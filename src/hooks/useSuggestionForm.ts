@@ -167,8 +167,19 @@ export const useSuggestionForm = (
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+  const handleFileUpload = (
+    e: React.ChangeEvent<HTMLInputElement> | File[]
+  ) => {
+    let files: File[];
+
+    if (Array.isArray(e)) {
+      // Handle dropped files
+      files = e;
+    } else {
+      // Handle file input event
+      files = Array.from(e.target.files || []);
+    }
+
     const newAttachments = files.map((file) => ({
       name: file.name,
       size: file.size,
@@ -241,6 +252,12 @@ export const useSuggestionForm = (
     setErrors({});
   };
 
+  const goToStep = (step: number) => {
+    if (step >= 1 && step <= 4) {
+      setCurrentStep(step);
+    }
+  };
+
   return {
     currentStep,
     formData,
@@ -255,5 +272,6 @@ export const useSuggestionForm = (
     canSubmit,
     toggleSection,
     resetForm,
+    goToStep,
   };
 };

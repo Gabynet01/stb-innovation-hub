@@ -4,7 +4,6 @@ import {
     ArrowPathIcon,
     PlusIcon
 } from '@heroicons/react/24/outline';
-import { APP_CONFIG } from '@/constants';
 
 interface SuggestionsHeaderProps {
     showFilters: boolean;
@@ -23,7 +22,7 @@ export const SuggestionsHeader: React.FC<SuggestionsHeaderProps> = ({
 }) => {
     return (
         <div className="relative overflow-hidden">
-            {/* Elegant Background with Standard Bank Blue */}
+            {/* Elegant Background with Stanbic Bank Blue */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#0051FF] via-[#0047E6] to-[#0038CC]"></div>
 
             {/* Subtle Pattern Overlay */}
@@ -44,7 +43,7 @@ export const SuggestionsHeader: React.FC<SuggestionsHeaderProps> = ({
                                 Share Your Ideas
                             </h1>
                             <p className="text-white/70 text-base">
-                                Help shape the future of Standard Bank
+                                Help shape the future of Stanbic Bank
                             </p>
                         </div>
                     </div>

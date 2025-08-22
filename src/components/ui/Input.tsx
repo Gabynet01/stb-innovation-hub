@@ -37,7 +37,7 @@ export const Input: React.FC<InputProps> = ({
         lg: 'px-4 py-3 text-base'
     };
 
-    // Variant classes - using Standard Bank electric blue
+    // Variant classes - using Stanbic Bank electric blue
     const variantClasses = {
         default: 'border-slate-300 focus:border-[#0051FF] focus:ring-[#0051FF]/20',
         success: 'border-[#0051FF] focus:border-[#0051FF] focus:ring-[#0051FF]/20',
@@ -45,7 +45,7 @@ export const Input: React.FC<InputProps> = ({
         danger: 'border-[#0051FF] focus:border-[#0051FF] focus:ring-[#0051FF]/20'
     };
 
-    // Error state - using Standard Bank electric blue
+    // Error state - using Stanbic Bank electric blue
     const errorClasses = error ? 'border-[#0051FF] focus:border-[#0051FF] focus:ring-[#0051FF]/20' : '';
 
     // Icon padding

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SuggestionsHeader } from './SuggestionsHeader';
 import { SuggestionsStats } from './SuggestionsStats';
 import { SuggestionsFilters } from './SuggestionsFilters';
@@ -39,20 +39,7 @@ export const ListView: React.FC<ListViewProps> = ({
     onEdit,
     onDelete
 }) => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 6;
-    const totalPages = Math.ceil(suggestions.length / itemsPerPage);
-    const startItem = (currentPage - 1) * itemsPerPage + 1;
-    const endItem = Math.min(currentPage * itemsPerPage, suggestions.length);
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
-
-    // Reset to first page when suggestions change
-    React.useEffect(() => {
-        setCurrentPage(1);
-    }, [suggestions.length]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">

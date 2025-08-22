@@ -27,7 +27,7 @@ export const Badge: React.FC<BadgeProps> = ({
         'transition-all duration-200'
     ];
 
-    // Variant classes - using Standard Bank electric blue
+    // Variant classes - using Stanbic Bank electric blue
     const variantClasses = {
         default: 'bg-gradient-to-r from-[#0051FF]/10 to-[#0047E6]/10 text-[#0051FF] border border-[#0051FF]/20',
         primary: 'bg-gradient-to-r from-[#0051FF] to-[#0047E6] text-white border border-[#0051FF] shadow-sm',

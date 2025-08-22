@@ -26,10 +26,10 @@
   }
 }
 
-/* Standard Bank Brand Fonts - Benton Sans Pro (Primary) with Inter fallback */
+/* Stanbic Bank Brand Fonts - Benton Sans Pro (Primary) with Inter fallback */
 /* 
   Font Strategy:
-  - Primary: Benton Sans Pro (Standard Bank's official brand font)
+  - Primary: Benton Sans Pro (Stanbic Bank's official brand font)
   - Fallback: Inter (geometric sans-serif that closely matches Benton Sans Pro)
   - System fonts as final fallback for maximum compatibility
   
@@ -65,7 +65,7 @@
 
 @layer components {
 
-  /* Standard Bank Brand Font Utilities - Benton Sans Pro with Inter fallback */
+  /* Stanbic Bank Brand Font Utilities - Benton Sans Pro with Inter fallback */
   .font-benton-thin {
     font-family: 'Benton Sans Pro', 'Inter', sans-serif;
     font-weight: 100;
@@ -217,7 +217,7 @@
     animation-delay: 1.5s;
   }
 
-  /* Standard Bank Brand Color Palette */
+  /* Stanbic Bank Brand Color Palette */
   .bg-primary {
     background-color: #0051FF;
     /* Electric Blue */
@@ -225,7 +225,7 @@
 
   .bg-primary-hover {
     background-color: #0033A1;
-    /* Standard Bank Blue */
+    /* Stanbic Bank Blue */
   }
 
   .bg-secondary {
@@ -254,8 +254,8 @@
     background-color: #0891b2;
   }
 
-  /* Standard Bank Specific Color Classes */
-  .bg-standard-bank-blue {
+  /* Stanbic Bank Specific Color Classes */
+  .bg-stanbic-bank-blue {
     background-color: #0033A1;
   }
 
@@ -275,7 +275,7 @@
     background-color: #000032;
   }
 
-  .text-standard-bank-blue {
+  .text-stanbic-bank-blue {
     color: #0033A1;
   }
 
@@ -295,7 +295,7 @@
     color: #000032;
   }
 
-  .border-standard-bank-blue {
+  .border-stanbic-bank-blue {
     border-color: #0033A1;
   }
 
@@ -408,7 +408,7 @@
     border: 1px solid #94a3b8;
   }
 
-  /* Standard Bank Brand Gradients - Vibrant */
+  /* Stanbic Bank Brand Gradients - Vibrant */
   .gradient-primary {
     background: linear-gradient(135deg, #0051FF 0%, #0033A1 100%);
   }

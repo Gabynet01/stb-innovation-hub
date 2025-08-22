@@ -1,6 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UserCircleIcon, MagnifyingGlassIcon, PlusIcon, Bars3Icon } from '@heroicons/react/24/outline';
-import stanbicLogo from '@/assets/images/stanbic-logo.jpg';
+import stanbicLogo from '@/assets/images/stanbic-logo.png';
 import './navbar.component.scss';
 
 interface NavbarProps {
@@ -8,9 +9,10 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onSidebarToggle }) => {
+    const navigate = useNavigate();
+
     const handleNewIdea = () => {
-        console.log('New Idea clicked');
-        // Add your new idea logic here
+        navigate('/suggestions?view=form');
     };
 
     const handleUserProfile = () => {
@@ -27,13 +29,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onSidebarToggle }) => {
                         <div className="navbar__logo">
                             <img
                                 src={stanbicLogo}
-                                alt="Standard Bank Logo"
+                                alt="Stanbic Bank Logo"
                                 className="navbar__logo-image"
                             />
                         </div>
 
                         <div className="navbar__brand-text">
-                            <h1 className="navbar__brand-title">Standard Bank</h1>
+                            <h1 className="navbar__brand-title">Stanbic Bank</h1>
                             <p className="navbar__brand-subtitle">Ideation Hub</p>
                         </div>
                     </div>

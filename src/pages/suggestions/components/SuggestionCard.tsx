@@ -5,12 +5,8 @@ import { getCategoryDisplayName } from '@/utils/formatting';
 import {
     PencilIcon,
     TrashIcon,
-    ClockIcon,
     UserIcon,
-    TagIcon,
-    EyeIcon,
-    LightBulbIcon,
-    SparklesIcon
+    EyeIcon
 } from '@heroicons/react/24/outline';
 
 interface SuggestionCardProps {

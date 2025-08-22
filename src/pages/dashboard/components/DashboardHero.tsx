@@ -44,7 +44,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({ systemStatus = 'op
                     Ideation Hub
                 </h1>
                 <p className="text-xl text-gray-600 max-w-4xl mx-auto font-medium leading-relaxed">
-                    Welcome to {APP_CONFIG.name}. Share ideas, explore AI-powered insights, and help shape the future at Standard Bank.
+                    Welcome to {APP_CONFIG.name}. Share ideas, explore AI-powered insights, and help shape the future at Stanbic Bank.
                 </p>
 
                 {/* System Status Indicator */}

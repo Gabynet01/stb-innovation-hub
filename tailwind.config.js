@@ -7,8 +7,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Standard Bank Brand Colors (Updated - Electric Blue Primary)
-        'standard-bank': {
+        // Stanbic Bank Brand Colors (Updated - Electric Blue Primary)
+        'stanbic-bank': {
           50: '#F0F7FF',   // Very light blue tint
           100: '#E0EFFF',  // Light blue tint
           200: '#C1DFFF',  // Light blue
@@ -16,7 +16,7 @@ module.exports = {
           400: '#83BFFF',  // Medium blue
           500: '#50BEFF',  // Sky Blue
           600: '#0051FF',  // Electric Blue (Primary)
-          700: '#0033A1',  // Standard Bank Blue
+          700: '#0033A1',  // Stanbic Bank Blue
           800: '#00008C',  // Deep Blue
           900: '#000032',  // Stature Blue
         },
@@ -29,7 +29,7 @@ module.exports = {
           400: '#83BFFF',
           500: '#50BEFF',  // Sky Blue
           600: '#0051FF',  // Electric Blue (Main brand color)
-          700: '#0033A1',  // Standard Bank Blue
+          700: '#0033A1',  // Stanbic Bank Blue
           800: '#00008C',  // Deep Blue
           900: '#000032',  // Stature Blue
         },
@@ -42,7 +42,7 @@ module.exports = {
           400: '#83BFFF',
           500: '#50BEFF',  // Sky Blue as accent
           600: '#0051FF',  // Electric Blue as primary
-          700: '#0033A1',  // Standard Bank Blue
+          700: '#0033A1',  // Stanbic Bank Blue
           800: '#00008C',  // Deep Blue
           900: '#000032',  // Stature Blue
         },

@@ -39,7 +39,8 @@ export const SuggestionForm: React.FC<SuggestionFormProps> = ({
         prevStep,
         canSubmit,
         toggleSection,
-        resetForm
+        resetForm,
+        goToStep
     } = useSuggestionForm(editingSuggestion || null, loading);
 
     const { confirmation, showConfirmation, hideConfirmation } = useConfirmation();
@@ -81,10 +82,8 @@ export const SuggestionForm: React.FC<SuggestionFormProps> = ({
     };
 
     const handleEditStep = (step: number) => {
-        // Set the current step to the step being edited
-        // Note: This would need to be implemented in the hook if you want to track which step to go back to
-        // For now, we'll just set it directly
-        // You could enhance the hook to support this if needed
+        // Navigate to the specified step for editing
+        goToStep(step);
     };
 
     return (

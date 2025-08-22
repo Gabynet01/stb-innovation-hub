@@ -5,10 +5,7 @@ import { ConfirmationModal } from '@/components/ui';
 import { useConfirmation } from '@/hooks/useConfirmation';
 import {
     TagIcon,
-    UsersIcon,
     MagnifyingGlassIcon,
-    FunnelIcon,
-    ChartBarIcon,
     PlusIcon,
     EyeIcon,
     PencilIcon,

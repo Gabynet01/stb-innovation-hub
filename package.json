@@ -1,9 +1,9 @@
 {
-  "name": "standard-bank-ideation-hub",
+  "name": "stanbic-bank-ideation-hub",
   "version": "2.0.0",
   "private": true,
-  "description": "Standard Bank's Innovation Platform - AI-powered suggestion management and insights",
-  "author": "Standard Bank",
+  "description": "Stanbic Bank's Innovation Platform - AI-powered suggestion management and insights",
+  "author": "Stanbic Bank",
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@testing-library/dom": "^10.4.1",

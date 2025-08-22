@@ -103,7 +103,7 @@ export const AttachmentViewer: React.FC<AttachmentViewerProps> = ({ attachments 
                     <DocumentIcon className="h-8 w-8 text-blue-600" />
                     <div>
                         <h3 className="text-lg font-semibold text-slate-900">{attachment.name || 'Document'}</h3>
-                        <p className="text-sm text-slate-500">{type || 'Unknown type'}</p>
+                        <p className="text-sm text-slate-500 truncate">{type || 'Unknown type'}</p>
                     </div>
                 </div>
                 {attachment.content ? (
@@ -114,7 +114,7 @@ export const AttachmentViewer: React.FC<AttachmentViewerProps> = ({ attachments 
                     <div className="text-center py-12">
                         <DocumentIcon className="h-16 w-16 text-slate-400 mx-auto mb-4" />
                         <p className="text-slate-500">Preview not available for this file type</p>
-                        <p className="text-sm text-slate-400 mt-2">
+                        <p className="text-sm text-slate-400 mt-2 truncate">
                             {attachment.name || 'Attachment'} • {type || 'Unknown type'}
                         </p>
                     </div>
@@ -144,7 +144,7 @@ export const AttachmentViewer: React.FC<AttachmentViewerProps> = ({ attachments 
                                     <p className="text-sm font-medium text-slate-900 truncate group-hover:text-[#0051FF] transition-colors duration-200">
                                         {attachment.name || `Attachment ${index + 1}`}
                                     </p>
-                                    <p className="text-xs text-slate-500">
+                                    <p className="text-xs text-slate-500 truncate">
                                         {attachment.type || attachment.mimeType || 'Unknown type'}
                                     </p>
                                 </div>
@@ -175,7 +175,7 @@ export const AttachmentViewer: React.FC<AttachmentViewerProps> = ({ attachments 
                                     <h3 className="text-lg font-semibold text-slate-900">
                                         {selectedAttachment.name || 'Attachment'}
                                     </h3>
-                                    <p className="text-sm text-slate-500">
+                                    <p className="text-sm text-slate-500 truncate">
                                         {selectedAttachment.type || selectedAttachment.mimeType || 'Unknown type'}
                                     </p>
                                 </div>

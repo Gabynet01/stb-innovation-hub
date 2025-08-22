@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Suggestion } from '@/types/api';
 import { useSuggestions } from '@/hooks/useSuggestions';
 import { ListView, FormView, DetailView } from './components';
@@ -6,6 +7,7 @@ import { useSnackbar, ConfirmationModal } from '@/components/ui';
 import { useConfirmation } from '@/hooks/useConfirmation';
 
 export const SuggestionsPage: React.FC = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
     const {
         suggestions,
         loading: suggestionsLoading,
@@ -25,6 +27,15 @@ export const SuggestionsPage: React.FC = () => {
     const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
     const [showFilters, setShowFilters] = useState(false);
     const [formLoading, setFormLoading] = useState(false);
+
+    // Check URL query parameter to automatically show form
+    useEffect(() => {
+        const viewParam = searchParams.get('view');
+        if (viewParam === 'form') {
+            setView('form');
+            setSelectedSuggestion(null);
+        }
+    }, [searchParams]);
 
     // Single confirmation modal for all views
     const renderConfirmationModal = () => {
@@ -136,6 +147,7 @@ export const SuggestionsPage: React.FC = () => {
         setView('list');
         setSelectedSuggestion(null);
         setFormLoading(false);
+        setSearchParams({});
     };
 
     const handleOpenForm = () => {
