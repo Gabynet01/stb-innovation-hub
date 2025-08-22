@@ -2,7 +2,7 @@ import { ApiResponse } from "@/types/api";
 
 // API Configuration
 const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:9000";
 const API_VERSION = "v1";
 const DEFAULT_TIMEOUT = 30000; // 30 seconds
 const MAX_RETRIES = 3;
@@ -14,7 +14,7 @@ export class ApiError extends Error {
     message: string,
     public status?: number,
     public code?: string,
-    public details?: any
+    public details?: Record<string, unknown>
   ) {
     super(message);
     this.name = "ApiError";
@@ -67,20 +67,14 @@ export class BaseApiService {
     const url = `${this.baseUrl}${endpoint}`;
     const requestTimeout = timeout || this.timeout;
 
-    const defaultOptions: RequestInit = {
-      headers: {
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
-      ...options,
-    };
+    const defaultOptions = options;
 
     const requestPromise = async (): Promise<ApiResponse<T>> => {
       try {
         const response = await fetch(url, defaultOptions);
 
         if (!response.ok) {
-          let errorData: any = {};
+          let errorData: Record<string, unknown> = {};
           try {
             errorData = await response.json();
           } catch {
@@ -88,10 +82,11 @@ export class BaseApiService {
           }
 
           throw new ApiError(
-            errorData.message || `HTTP error! status: ${response.status}`,
+            (errorData.message as string) ||
+              `HTTP error! status: ${response.status}`,
             response.status,
-            errorData.code,
-            errorData.details
+            errorData.code as string,
+            errorData.details as Record<string, unknown>
           );
         }
 
@@ -135,7 +130,12 @@ export class BaseApiService {
 
   // Utility methods
   setBaseUrl(url: string): void {
-    this.baseUrl = `${url}/${API_VERSION}`;
+    // Don't add API_VERSION again if it's already in the URL
+    if (url.endsWith(`/${API_VERSION}`)) {
+      this.baseUrl = url;
+    } else {
+      this.baseUrl = `${url}/${API_VERSION}`;
+    }
   }
 
   setTimeout(timeout: number): void {

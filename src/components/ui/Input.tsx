@@ -37,16 +37,16 @@ export const Input: React.FC<InputProps> = ({
         lg: 'px-4 py-3 text-base'
     };
 
-    // Variant classes
+    // Variant classes - using Standard Bank electric blue
     const variantClasses = {
-        default: 'border-slate-300 focus:border-primary focus:ring-primary/20',
-        success: 'border-success focus:border-success focus:ring-success/20',
-        warning: 'border-warning focus:border-warning focus:ring-warning/20',
-        danger: 'border-danger focus:border-danger focus:ring-danger/20'
+        default: 'border-slate-300 focus:border-[#0051FF] focus:ring-[#0051FF]/20',
+        success: 'border-[#0051FF] focus:border-[#0051FF] focus:ring-[#0051FF]/20',
+        warning: 'border-[#0051FF] focus:border-[#0051FF] focus:ring-[#0051FF]/20',
+        danger: 'border-[#0051FF] focus:border-[#0051FF] focus:ring-[#0051FF]/20'
     };
 
-    // Error state
-    const errorClasses = error ? 'border-danger focus:border-danger focus:ring-danger/20' : '';
+    // Error state - using Standard Bank electric blue
+    const errorClasses = error ? 'border-[#0051FF] focus:border-[#0051FF] focus:ring-[#0051FF]/20' : '';
 
     // Icon padding
     const iconPadding = {
@@ -94,7 +94,7 @@ export const Input: React.FC<InputProps> = ({
             </div>
 
             {error && (
-                <p className="text-sm text-danger flex items-center">
+                <p className="text-sm text-[#0051FF] flex items-center">
                     <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>

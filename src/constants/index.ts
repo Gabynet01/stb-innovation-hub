@@ -1,17 +1,17 @@
-// Status Colors for UI badges - Stanbic Bank Zambia Brand
+// Status Colors for UI badges - Clean Professional Design
 export const STATUS_COLORS = {
-  pending: "border-stanbic-gold-200 bg-stanbic-gold-50 text-stanbic-gold-800",
+  pending: "border-blue-200 bg-blue-50 text-blue-800",
   approved: "border-green-200 bg-green-50 text-green-800",
   rejected: "border-red-200 bg-red-50 text-red-800",
-  in_progress: "border-stanbic-200 bg-stanbic-50 text-stanbic-700",
-  completed: "border-corporate-200 bg-corporate-50 text-corporate-800",
+  in_progress: "border-amber-200 bg-amber-50 text-amber-800",
+  completed: "border-emerald-200 bg-emerald-50 text-emerald-800",
 } as const;
 
-// Priority Colors for UI badges - Stanbic Bank Zambia Brand
+// Priority Colors for UI badges - Clean Professional Design
 export const PRIORITY_COLORS = {
-  low: "border-corporate-200 bg-corporate-50 text-corporate-800",
-  medium: "border-stanbic-gold-200 bg-stanbic-gold-50 text-stanbic-gold-800",
-  high: "border-stanbic-200 bg-stanbic-50 text-stanbic-700",
+  low: "border-gray-200 bg-gray-50 text-gray-800",
+  medium: "border-blue-200 bg-blue-50 text-blue-800",
+  high: "border-amber-200 bg-amber-50 text-amber-800",
   critical: "border-red-200 bg-red-50 text-red-800",
 } as const;
 
@@ -48,3 +48,14 @@ export const STATUS_ORDER = {
   completed: 4,
   rejected: 5,
 } as const;
+
+// App Branding Constants
+export const APP_CONFIG = {
+  name: "Ideation Hub",
+  description: "Standard Bank's Innovation Platform",
+  tagline: "Empowering Ideas, Driving Innovation",
+  version: "2.0.0",
+} as const;
+
+// Export suggestion form constants
+export * from "./suggestion-form";

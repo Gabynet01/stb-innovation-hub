@@ -2,22 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Outfit Font Import - 2025 Modern Premium Font */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+/* Line-clamp utilities for text truncation */
+@layer utilities {
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
 
-/* Force Outfit Font Throughout Application */
-* {
-  font-family: 'Outfit' !important;
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
 }
 
-/* Enterprise Design System */
+/* Standard Bank Brand Fonts - Benton Sans Pro (Primary) with Inter fallback */
+/* 
+  Font Strategy:
+  - Primary: Benton Sans Pro (Standard Bank's official brand font)
+  - Fallback: Inter (geometric sans-serif that closely matches Benton Sans Pro)
+  - System fonts as final fallback for maximum compatibility
+  
+  Note: Benton Sans Pro is a proprietary font that may not be available on all systems.
+  Inter provides a similar geometric, professional aesthetic as a web-safe alternative.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+/* Force Benton Sans Pro Font Throughout Application with Inter fallback */
+* {
+  font-family: 'Benton Sans Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Enterprise Design System - Benton Sans Pro Font */
 @layer base {
   html {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Benton Sans Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Benton Sans Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #fafbfc;
@@ -32,17 +65,177 @@
 
 @layer components {
 
-  /* Enterprise Color Palette */
+  /* Standard Bank Brand Font Utilities - Benton Sans Pro with Inter fallback */
+  .font-benton-thin {
+    font-family: 'Benton Sans Pro', 'Inter', sans-serif;
+    font-weight: 100;
+  }
+
+  .font-benton-extralight {
+    font-family: 'Benton Sans Pro', 'Inter', sans-serif;
+    font-weight: 200;
+  }
+
+  .font-benton-light {
+    font-family: 'Benton Sans Pro', 'Inter', sans-serif;
+    font-weight: 300;
+  }
+
+  .font-benton-normal {
+    font-family: 'Benton Sans Pro', 'Inter', sans-serif;
+    font-weight: 400;
+  }
+
+  .font-benton-medium {
+    font-family: 'Benton Sans Pro', 'Inter', sans-serif;
+    font-weight: 500;
+  }
+
+  .font-benton-semibold {
+    font-family: 'Benton Sans Pro', 'Inter', sans-serif;
+    font-weight: 600;
+  }
+
+  .font-benton-bold {
+    font-family: 'Benton Sans Pro', 'Inter', sans-serif;
+    font-weight: 700;
+  }
+
+  .font-benton-extrabold {
+    font-family: 'Benton Sans Pro', 'Inter', sans-serif;
+    font-weight: 800;
+  }
+
+  .font-benton-black {
+    font-family: 'Benton Sans Pro', 'Inter', sans-serif;
+    font-weight: 900;
+  }
+
+  /* Inter Font Utilities (Fallback) */
+  .font-inter-thin {
+    font-family: 'Inter', sans-serif;
+    font-weight: 100;
+  }
+
+  .font-inter-extralight {
+    font-family: 'Inter', sans-serif;
+    font-weight: 200;
+  }
+
+  .font-inter-light {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+  }
+
+  .font-inter-normal {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+
+  .font-inter-medium {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+
+  .font-inter-semibold {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+  }
+
+  .font-inter-bold {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+
+  .font-inter-extrabold {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+  }
+
+  .font-inter-black {
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+  }
+
+  /* Custom Animation Delays for Staggered Effects */
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
+
+  .animation-delay-800 {
+    animation-delay: 800ms;
+  }
+
+  /* Enhanced Shadow Utilities */
+  .shadow-3xl {
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  .shadow-4xl {
+    box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Glassmorphism Effects */
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .glass-effect-hover:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* Floating Animation */
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-float-delayed {
+    animation: float 3s ease-in-out infinite;
+    animation-delay: 1.5s;
+  }
+
+  /* Standard Bank Brand Color Palette */
   .bg-primary {
-    background-color: #2563eb;
+    background-color: #0051FF;
+    /* Electric Blue */
   }
 
   .bg-primary-hover {
-    background-color: #1d4ed8;
+    background-color: #0033A1;
+    /* Standard Bank Blue */
   }
 
   .bg-secondary {
-    background-color: #64748b;
+    background-color: #50BEFF;
+    /* Sky Blue */
+  }
+
+  .bg-accent {
+    background-color: #83BFFF;
+    /* Light Blue */
   }
 
   .bg-success {
@@ -59,6 +252,59 @@
 
   .bg-info {
     background-color: #0891b2;
+  }
+
+  /* Standard Bank Specific Color Classes */
+  .bg-standard-bank-blue {
+    background-color: #0033A1;
+  }
+
+  .bg-electric-blue {
+    background-color: #0051FF;
+  }
+
+  .bg-sky-blue {
+    background-color: #50BEFF;
+  }
+
+  .bg-deep-blue {
+    background-color: #00008C;
+  }
+
+  .bg-stature-blue {
+    background-color: #000032;
+  }
+
+  .text-standard-bank-blue {
+    color: #0033A1;
+  }
+
+  .text-electric-blue {
+    color: #0051FF;
+  }
+
+  .text-sky-blue {
+    color: #50BEFF;
+  }
+
+  .text-deep-blue {
+    color: #00008C;
+  }
+
+  .text-stature-blue {
+    color: #000032;
+  }
+
+  .border-standard-bank-blue {
+    border-color: #0033A1;
+  }
+
+  .border-electric-blue {
+    border-color: #0051FF;
+  }
+
+  .border-sky-blue {
+    border-color: #50BEFF;
   }
 
   /* Enterprise Typography */
@@ -162,13 +408,33 @@
     border: 1px solid #94a3b8;
   }
 
-  /* Enterprise Gradients */
+  /* Standard Bank Brand Gradients - Vibrant */
   .gradient-primary {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #0051FF 0%, #0033A1 100%);
   }
 
   .gradient-secondary {
-    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    background: linear-gradient(135deg, #50BEFF 0%, #0051FF 100%);
+  }
+
+  .gradient-accent {
+    background: linear-gradient(135deg, #83BFFF 0%, #50BEFF 100%);
+  }
+
+  .gradient-sky {
+    background: linear-gradient(135deg, #50BEFF 0%, #83BFFF 100%);
+  }
+
+  .gradient-vibrant {
+    background: linear-gradient(135deg, #0051FF 0%, #50BEFF 50%, #83BFFF 100%);
+  }
+
+  .gradient-electric {
+    background: linear-gradient(135deg, #0051FF 0%, #0033A1 50%, #00008C 100%);
+  }
+
+  .gradient-modern {
+    background: linear-gradient(135deg, #50BEFF 0%, #0051FF 50%, #0033A1 100%);
   }
 
   .gradient-success {

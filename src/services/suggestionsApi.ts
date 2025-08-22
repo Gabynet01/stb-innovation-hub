@@ -7,7 +7,6 @@ import {
 } from "@/types/api";
 
 export class SuggestionsApiService extends BaseApiService {
-  // Create Suggestion
   async createSuggestion(
     suggestion: SuggestionCreate,
     idempotencyKey?: string
@@ -20,17 +19,18 @@ export class SuggestionsApiService extends BaseApiService {
     return this.requestWithRetry("/suggestions", {
       method: "POST",
       body: JSON.stringify(suggestion),
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+        ...headers,
+      },
     });
   }
 
-  // Get Suggestions with filters
   async getSuggestions(
     filters: SuggestionFilters = {}
   ): Promise<ApiResponse<Suggestion[]>> {
     const queryParams = new URLSearchParams();
 
-    // Add filters based on API spec
     if (filters.author_type)
       queryParams.append("author_type", filters.author_type);
     if (filters.category) queryParams.append("category", filters.category);
@@ -48,7 +48,6 @@ export class SuggestionsApiService extends BaseApiService {
     return this.request<Suggestion[]>(endpoint);
   }
 
-  // Get Single Suggestion
   async getSuggestion(id: string): Promise<ApiResponse<Suggestion>> {
     if (!id || typeof id !== "string") {
       throw new Error("Invalid suggestion ID provided");
@@ -56,7 +55,6 @@ export class SuggestionsApiService extends BaseApiService {
     return this.request<Suggestion>(`/suggestions/${id}`);
   }
 
-  // Update Suggestion
   async updateSuggestion(
     id: string,
     updates: Partial<Suggestion>
@@ -71,10 +69,12 @@ export class SuggestionsApiService extends BaseApiService {
     return this.requestWithRetry(`/suggestions/${id}`, {
       method: "PATCH",
       body: JSON.stringify(updates),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
   }
 
-  // Delete Suggestion
   async deleteSuggestion(id: string): Promise<ApiResponse> {
     if (!id || typeof id !== "string") {
       throw new Error("Invalid suggestion ID provided");

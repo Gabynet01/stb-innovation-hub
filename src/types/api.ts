@@ -1,74 +1,56 @@
-// API Response Types
+// Core API Response Structure
 export interface ApiResponse<T = any> {
   ok: boolean;
-  data?: T;
-  meta?: Record<string, any> | null;
+  data: T;
+  meta?: any;
 }
 
-export interface PaginationMeta {
-  page: number;
-  page_size: number;
-  total: number;
-  total_pages: number;
-}
-
-// Enums
-export enum AuthorType {
-  STAFF = "STAFF",
-  CUSTOMER = "CUSTOMER",
-}
-
-export enum Category {
-  UX = "UX",
-  PRODUCT = "PRODUCT",
-  SERVICE = "SERVICE",
-  OPERATIONAL = "OPERATIONAL",
-  OTHER = "OTHER",
-}
-
-// Core Types
+// Suggestion Types - exactly matching backend schemas
 export interface ContactInfo {
-  email?: string | null;
-  phone?: string | null;
+  email: string | null;
+  phone: string | null;
 }
 
 export interface SuggestionCreate {
-  author_type: AuthorType;
-  category: Category;
+  author_type: "STAFF" | "CUSTOMER";
+  category: "UX" | "PRODUCT" | "SERVICE" | "OPERATIONAL" | "OTHER";
   title: string;
   body: string;
   contact: ContactInfo;
-  attachments?: Record<string, any>[] | null;
+  attachments?: Record<string, any>[];
 }
 
-// For production: Only use what's defined in the API spec
-export interface Suggestion extends SuggestionCreate {
+export interface Suggestion {
   id: string;
-  // Only fields defined in SuggestionCreate are included
-  // No additional fields beyond what the API spec defines
+  author_type: "STAFF" | "CUSTOMER";
+  category: "UX" | "PRODUCT" | "SERVICE" | "OPERATIONAL" | "OTHER";
+  title: string;
+  body: string;
+  contact: Record<string, any>;
+  attachments: Record<string, any>[];
+  tags: string[];
+  language: string | null;
+  embedding_model: string | null;
+  status: "NEW" | "PROCESSED" | "ARCHIVED";
+  created_at: string;
+  updated_at: string;
+  archived_at: string | null;
 }
 
-// Filter Types - only what's defined in the API spec
 export interface SuggestionFilters {
-  author_type?: AuthorType | null;
-  category?: Category | null;
-  status?: string | null;
-  language?: string | null;
-  tag?: string | null;
+  search?: string;
+  author_type?: string;
+  category?: string;
+  status?: string;
+  language?: string;
+  tag?: string;
   page?: number;
   page_size?: number;
 }
 
-// Cluster Types
-export enum ClusterKind {
-  EMBEDDING = "EMBEDDING",
-  TAG = "TAG",
-  TOPIC = "TOPIC",
-  FUSION = "FUSION",
-}
-
+// Cluster Types - exactly matching backend schemas
 export interface ClusterCreate {
-  kind: ClusterKind;
+  kind: "EMBEDDING" | "TAG" | "TOPIC" | "FUSION";
   title?: string | null;
   description?: string | null;
   tags?: string[];
@@ -76,27 +58,77 @@ export interface ClusterCreate {
   fusion_params?: Record<string, any> | null;
 }
 
-// For production: Only use what's defined in the API spec
-export interface Cluster extends ClusterCreate {
+export interface Cluster {
   id: string;
-  // Only fields defined in ClusterCreate are included
-  // No additional fields beyond what the API spec defines
+  kind: "EMBEDDING" | "TAG" | "TOPIC" | "FUSION";
+  title?: string | null;
+  description?: string | null;
+  tags: string[];
+  weight: number;
+  status: "NEW" | "IN_REVIEW" | "IN_PROGRESS" | "CLOSED" | "ARCHIVED";
+  primary_topic_id?: string | null;
+  fusion_params?: Record<string, any> | null;
+  created_at: string;
+  updated_at: string;
 }
 
-// Topic Types
+export interface ClusterFilters {
+  kind?: string;
+  search?: string;
+  page?: number;
+  page_size?: number;
+}
+
+// Topic Types - exactly matching backend schemas
 export interface TopicCreate {
   label: string;
   description?: string | null;
 }
 
-// For production: Only use what's defined in the API spec
-export interface Topic extends TopicCreate {
+export interface Topic {
   id: string;
-  // Only fields defined in TopicCreate are included
-  // No additional fields beyond what the API spec defines
+  label: string;
+  description?: string | null;
 }
 
-// Job Types
+export interface TopicFilters {
+  search?: string;
+  page?: number;
+  page_size?: number;
+}
+
+// Metrics Types - exactly matching backend responses
+export interface OverviewMetrics {
+  total_suggestions: number;
+  total_clusters: number;
+  jobs: Record<string, number>;
+  system_status: string;
+  timestamp: string;
+}
+
+export interface ClusterMetrics {
+  total_clusters: number;
+  by_kind: Record<string, number>;
+  by_status: Record<string, number>;
+  total_weight: number;
+  avg_weight: number;
+}
+
+export interface TopicMetrics {
+  total_topics: number;
+  reuse_rate: number;
+  avg_confidence: number;
+  message: string;
+}
+
+export interface GenerationMetrics {
+  total_documents: number;
+  documents_by_status: Record<string, number>;
+  documents_by_type: Record<string, number>;
+  average_generation_time: number;
+}
+
+// Job Types - exactly matching backend schemas
 export interface Job {
   id: string;
   created_at: string;
@@ -108,35 +140,61 @@ export interface Job {
   error?: string | null;
 }
 
-// Metrics Types
-export interface OverviewMetrics {
-  total_suggestions: number;
-  total_clusters: number;
-  total_topics: number;
-  pending_suggestions: number;
-  completed_suggestions: number;
+export interface JobFilters {
+  status?: string | null;
+  job_type?: string | null;
+  page?: number;
+  page_size?: number;
+}
+
+export interface JobStats {
+  total_jobs: number;
+  jobs_by_status: Record<string, number>;
+  jobs_by_type: Record<string, number>;
   average_processing_time: number;
 }
 
-export interface ClusterMetrics {
-  total_clusters: number;
-  clusters_by_kind: Record<ClusterKind, number>;
-  average_cluster_weight: number;
-  top_clusters: Cluster[];
+// Document Types - exactly matching backend schemas
+export interface Document {
+  id: string;
+  title: string;
+  content: string;
+  template_id?: string | null;
+  generated_at: string;
+  status: "draft" | "generated" | "published";
+  metadata?: Record<string, any> | null;
 }
 
-export interface TopicMetrics {
-  total_topics: number;
-  topics_by_support: Record<string, number>;
-  average_confidence: number;
-  top_topics: Topic[];
+export interface DocumentCreate {
+  title: string;
+  template_id: string;
+  data: Record<string, any>;
+  output_format?: "pdf" | "docx" | "html";
 }
 
-export interface GenerationMetrics {
-  total_documents: number;
-  documents_by_template: Record<string, number>;
-  average_generation_time: number;
-  success_rate: number;
+export interface DocumentFilters {
+  template_id?: string | null;
+  status?: string | null;
+  page?: number;
+  page_size?: number;
+}
+
+// Template Types - exactly matching backend schemas
+export interface Template {
+  id: string;
+  name: string;
+  description?: string | null;
+  content: string;
+  variables: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TemplateCreate {
+  name: string;
+  description?: string | null;
+  content: string;
+  variables: string[];
 }
 
 // Validation Types

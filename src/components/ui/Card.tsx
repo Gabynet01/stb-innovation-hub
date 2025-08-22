@@ -64,15 +64,16 @@ export const Card: React.FC<CardProps> = ({
         xl: 'rounded-2xl'
     };
 
-    // Hover effects
+    // Hover effects with Standard Bank electric blue
     const hoverClasses = hover ? [
         'hover:shadow-large',
         'hover:scale-[1.02]',
-        'hover:border-slate-300'
+        'hover:border-[#0051FF]/20',
+        'hover:shadow-[#0051FF]/5'
     ] : [];
 
-    // Gradient background
-    const backgroundClasses = gradient ? 'bg-gradient-to-br from-white to-slate-50' : 'bg-white';
+    // Gradient background with Standard Bank electric blue accents
+    const backgroundClasses = gradient ? 'bg-gradient-to-br from-white via-slate-50 to-[#0051FF]/5' : 'bg-white';
 
     // Combine all classes
     const cardClasses = [

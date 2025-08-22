@@ -27,15 +27,15 @@ export const Badge: React.FC<BadgeProps> = ({
         'transition-all duration-200'
     ];
 
-    // Variant classes
+    // Variant classes - using Standard Bank electric blue
     const variantClasses = {
-        default: 'bg-slate-100 text-slate-800 border border-slate-200',
-        primary: 'bg-primary text-white border border-blue-600',
-        success: 'bg-success text-white border border-emerald-600',
-        warning: 'bg-warning text-white border border-amber-600',
-        danger: 'bg-danger text-white border border-red-600',
-        info: 'bg-info text-white border border-cyan-600',
-        neutral: 'bg-slate-200 text-slate-700 border border-slate-300'
+        default: 'bg-gradient-to-r from-[#0051FF]/10 to-[#0047E6]/10 text-[#0051FF] border border-[#0051FF]/20',
+        primary: 'bg-gradient-to-r from-[#0051FF] to-[#0047E6] text-white border border-[#0051FF] shadow-sm',
+        success: 'bg-gradient-to-r from-[#0051FF] to-[#0047E6] text-white border border-[#0051FF] shadow-sm',
+        warning: 'bg-gradient-to-r from-[#0051FF] to-[#0047E6] text-white border border-[#0051FF] shadow-sm',
+        danger: 'bg-gradient-to-r from-[#0051FF] to-[#0047E6] text-white border border-[#0051FF] shadow-sm',
+        info: 'bg-gradient-to-r from-[#0051FF] to-[#0047E6] text-white border border-[#0051FF] shadow-sm',
+        neutral: 'bg-gradient-to-r from-slate-200 to-slate-300 text-slate-700 border border-slate-400'
     };
 
     // Size classes

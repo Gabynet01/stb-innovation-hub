@@ -1,7 +1,8 @@
 import React from 'react';
+import { classNames } from '../../utils/classNames';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'ghost' | 'outline';
+    variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'ghost' | 'outline' | 'gradient';
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     loading?: boolean;
     icon?: React.ComponentType<{ className?: string }>;
@@ -19,36 +20,38 @@ export const Button: React.FC<ButtonProps> = ({
     iconPosition = 'left',
     children,
     fullWidth = false,
-    rounded = 'md',
+    rounded = 'lg',
     className,
     disabled,
     ...props
 }) => {
     // Base classes
     const baseClasses = [
-        'inline-flex items-center justify-center font-medium transition-all duration-200',
+        'inline-flex items-center justify-center font-semibold transition-all duration-300',
         'focus:outline-none focus:ring-2 focus:ring-offset-2',
-        'disabled:opacity-50 disabled:cursor-not-allowed'
+        'disabled:opacity-50 disabled:cursor-not-allowed',
+        'transform hover:scale-[1.02] active:scale-[0.98]'
     ];
 
-    // Variant classes
+    // Variant classes - Clean Professional Design
     const variantClasses = {
-        primary: 'bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500 shadow-lg hover:shadow-xl transition-all duration-200',
-        secondary: 'bg-neutral-600 text-white hover:bg-neutral-700 focus:ring-neutral-500 shadow-lg hover:shadow-xl transition-all duration-200',
-        success: 'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500 shadow-lg hover:shadow-xl transition-all duration-200',
-        warning: 'bg-amber-600 text-white hover:bg-amber-700 focus:ring-amber-500 shadow-lg hover:shadow-xl transition-all duration-200',
-        danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-lg hover:shadow-xl transition-all duration-200',
-        ghost: 'bg-transparent text-neutral-700 hover:bg-neutral-100 focus:ring-neutral-500 transition-all duration-200',
-        outline: 'bg-transparent text-primary-600 border-2 border-primary-300 hover:bg-primary-50 hover:border-primary-400 focus:ring-primary-500 transition-all duration-200'
+        primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500/30 shadow-md hover:shadow-lg',
+        secondary: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-500/30 shadow-sm hover:shadow-md',
+        success: 'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500/30 shadow-md hover:shadow-lg',
+        warning: 'bg-amber-500 text-white hover:bg-amber-600 focus:ring-amber-500/30 shadow-md hover:shadow-lg',
+        danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500/30 shadow-md hover:shadow-lg',
+        ghost: 'bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-800 focus:ring-gray-500/30',
+        outline: 'bg-transparent text-blue-600 border border-blue-600 hover:bg-blue-50 hover:border-blue-700 focus:ring-blue-500/30 transition-all duration-300',
+        gradient: 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 focus:ring-blue-500/30 shadow-md hover:shadow-lg'
     };
 
     // Size classes
     const sizeClasses = {
-        xs: 'px-2.5 py-1.5 text-xs',
-        sm: 'px-3 py-2 text-sm',
-        md: 'px-4 py-2.5 text-sm',
-        lg: 'px-6 py-3 text-base',
-        xl: 'px-8 py-4 text-lg'
+        xs: 'px-3 py-1.5 text-xs',
+        sm: 'px-4 py-2 text-sm',
+        md: 'px-6 py-3 text-sm',
+        lg: 'px-8 py-4 text-base',
+        xl: 'px-10 py-5 text-lg'
     };
 
     // Icon size classes
@@ -62,9 +65,9 @@ export const Button: React.FC<ButtonProps> = ({
 
     // Rounded classes
     const roundedClasses = {
-        sm: 'rounded',
-        md: 'rounded-lg',
-        lg: 'rounded-xl',
+        sm: 'rounded-lg',
+        md: 'rounded-xl',
+        lg: 'rounded-2xl',
         full: 'rounded-full'
     };
 
@@ -72,14 +75,14 @@ export const Button: React.FC<ButtonProps> = ({
     const widthClasses = fullWidth ? 'w-full' : '';
 
     // Combine all classes
-    const buttonClasses = [
+    const buttonClasses = classNames(
         ...baseClasses,
         variantClasses[variant],
         sizeClasses[size],
         roundedClasses[rounded],
         widthClasses,
         className
-    ].filter(Boolean).join(' ');
+    );
 
     return (
         <button

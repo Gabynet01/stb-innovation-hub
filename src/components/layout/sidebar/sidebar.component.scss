@@ -1,0 +1,120 @@
+// Sidebar Component Styles using Tailwind CSS
+.sidebar {
+  @apply w-72 h-screen bg-white border-r border-gray-100 fixed left-0 top-24 overflow-y-auto transition-all duration-300 ease-in-out z-40;
+
+  &--collapsed {
+    @apply w-20;
+  }
+
+  &__container {
+    @apply p-6 transition-all duration-300;
+
+    .sidebar--collapsed & {
+      @apply px-2;
+    }
+  }
+
+  &__navigation {
+    @apply space-y-2;
+  }
+
+  // Menu Items
+  &__menu-item {
+    @apply w-full p-4 text-left rounded-lg transition-all duration-200 border-none bg-transparent cursor-pointer;
+
+    &:hover {
+      @apply text-blue-700 bg-blue-50;
+    }
+
+    &--active {
+      @apply bg-blue-600 text-white shadow-sm;
+
+      &:hover {
+        @apply bg-blue-600 text-white;
+      }
+    }
+  }
+
+  &__menu-item-content {
+    @apply flex items-center space-x-3;
+
+    &--collapsed {
+      @apply justify-center space-x-0;
+    }
+  }
+
+  &__menu-item-icon {
+    @apply h-5 w-5 transition-all duration-200 text-gray-600 group-hover:text-blue-600;
+
+    &--active {
+      @apply text-white;
+    }
+
+    .sidebar__menu-item--active & {
+      @apply text-white;
+    }
+  }
+
+  &__menu-item-details {
+    @apply flex-1 min-w-0;
+  }
+
+  &__menu-item-header {
+    @apply flex items-center justify-between;
+  }
+
+  &__menu-item-title {
+    @apply text-sm font-medium truncate;
+  }
+
+  &__menu-item-count {
+    @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600;
+
+    &--active {
+      @apply bg-white/20 text-white;
+    }
+
+    .sidebar__menu-item--active & {
+      @apply bg-white/20 text-white;
+    }
+  }
+
+  &__user-role {
+    @apply text-xs text-gray-500 font-medium;
+  }
+
+  &__error {
+    @apply mt-4 p-2;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .sidebar {
+    &__container {
+      @apply p-4;
+    }
+
+    &--collapsed &__container {
+      @apply px-2;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar {
+    @apply w-64;
+
+    &--collapsed {
+      @apply w-16;
+    }
+
+    &__container {
+      @apply p-3;
+    }
+
+    &--collapsed &__container {
+      @apply px-1;
+    }
+  }
+}

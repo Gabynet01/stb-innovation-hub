@@ -5,8 +5,7 @@ export * from "./ui";
 export * from "./layout";
 
 // Feature Components
-export * from "./suggestions";
-export * from "./dashboard";
+// export * from "./dashboard";
 
 // Pages
 export * from "../pages";
