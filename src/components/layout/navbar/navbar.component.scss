@@ -3,7 +3,7 @@
   @apply bg-white border-b border-gray-200 shadow-sm w-full fixed top-0 left-0 z-50 overflow-hidden;
 
   &__container {
-    @apply w-full px-4;
+    @apply w-full px-2;
   }
 
   &__content {
@@ -37,7 +37,7 @@
 
   // Center Section
   &__center {
-    @apply flex-1 flex justify-center px-8;
+    @apply flex-1 flex justify-center px-4;
   }
 
   &__search-section {
@@ -226,7 +226,7 @@
     }
 
     &__center {
-      @apply px-4;
+      @apply px-2;
     }
 
     &__search-section {
