@@ -78,7 +78,10 @@ export const SuggestionForm: React.FC<SuggestionFormProps> = ({
             title: 'Clear Form',
             message: 'Are you sure you want to clear the form? This action cannot be undone.',
             type: 'warning'
-        }, resetForm);
+        }, () => {
+            resetForm();
+            hideConfirmation();
+        });
     };
 
     const handleEditStep = (step: number) => {

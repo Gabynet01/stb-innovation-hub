@@ -60,13 +60,13 @@ export const FormNavigation: React.FC<FormNavigationProps> = ({
                     Continue to Next Step →
                 </Button>
             ) : (
-                <div className="text-center space-y-4 w-full">
+                <div>
                     <Button
                         type="button"
                         variant="primary"
                         size="lg"
                         icon={loading ? undefined : PlusIcon}
-                        className="w-full sm:w-auto px-8 sm:px-12 py-4 bg-gradient-to-r from-[#0051FF] to-[#0047E6] hover:from-[#0047E6] hover:to-[#0038CC] shadow-lg hover:shadow-xl text-base sm:text-lg font-semibold"
+                        className="w-full sm:w-auto px-6 sm:px-10 py-3 bg-gradient-to-r from-[#0051FF] to-[#0047E6] hover:from-[#0047E6] hover:to-[#0038CC] shadow-lg hover:shadow-xl"
                         disabled={!canSubmit || loading}
                         onClick={onSubmit}
                     >
