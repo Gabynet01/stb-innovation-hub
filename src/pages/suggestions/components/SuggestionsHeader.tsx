@@ -56,8 +56,7 @@ export const SuggestionsHeader: React.FC<SuggestionsHeaderProps> = ({
                             className="px-6 py-3 md:px-4 md:py-2.5 sm:px-3 sm:py-2 font-semibold bg-white/10 text-white border border-white/30 hover:bg-white/20 hover:border-white/40 rounded-lg transition-all duration-300 text-sm md:text-xs"
                         >
                             <FunnelIcon className="h-4 w-4 md:h-3.5 md:w-3.5 sm:h-3 sm:w-3 mr-2 md:mr-1.5 sm:mr-1 inline" />
-                            <span className="hidden sm:inline">{showFilters ? 'Hide' : 'Show'}</span>
-                            <span className="sm:hidden">{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
+                            <span>{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
                         </button>
 
                         {/* Refresh Button */}
