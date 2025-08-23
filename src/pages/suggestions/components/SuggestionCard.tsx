@@ -75,7 +75,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
 
     return (
         <div
-            className="group relative bg-white/95 backdrop-blur-sm rounded-2xl border border-white/60 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.12),0_12px_24px_-6px_rgba(0,0,0,0.08)] hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15),0_25px_50px_-10px_rgba(0,0,0,0.1)] hover:border-white/80 hover:-translate-y-1 transition-all duration-500 overflow-hidden cursor-pointer h-[270px] flex flex-col"
+            className="group relative bg-white/95 backdrop-blur-sm rounded-2xl border border-white/60 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.12),0_12px_24px_-6px_rgba(0,0,0,0.08)] hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15),0_25px_50px_-10px_rgba(0,0,0,0.1)] hover:border-white/80 hover:-translate-y-1 transition-all duration-500 overflow-hidden cursor-pointer h-[310px] flex flex-col"
             onClick={() => onView(suggestion)}
         >
             {/* Header - Like Instagram */}
@@ -110,7 +110,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
             </div>
 
             {/* Content Area */}
-            <div className="h-32 p-4 flex flex-col overflow-hidden">
+            <div className="h-40 p-4 flex flex-col overflow-hidden">
                 {/* Title */}
                 <div className="mb-2 overflow-hidden">
                     <h3 className="text-base font-semibold text-slate-800 line-clamp-1 leading-tight group-hover:text-[#0051FF] transition-colors duration-200">
