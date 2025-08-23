@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Suggestion } from '@/types/api';
 import {
     LightBulbIcon,
-    SparklesIcon,
-    ChartBarIcon,
     StarIcon,
-    ClockIcon,
-    UserGroupIcon,
     ArrowTrendingUpIcon
 } from '@heroicons/react/24/outline';
 
@@ -16,7 +12,6 @@ interface SuggestionsStatsProps {
 
 export const SuggestionsStats: React.FC<SuggestionsStatsProps> = ({ suggestions }) => {
     const [currentInsight, setCurrentInsight] = useState(0);
-    const [isAnimating, setIsAnimating] = useState(false);
 
     // Calculate meaningful suggestion metrics
     const totalSuggestions = suggestions.length;

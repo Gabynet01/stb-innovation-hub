@@ -52,7 +52,7 @@ export const ListView: React.FC<ListViewProps> = ({
                 loading={loading}
             />
 
-            <div className="max-w-7xl mx-auto px-6">
+            <div className="max-w-7xl mx-auto">
                 {/* Stats Section - Compact */}
                 <div className="py-6">
                     <SuggestionsStats suggestions={suggestions} />

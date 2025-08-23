@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Suggestion } from '@/types/api';
 import { ConfirmationModal } from '@/components/ui';
 import { useConfirmation } from '@/hooks/useConfirmation';

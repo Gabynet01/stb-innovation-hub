@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Suggestion } from '@/types/api';
 import { SuggestionCard } from './SuggestionCard';
 import { EmptyState } from './EmptyState';
