@@ -22,7 +22,7 @@ export const ContactInfoStep: React.FC<ContactInfoStepProps> = ({
             </div>
 
             <div className="bg-white border border-slate-200 rounded-2xl shadow-lg p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-3">
                             Email Address

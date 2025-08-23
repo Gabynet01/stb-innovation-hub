@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Navbar } from '../navbar';
 import { Sidebar } from '../sidebar';
@@ -12,11 +12,43 @@ interface MainLayoutProps {
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
+    // Close mobile sidebar when route changes
+    useEffect(() => {
+        setMobileSidebarOpen(false);
+    }, [location.pathname]);
+
+    // Handle escape key to close mobile sidebar
+    useEffect(() => {
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && mobileSidebarOpen) {
+                setMobileSidebarOpen(false);
+            }
+        };
+
+        if (mobileSidebarOpen) {
+            document.addEventListener('keydown', handleEscape);
+            // Prevent body scroll when mobile sidebar is open
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+            document.body.style.overflow = 'unset';
+        };
+    }, [mobileSidebarOpen]);
+
     const handleSidebarToggle = () => {
         setSidebarCollapsed(!sidebarCollapsed);
+    };
+
+    const handleMobileSidebarToggle = () => {
+        setMobileSidebarOpen(!mobileSidebarOpen);
     };
 
     const handleViewChange = (view: ViewType) => {
@@ -27,6 +59,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const handleMenuChange = (menu: string) => {
         // Navigate to the selected menu
         navigate(`/${menu}`);
+        // Close mobile sidebar after navigation
+        setMobileSidebarOpen(false);
     };
 
     // Extract current menu from pathname
@@ -36,9 +70,21 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     return (
         <div className="main-layout">
             {/* Navigation - Full width at top */}
-            <Navbar onSidebarToggle={handleSidebarToggle} />
+            <Navbar
+                onSidebarToggle={handleSidebarToggle}
+                onMobileSidebarToggle={handleMobileSidebarToggle}
+                mobileSidebarOpen={mobileSidebarOpen}
+            />
 
             <div className="main-layout__content">
+                {/* Mobile Sidebar Overlay */}
+                {mobileSidebarOpen && (
+                    <div
+                        className="main-layout__mobile-overlay"
+                        onClick={() => setMobileSidebarOpen(false)}
+                    />
+                )}
+
                 {/* Sidebar */}
                 <Sidebar
                     onViewChange={handleViewChange}
@@ -47,6 +93,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     currentMenu={currentMenu as any}
                     onCollapseChange={setSidebarCollapsed}
                     isCollapsed={sidebarCollapsed}
+                    mobileOpen={mobileSidebarOpen}
                 />
 
                 {/* Main content area */}

@@ -1,9 +1,13 @@
 // MainLayout Component Styles using Tailwind CSS
 .main-layout {
-  @apply min-h-screen bg-gray-50;
+  @apply min-h-screen bg-gray-50 overflow-x-hidden;
 
   &__content {
     @apply flex pt-24;
+  }
+
+  &__mobile-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden;
   }
 
   &__main {
@@ -28,8 +32,16 @@
 }
 
 // Responsive Design
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .main-layout {
+    &__main {
+      @apply ml-20;
+
+      &--collapsed {
+        @apply ml-16;
+      }
+    }
+
     &__main-container {
       @apply p-6;
     }
@@ -40,10 +52,14 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .main-layout {
-    &__content {
-      @apply pt-20;
+    &__main {
+      @apply ml-0 transition-all duration-300;
+
+      &--collapsed {
+        @apply ml-0;
+      }
     }
 
     &__main-container {
@@ -52,6 +68,38 @@
 
     &__main-card {
       @apply p-4 rounded-2xl;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .main-layout {
+    &__content {
+      @apply pt-16;
+    }
+
+    &__main-container {
+      @apply p-3;
+    }
+
+    &__main-card {
+      @apply p-3 rounded-xl;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .main-layout {
+    &__content {
+      @apply pt-14;
+    }
+
+    &__main-container {
+      @apply p-2;
+    }
+
+    &__main-card {
+      @apply p-2 rounded-lg;
     }
   }
 }

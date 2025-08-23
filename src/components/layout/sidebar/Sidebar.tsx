@@ -28,6 +28,7 @@ interface SidebarProps {
     currentMenu: MenuId;
     onCollapseChange: (collapsed: boolean) => void;
     isCollapsed: boolean;
+    mobileOpen?: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -36,7 +37,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     onMenuChange,
     currentMenu,
     onCollapseChange,
-    isCollapsed
+    isCollapsed,
+    mobileOpen = false
 }) => {
     const { counts, loading, error } = useSidebarCounts();
 
@@ -125,7 +127,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     };
 
     return (
-        <div className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : ''}`}>
+        <div className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : ''} ${mobileOpen ? 'sidebar--mobile-open' : ''}`}>
             <div className="sidebar__container">
                 <nav className="sidebar__navigation">
                     {menuItems.map(renderMenuItem)}

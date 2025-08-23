@@ -29,7 +29,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
 
             <div className="space-y-10 bg-white border border-slate-200 rounded-2xl shadow-lg p-6">
                 {/* Author Type and Category */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
                     <div>
                         <label className="block text-lg font-semibold text-slate-800 mb-4">
                             <UserIcon className="h-5 w-5 inline mr-2 text-[#0051FF]" />

@@ -17,12 +17,12 @@ export const DetailView: React.FC<DetailViewProps> = ({
     onBack
 }) => {
     return (
-        <div className="max-w-4xl mx-auto p-6">
-            <div className="mb-6 -ml-6">
+        <div className="max-w-4xl mx-auto p-4 sm:p-6">
+            <div className="mb-6 -ml-4 sm:-ml-6">
                 <Button
                     onClick={onBack}
                     variant="secondary"
-                    className="mb-4"
+                    className="mb-4 w-full sm:w-auto"
                 >
                     ← Back to Suggestions
                 </Button>

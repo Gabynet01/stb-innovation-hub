@@ -1,6 +1,6 @@
 // Navbar Component Styles using Tailwind CSS
 .navbar {
-  @apply bg-white border-b border-gray-200 shadow-sm w-full fixed top-0 left-0 z-50;
+  @apply bg-white border-b border-gray-200 shadow-sm w-full fixed top-0 left-0 z-50 overflow-hidden;
 
   &__container {
     @apply w-full px-4;
@@ -68,11 +68,83 @@
     }
   }
 
+  // Mobile Search Toggle Button
+  &__mobile-search-toggle {
+    @apply p-2.5 text-gray-600 bg-gray-100 hover:text-[#0051FF] hover:bg-[#0051FF]/10 rounded-lg transition-all duration-200 ease-in-out border border-gray-200 cursor-pointer transform hover:scale-105 active:scale-95;
+
+    &:hover {
+      @apply text-[#0051FF] bg-[#0051FF]/10;
+    }
+
+    &:active {
+      @apply transform scale-95;
+    }
+  }
+
+  &__mobile-search-icon {
+    @apply h-5 w-5;
+  }
+
+  // Mobile Search Close Button
+  &__mobile-search-close {
+    @apply absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200 cursor-pointer;
+
+    &:hover {
+      @apply text-gray-600;
+    }
+  }
+
+  &__mobile-search-close-icon {
+    @apply h-5 w-5;
+  }
+
+  // Mobile Search Row - New row below main navbar
+  &__mobile-search-row {
+    @apply w-full bg-white border-t border-gray-200 px-4 py-3;
+  }
+
+  &__mobile-search-container {
+    @apply relative flex items-center w-full;
+  }
+
+  &__mobile-search-icon-container {
+    @apply absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none;
+  }
+
+  &__mobile-search-icon-svg {
+    @apply h-5 w-5 text-gray-400;
+  }
+
+  &__mobile-search-input {
+    @apply block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0051FF] focus:border-[#0051FF] focus:bg-white transition-all duration-200 text-base font-medium;
+
+    &::placeholder {
+      @apply text-gray-400;
+    }
+
+    &:focus {
+      @apply outline-none border-[#0051FF] bg-white ring-2 ring-[#0051FF] ring-opacity-20;
+    }
+  }
+
+  &__mobile-search-close-btn {
+    @apply absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200 cursor-pointer;
+
+    &:hover {
+      @apply text-gray-600;
+    }
+  }
+
   &__new-idea-btn {
     @apply px-6 py-3.5 bg-[#0051FF] text-white rounded-2xl font-semibold shadow-md hover:bg-[#0033A1] hover:shadow-lg transition-all duration-200 flex items-center space-x-2 flex-shrink-0 border-none cursor-pointer;
 
     &:hover {
       @apply bg-[#0033A1] shadow-lg;
+    }
+
+    // Mobile version - icon only
+    &--mobile {
+      @apply px-3 py-2.5 rounded-lg;
     }
   }
 
@@ -98,6 +170,10 @@
 
     &:active {
       @apply transform scale-95;
+    }
+
+    &--active {
+      @apply text-[#0051FF] bg-[#0051FF]/20 border-[#0051FF];
     }
   }
 
@@ -143,8 +219,12 @@
 }
 
 // Responsive Design using Tailwind breakpoints
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .navbar {
+    &__content {
+      @apply h-20;
+    }
+
     &__center {
       @apply px-4;
     }
@@ -156,11 +236,115 @@
     &__new-idea-btn {
       @apply px-4 py-3;
     }
+
+    &__user-info {
+      @apply hidden;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    &__container {
+      @apply px-2;
+    }
+
+    &__content {
+      @apply h-16;
+    }
+
+    &__brand {
+      @apply space-x-2;
+    }
+
+    &__logo {
+      @apply w-16 h-16;
+    }
+
+    &__logo-image {
+      @apply w-14 h-14;
+    }
+
+    &__brand-title {
+      @apply text-xl;
+    }
+
+    &__brand-subtitle {
+      @apply text-xs;
+    }
+
+    &__center {
+      @apply px-2;
+    }
+
+    &__search-section {
+      @apply space-x-2;
+    }
+
+    &__search-container {
+      @apply transition-all duration-300 ease-in-out;
+    }
+
+    &__search-input {
+      @apply text-sm pl-10 pr-3 py-2.5;
+    }
+
+    &__new-idea-btn {
+      @apply px-3 py-2.5 text-sm;
+    }
+
+    &__new-idea-text {
+      @apply hidden;
+    }
+
+    &__actions {
+      @apply space-x-2;
+    }
+
+    &__sidebar-toggle {
+      @apply p-2;
+    }
+
+    &__user-profile {
+      @apply p-2;
+    }
+
+    &__user-avatar-container {
+      @apply w-9 h-9;
+    }
+
+    &__mobile-search-toggle {
+      @apply p-2;
+    }
+
+    &__mobile-search-close {
+      @apply pr-2;
+    }
+
+    &__new-idea-btn--mobile {
+      @apply px-2.5 py-2;
+    }
+
+    &__mobile-search-row {
+      @apply px-2 py-2;
+    }
+
+    &__mobile-search-input {
+      @apply py-2.5 text-sm;
+    }
   }
 }
 
 @media (max-width: 640px) {
   .navbar {
+    &__container {
+      @apply px-1;
+    }
+
+    &__content {
+      @apply h-14;
+    }
+
     &__brand-title {
       @apply text-lg;
     }
@@ -170,11 +354,91 @@
     }
 
     &__logo {
-      @apply w-16 h-16;
+      @apply w-14 h-14;
     }
 
     &__logo-image {
-      @apply w-14 h-14;
+      @apply w-12 h-12;
+    }
+
+    &__center {
+      @apply px-1;
+    }
+
+    &__search-section {
+      @apply space-x-1;
+    }
+
+    &__search-input {
+      @apply text-xs pl-8 pr-2 py-2;
+    }
+
+    &__new-idea-btn {
+      @apply px-2 py-2 text-xs;
+    }
+
+    &__sidebar-toggle {
+      @apply p-1.5;
+    }
+
+    &__user-avatar-container {
+      @apply w-8 h-8;
+    }
+
+    &__mobile-search-toggle {
+      @apply p-1.5;
+    }
+
+    &__mobile-search-close {
+      @apply pr-1;
+    }
+
+    &__new-idea-btn--mobile {
+      @apply px-2 py-1.5;
+    }
+
+    &__mobile-search-row {
+      @apply px-1 py-2;
+    }
+
+    &__mobile-search-input {
+      @apply py-2 text-sm;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    &__container {
+      @apply px-1;
+    }
+
+    &__center {
+      @apply px-1;
+    }
+
+    &__search-section {
+      @apply space-x-1;
+    }
+
+    &__brand {
+      @apply space-x-1;
+    }
+
+    &__brand-title {
+      @apply text-base;
+    }
+
+    &__brand-subtitle {
+      @apply text-xs;
+    }
+
+    &__logo {
+      @apply w-12 h-12;
+    }
+
+    &__logo-image {
+      @apply w-10 h-10;
     }
   }
 }

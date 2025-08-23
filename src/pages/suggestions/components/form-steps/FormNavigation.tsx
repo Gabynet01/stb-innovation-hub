@@ -24,15 +24,15 @@ export const FormNavigation: React.FC<FormNavigationProps> = ({
     onClearForm
 }) => {
     return (
-        <div className="flex items-center justify-between pt-8 border-t border-slate-200">
-            <div className="flex items-center space-x-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-8 border-t border-slate-200 space-y-4 sm:space-y-0">
+            <div className="flex items-center justify-center sm:justify-start space-x-4">
                 {currentStep > 1 ? (
                     <Button
                         type="button"
                         variant="outline"
                         size="lg"
                         onClick={onPrevStep}
-                        className="px-8 py-3 text-slate-700 hover:text-slate-900 border-slate-300 hover:border-slate-400"
+                        className="w-full sm:w-auto px-6 sm:px-8 py-3 text-slate-700 hover:text-slate-900 border-slate-300 hover:border-slate-400"
                     >
                         ← Previous Step
                     </Button>
@@ -42,7 +42,7 @@ export const FormNavigation: React.FC<FormNavigationProps> = ({
                         variant="outline"
                         size="lg"
                         onClick={onClearForm}
-                        className="px-6 py-3 text-slate-600 hover:text-slate-800 border-slate-300 hover:border-slate-400"
+                        className="w-full sm:w-auto px-6 py-3 text-slate-600 hover:text-slate-800 border-slate-300 hover:border-slate-400"
                     >
                         Clear Form
                     </Button>
@@ -55,25 +55,25 @@ export const FormNavigation: React.FC<FormNavigationProps> = ({
                     variant="primary"
                     size="lg"
                     onClick={onNextStep}
-                    className="px-10 py-3 bg-gradient-to-r from-[#0051FF] to-[#0047E6] hover:from-[#0047E6] hover:to-[#0038CC] shadow-lg hover:shadow-xl"
+                    className="w-full sm:w-auto px-6 sm:px-10 py-3 bg-gradient-to-r from-[#0051FF] to-[#0047E6] hover:from-[#0047E6] hover:to-[#0038CC] shadow-lg hover:shadow-xl"
                 >
                     Continue to Next Step →
                 </Button>
             ) : (
-                <div className="text-center space-y-4">
+                <div className="text-center space-y-4 w-full">
                     <Button
                         type="button"
                         variant="primary"
                         size="lg"
                         icon={loading ? undefined : PlusIcon}
-                        className="px-12 py-4 bg-gradient-to-r from-[#0051FF] to-[#0047E6] hover:from-[#0047E6] hover:to-[#0038CC] shadow-lg hover:shadow-xl text-lg font-semibold"
+                        className="w-full sm:w-auto px-8 sm:px-12 py-4 bg-gradient-to-r from-[#0051FF] to-[#0047E6] hover:from-[#0047E6] hover:to-[#0038CC] shadow-lg hover:shadow-xl text-base sm:text-lg font-semibold"
                         disabled={!canSubmit || loading}
                         onClick={onSubmit}
                     >
                         {loading ? (
-                            <div className="flex items-center space-x-3">
+                            <div className="flex items-center justify-center space-x-3">
                                 <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                                <span>Submitting Your Idea...</span>
+                                <span className="text-sm sm:text-base">Submitting Your Idea...</span>
                             </div>
                         ) : (
                             editingSuggestion ? 'Update Suggestion' : 'Submit Your Idea'
