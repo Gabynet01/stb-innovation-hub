@@ -65,6 +65,19 @@
 
 @layer components {
 
+  /* Performance optimizations for smooth scrolling */
+  .suggestions-container {
+    will-change: scroll-position;
+    transform: translateZ(0);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .suggestion-card {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
   /* Stanbic Bank Brand Font Utilities - Benton Sans Pro with Inter fallback */
   .font-benton-thin {
     font-family: 'Benton Sans Pro', 'Inter', sans-serif;

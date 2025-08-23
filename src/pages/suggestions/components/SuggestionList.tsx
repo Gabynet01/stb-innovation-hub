@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Suggestion } from '@/types/api';
 import { SuggestionCard } from './SuggestionCard';
 import { EmptyState } from './EmptyState';
@@ -11,7 +11,7 @@ interface SuggestionListProps {
     onView: (suggestion: Suggestion) => void;
 }
 
-export const SuggestionList: React.FC<SuggestionListProps> = ({
+const SuggestionListComponent: React.FC<SuggestionListProps> = ({
     suggestions,
     onEdit,
     onDelete,
@@ -20,22 +20,23 @@ export const SuggestionList: React.FC<SuggestionListProps> = ({
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
 
-    // Calculate pagination
-    const totalPages = Math.ceil(suggestions.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentSuggestions = suggestions.slice(startIndex, endIndex);
+    const { totalPages, currentSuggestions } = useMemo(() => {
+        const totalPages = Math.ceil(suggestions.length / itemsPerPage);
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const currentSuggestions = suggestions.slice(startIndex, endIndex);
 
-    // Reset to first page when suggestions change
+        return { totalPages, currentSuggestions };
+    }, [suggestions, currentPage, itemsPerPage]);
+
     React.useEffect(() => {
         setCurrentPage(1);
     }, [suggestions.length]);
 
-    const handlePageChange = (page: number) => {
+    const handlePageChange = useCallback((page: number) => {
         setCurrentPage(page);
-        // Scroll to top of the list
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    }, []);
 
     if (suggestions.length === 0) {
         return <EmptyState hasFilters={false} />;
@@ -68,4 +69,6 @@ export const SuggestionList: React.FC<SuggestionListProps> = ({
             )}
         </div>
     );
-}; 
+};
+
+export const SuggestionList = React.memo(SuggestionListComponent); 

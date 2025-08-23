@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Suggestion } from '@/types/api';
 import { getRelativeTime } from '@/utils/date';
 import { getCategoryDisplayName } from '@/utils/formatting';
@@ -16,14 +16,15 @@ interface SuggestionCardProps {
     onView: (suggestion: Suggestion) => void;
 }
 
-export const SuggestionCard: React.FC<SuggestionCardProps> = ({
+const SuggestionCardComponent: React.FC<SuggestionCardProps> = ({
     suggestion,
     onEdit,
     onDelete,
     onView
 }) => {
-    const getStatusConfig = (status: string) => {
-        switch (status) {
+
+    const statusConfig = useMemo(() => {
+        switch (suggestion.status) {
             case 'NEW':
                 return {
                     color: 'bg-[#0051FF]',
@@ -43,10 +44,10 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
                     bgColor: 'bg-slate-50'
                 };
         }
-    };
+    }, [suggestion.status]);
 
-    const getCategoryConfig = (category: string) => {
-        switch (category) {
+    const categoryConfig = useMemo(() => {
+        switch (suggestion.category) {
             case 'UX':
                 return {
                     color: 'bg-purple-100 text-purple-700 border-purple-200'
@@ -68,15 +69,14 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
                     color: 'bg-slate-100 text-slate-700 border-slate-200'
                 };
         }
-    };
+    }, [suggestion.category]);
 
-    const statusConfig = getStatusConfig(suggestion.status);
-    const categoryConfig = getCategoryConfig(suggestion.category);
+    const relativeTime = useMemo(() => getRelativeTime(suggestion.created_at), [suggestion.created_at]);
 
     return (
         <div
-            className="group relative bg-white/95 backdrop-blur-sm rounded-2xl border border-white/60 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.12),0_12px_24px_-6px_rgba(0,0,0,0.08)] hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15),0_25px_50px_-10px_rgba(0,0,0,0.1)] hover:border-white/80 hover:-translate-y-1 transition-all duration-500 overflow-hidden cursor-pointer h-[310px] flex flex-col"
-            onClick={() => onView(suggestion)}
+            className="group relative bg-white/95 backdrop-blur-sm rounded-2xl border border-white/60 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.12),0_12px_24px_-6px_rgba(0,0,0,0.08)] hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15),0_25px_50px_-10px_rgba(0,0,0,0.1)] hover:border-white/80 hover:-translate-y-1 transition-all duration-500 overflow-hidden cursor-pointer h-[310px] flex flex-col suggestion-card"
+            onClick={useCallback(() => onView(suggestion), [onView, suggestion])}
         >
             {/* Header - Like Instagram */}
             <div className="flex items-center justify-between p-4 border-b border-slate-100">
@@ -92,7 +92,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
                             {suggestion.author_type === 'STAFF' ? 'Staff Member' : 'Customer'}
                         </span>
                         <span className="text-xs text-slate-500">
-                            {getRelativeTime(suggestion.created_at)}
+                            {relativeTime}
                         </span>
                     </div>
                 </div>
@@ -165,10 +165,10 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
                     {/* Left Side - Quick Actions */}
                     <div className="flex items-center space-x-4">
                         <button
-                            onClick={(e) => {
+                            onClick={useCallback((e: React.MouseEvent) => {
                                 e.stopPropagation();
                                 onEdit(suggestion);
-                            }}
+                            }, [onEdit, suggestion])}
                             className="flex items-center space-x-1 text-slate-500 hover:text-emerald-600 transition-colors duration-200 text-xs font-medium"
                         >
                             <PencilIcon className="w-4 h-4" />
@@ -176,10 +176,10 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
                         </button>
 
                         <button
-                            onClick={(e) => {
+                            onClick={useCallback((e: React.MouseEvent) => {
                                 e.stopPropagation();
                                 onDelete(suggestion.id);
-                            }}
+                            }, [onDelete, suggestion.id])}
                             className="flex items-center space-x-1 text-slate-500 hover:text-red-500 transition-colors duration-200 text-xs font-medium"
                         >
                             <TrashIcon className="w-4 h-4" />
@@ -189,10 +189,10 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
 
                     {/* Right Side - View Button */}
                     <button
-                        onClick={(e) => {
+                        onClick={useCallback((e: React.MouseEvent) => {
                             e.stopPropagation();
                             onView(suggestion);
-                        }}
+                        }, [onView, suggestion])}
                         className="px-4 py-2 bg-[#0051FF] text-white rounded-lg hover:bg-[#0047E6] transition-colors duration-200 font-medium text-sm shadow-sm hover:shadow-md"
                     >
                         <EyeIcon className="w-4 h-4 inline mr-1" />
@@ -202,4 +202,6 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
             </div>
         </div>
     );
-}; 
+};
+
+export const SuggestionCard = React.memo(SuggestionCardComponent); 

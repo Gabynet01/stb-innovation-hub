@@ -1,5 +1,5 @@
 import React from 'react';
-import { LightBulbIcon, EyeIcon, UserIcon, CalendarIcon, ArrowRightIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { LightBulbIcon, EyeIcon, UserIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import type { Suggestion } from '../../../types/api';
 import { getStatusColor, getCategoryDisplayName, formatDisplayDate } from '../../../utils';

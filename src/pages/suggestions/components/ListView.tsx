@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { SuggestionsHeader } from './SuggestionsHeader';
 import { SuggestionsStats } from './SuggestionsStats';
 import { SuggestionsFilters } from './SuggestionsFilters';
@@ -23,7 +23,7 @@ interface ListViewProps {
     onDelete: (id: string) => Promise<void>;
 }
 
-export const ListView: React.FC<ListViewProps> = ({
+const ListViewComponent: React.FC<ListViewProps> = ({
     suggestions,
     loading,
     error,
@@ -42,7 +42,7 @@ export const ListView: React.FC<ListViewProps> = ({
 
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen suggestions-container">
             {/* Header Section */}
             <SuggestionsHeader
                 showFilters={showFilters}
@@ -145,4 +145,6 @@ export const ListView: React.FC<ListViewProps> = ({
             </div>
         </div>
     );
-}; 
+};
+
+export const ListView = memo(ListViewComponent); 
