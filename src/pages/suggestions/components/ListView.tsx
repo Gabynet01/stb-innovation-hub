@@ -42,7 +42,7 @@ export const ListView: React.FC<ListViewProps> = ({
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+        <div className="min-h-screen">
             {/* Header Section */}
             <SuggestionsHeader
                 showFilters={showFilters}
@@ -52,7 +52,7 @@ export const ListView: React.FC<ListViewProps> = ({
                 loading={loading}
             />
 
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto ">
                 {/* Stats Section - Compact */}
                 <div className="py-6">
                     <SuggestionsStats suggestions={suggestions} />
@@ -131,12 +131,6 @@ export const ListView: React.FC<ListViewProps> = ({
                             {/* Suggestions Grid */}
                             {suggestions.length > 0 && (
                                 <div className="relative">
-                                    {/* Decorative Background Elements */}
-                                    <div className="absolute inset-0 -z-10">
-                                        <div className="absolute top-0 left-1/4 w-32 h-32 bg-blue-100/30 rounded-full blur-3xl" />
-                                        <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-purple-100/30 rounded-full blur-3xl" />
-                                    </div>
-
                                     <SuggestionList
                                         suggestions={suggestions}
                                         onView={onView}
