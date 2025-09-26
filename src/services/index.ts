@@ -17,4 +17,3 @@ export { BaseApiService, ApiError } from "./baseApi";
 export type { ClusterFilters } from "./clustersApi";
 export type { TopicFilters } from "./topicsApi";
 export type { DocumentFilters } from "./documentsApi";
-export type { JobFilters } from "./jobsApi";

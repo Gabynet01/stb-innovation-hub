@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Suggestion } from '@/types/api';
 import { useSuggestions } from '@/hooks/useSuggestions';
 import { ListView, FormView, DetailView } from './components';
 import { useSnackbar, ConfirmationModal } from '@/components/ui';
 import { useConfirmation } from '@/hooks/useConfirmation';
+import { TopicAssociationManager } from '@/components/TopicAssociationManager';
 
 export const SuggestionsPage: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
     const {
         suggestions,
         loading: suggestionsLoading,
@@ -27,6 +29,8 @@ export const SuggestionsPage: React.FC = () => {
     const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
     const [showFilters, setShowFilters] = useState(false);
     const [formLoading, setFormLoading] = useState(false);
+    const [showTopicManager, setShowTopicManager] = useState(false);
+    const [suggestionForTopics, setSuggestionForTopics] = useState<Suggestion | null>(null);
 
     // Check URL query parameter to automatically show form
     useEffect(() => {
@@ -112,6 +116,16 @@ export const SuggestionsPage: React.FC = () => {
         setView('detail');
     };
 
+    const handleManageTopics = (suggestion: Suggestion) => {
+        setSuggestionForTopics(suggestion);
+        setShowTopicManager(true);
+    };
+
+    const handleCloseTopicManager = () => {
+        setShowTopicManager(false);
+        setSuggestionForTopics(null);
+    };
+
     const handleDeleteSuggestion = async (id: string) => {
         showConfirmation({
             title: 'Confirm Deletion',
@@ -158,6 +172,15 @@ export const SuggestionsPage: React.FC = () => {
     const handleToggleFilters = () => setShowFilters(!showFilters);
     const handleClearFilters = () => setFilters({});
 
+    // Cluster and Topic navigation handlers
+    const handleClusterClick = (clusterId: string) => {
+        navigate(`/clusters?highlight=${clusterId}`);
+    };
+
+    const handleTopicClick = (topicId: string) => {
+        navigate(`/topics?highlight=${topicId}`);
+    };
+
     // Single confirmation modal for all views - rendered outside conditional logic
     return (
         <>
@@ -195,11 +218,44 @@ export const SuggestionsPage: React.FC = () => {
                     onView={handleViewSuggestion}
                     onEdit={handleEditSuggestion}
                     onDelete={handleDeleteSuggestion}
+                    onClusterClick={handleClusterClick}
+                    onManageTopics={handleManageTopics}
+                    onTopicClick={handleTopicClick}
                 />
             )}
 
             {/* Single confirmation modal for all views */}
             {renderConfirmationModal()}
+
+            {/* Topic Association Manager Modal */}
+            {showTopicManager && suggestionForTopics && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+                        <div className="p-6 border-b border-gray-200">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-xl font-semibold text-gray-900">
+                                    Manage Topic Associations
+                                </h2>
+                                <button
+                                    onClick={handleCloseTopicManager}
+                                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                            <TopicAssociationManager
+                                suggestion={suggestionForTopics}
+                                onClose={handleCloseTopicManager}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }; 

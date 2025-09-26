@@ -9,13 +9,19 @@ interface SuggestionListProps {
     onEdit: (suggestion: Suggestion) => void;
     onDelete: (id: string) => void;
     onView: (suggestion: Suggestion) => void;
+    onClusterClick?: (clusterId: string) => void;
+    onTopicClick?: (topicId: string) => void;
+    onManageTopics?: (suggestion: Suggestion) => void;
 }
 
 const SuggestionListComponent: React.FC<SuggestionListProps> = ({
     suggestions,
     onEdit,
     onDelete,
-    onView
+    onView,
+    onClusterClick,
+    onTopicClick,
+    onManageTopics
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
@@ -53,6 +59,9 @@ const SuggestionListComponent: React.FC<SuggestionListProps> = ({
                         onEdit={onEdit}
                         onDelete={onDelete}
                         onView={onView}
+                        onClusterClick={onClusterClick}
+                        onTopicClick={onTopicClick}
+                        onManageTopics={onManageTopics}
                     />
                 ))}
             </div>

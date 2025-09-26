@@ -5,9 +5,10 @@ import type { Cluster, Topic } from '../../../types/api';
 interface AIInsightsProps {
     clusters: Cluster[];
     topics: Topic[];
+    onViewClusters?: () => void;
 }
 
-export const AIInsights: React.FC<AIInsightsProps> = ({ clusters, topics }) => {
+export const AIInsights: React.FC<AIInsightsProps> = ({ clusters, topics, onViewClusters }) => {
     // Get top clusters by weight
     const topClusters = clusters
         .sort((a, b) => (b.weight || 0) - (a.weight || 0))
@@ -63,8 +64,12 @@ export const AIInsights: React.FC<AIInsightsProps> = ({ clusters, topics }) => {
                             <p className="text-gray-600 text-lg font-medium">Smart patterns & trends discovered</p>
                         </div>
                     </div>
-                    <button className="p-3 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-2xl transition-all duration-200">
-                        <EyeIcon className="h-6 w-6" />
+                    <button
+                        onClick={onViewClusters}
+                        className="p-3 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-2xl transition-all duration-200 group"
+                        title="View all AI clusters"
+                    >
+                        <EyeIcon className="h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
                     </button>
                 </div>
             </div>

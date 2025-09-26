@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { MetricsApiService } from "@/services/metricsApi";
+import { apiService } from "@/services/api";
 
 interface SidebarCounts {
   suggestions: number;
@@ -37,15 +38,57 @@ export const useSidebarCounts = () => {
           suggestions: overviewResponse.data.total_suggestions || 0,
           clusters: overviewResponse.data.total_clusters || 0,
         }));
+      } else {
+        console.error("Failed to fetch overview metrics:", overviewResponse);
+        // Fallback: fetch counts directly from APIs
+        try {
+          const [suggestionsResponse, clustersResponse] = await Promise.all([
+            apiService.suggestions.getSuggestions({ page: 1, page_size: 1 }),
+            apiService.clusters.getClusters({ page: 1, page_size: 1 }),
+          ]);
+
+          if (suggestionsResponse.ok && suggestionsResponse.data) {
+            const suggestionsCount =
+              suggestionsResponse.meta?.total ||
+              suggestionsResponse.data.length ||
+              0;
+            setCounts((prev) => ({
+              ...prev,
+              suggestions: suggestionsCount,
+            }));
+          }
+
+          if (clustersResponse.ok && clustersResponse.data) {
+            const clustersCount =
+              clustersResponse.meta?.total || clustersResponse.data.length || 0;
+            setCounts((prev) => ({
+              ...prev,
+              clusters: clustersCount,
+            }));
+          }
+        } catch (fallbackError) {
+          console.error("Fallback counts fetch failed:", fallbackError);
+        }
       }
 
-      // Fetch topic metrics
-      const topicsResponse = await metricsService.getTopicMetrics();
-      if (topicsResponse.ok) {
-        setCounts((prev) => ({
-          ...prev,
-          topics: topicsResponse.data.total_topics || 0,
-        }));
+      // Fetch topics count directly from topics API (since metrics endpoint might not work)
+      try {
+        const topicsApiResponse = await apiService.topics.getTopics({
+          page: 1,
+          page_size: 1,
+        });
+        console.log("Topics API response:", topicsApiResponse);
+        if (topicsApiResponse.ok && topicsApiResponse.data) {
+          // Use pagination metadata if available, otherwise fall back to array length
+          const totalCount =
+            topicsApiResponse.meta?.total || topicsApiResponse.data.length || 0;
+          setCounts((prev) => ({
+            ...prev,
+            topics: totalCount,
+          }));
+        }
+      } catch (topicsError) {
+        console.error("Failed to fetch topics count:", topicsError);
       }
 
       // Fetch generation metrics for documents

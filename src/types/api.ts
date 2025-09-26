@@ -35,6 +35,18 @@ export interface Suggestion {
   created_at: string;
   updated_at: string;
   archived_at: string | null;
+  // Cluster information
+  cluster_id?: string | null;
+  cluster_title?: string | null;
+  cluster_kind?: string | null;
+  cluster_confidence?: number | null;
+  // Topic information
+  topic_id?: string | null;
+  topic_label?: string | null;
+  topic_confidence?: number | null;
+  // Processing status
+  processing_status?: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED";
+  job_id?: string | null;
 }
 
 export interface SuggestionFilters {
@@ -44,6 +56,9 @@ export interface SuggestionFilters {
   status?: string;
   language?: string;
   tag?: string;
+  cluster_id?: string;
+  cluster_kind?: string;
+  topic_id?: string;
   page?: number;
   page_size?: number;
 }
@@ -74,7 +89,10 @@ export interface Cluster {
 
 export interface ClusterFilters {
   kind?: string;
-  search?: string;
+  status?: string;
+  min_weight?: number;
+  tag?: string;
+  topic_id?: string;
   page?: number;
   page_size?: number;
 }
@@ -89,12 +107,35 @@ export interface Topic {
   id: string;
   label: string;
   description?: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface TopicFilters {
-  search?: string;
+  query?: string;
+  min_support?: number;
   page?: number;
   page_size?: number;
+}
+
+// Topic-Suggestion Association Types
+export interface TopicSuggestionAssociation {
+  suggestion: Suggestion;
+  confidence: number;
+}
+
+export interface SuggestionTopicAssociation {
+  topic: Topic;
+  confidence: number;
+}
+
+// Enhanced filtering for suggestions with topics and clusters
+export interface EnhancedSuggestionFilters extends SuggestionFilters {
+  cluster_id?: string;
+  cluster_kind?: string;
+  topic_id?: string;
+  min_topic_confidence?: number;
+  min_cluster_confidence?: number;
 }
 
 // Metrics Types - exactly matching backend responses
@@ -131,13 +172,14 @@ export interface GenerationMetrics {
 // Job Types - exactly matching backend schemas
 export interface Job {
   id: string;
+  type: string;
+  status: "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED" | "CANCELLED";
+  payload?: Record<string, any> | null;
+  attempts: number;
+  last_error?: string | null;
+  run_at?: string | null;
   created_at: string;
   updated_at: string;
-  status: "pending" | "running" | "completed" | "failed" | "cancelled";
-  job_type: string;
-  progress?: number | null;
-  result?: Record<string, any> | null;
-  error?: string | null;
 }
 
 export interface JobFilters {
@@ -158,11 +200,42 @@ export interface JobStats {
 export interface Document {
   id: string;
   title: string;
-  content: string;
+  content?: string; // Legacy field
   template_id?: string | null;
-  generated_at: string;
-  status: "draft" | "generated" | "published";
+  generated_at?: string; // Legacy field
+  created_at: string;
+  updated_at: string;
+  status:
+    | "draft"
+    | "generated"
+    | "published"
+    | "completed"
+    | "processing"
+    | "failed"
+    | "READY"
+    | "PROCESSING"
+    | "FAILED";
+  output_format?: "pdf" | "docx" | "html";
+  file_size?: number | null;
   metadata?: Record<string, any> | null;
+  rendered_format?: string | null;
+  rendered_url?: string | null;
+  draft_content?: {
+    markdown: string;
+    source_id: string;
+    source_type: string;
+    template_info: {
+      id: string;
+      name: string;
+      version: string;
+    };
+    generation_stats: {
+      batches_processed: number;
+      total_suggestions: number;
+      suggestions_processed: number;
+    };
+  } | null;
+  created_by?: string | null;
 }
 
 export interface DocumentCreate {
@@ -185,7 +258,12 @@ export interface Template {
   name: string;
   description?: string | null;
   content: string;
+  content_markdown?: string;
+  version?: string;
+  kind?: string;
+  engine?: string;
   variables: string[];
+  active?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -193,8 +271,19 @@ export interface Template {
 export interface TemplateCreate {
   name: string;
   description?: string | null;
-  content: string;
+  content_markdown: string;
+  version: string;
+  kind: string;
+  engine: string;
   variables: string[];
+}
+
+export interface TemplateFilters {
+  kind?: string | null;
+  active_only?: boolean;
+  search?: string | null;
+  page?: number;
+  page_size?: number;
 }
 
 // Validation Types

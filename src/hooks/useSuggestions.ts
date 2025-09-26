@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { apiService } from "@/services";
-import { Suggestion, SuggestionCreate, SuggestionFilters } from "@/types/api";
+import {
+  Suggestion,
+  SuggestionCreate,
+  SuggestionFilters,
+  EnhancedSuggestionFilters,
+  SuggestionTopicAssociation,
+} from "@/types/api";
 
 interface UseSuggestionsReturn {
   suggestions: Suggestion[];
@@ -10,8 +16,24 @@ interface UseSuggestionsReturn {
   createSuggestion: (suggestion: SuggestionCreate) => Promise<void>;
   updateSuggestion: (id: string, updates: Partial<Suggestion>) => Promise<void>;
   deleteSuggestion: (id: string) => Promise<void>;
-  filters: SuggestionFilters;
-  setFilters: (filters: SuggestionFilters) => void;
+  filters: SuggestionFilters | EnhancedSuggestionFilters;
+  setFilters: (filters: SuggestionFilters | EnhancedSuggestionFilters) => void;
+  getSuggestionTopics: (
+    suggestionId: string,
+    minConfidence?: number
+  ) => Promise<SuggestionTopicAssociation[] | null>;
+  associateSuggestionWithTopic: (
+    suggestionId: string,
+    topicId: string,
+    confidence?: number
+  ) => Promise<boolean>;
+  removeSuggestionFromTopic: (
+    suggestionId: string,
+    topicId: string
+  ) => Promise<boolean>;
+  getSuggestionProcessingStatus: (
+    suggestionId: string
+  ) => Promise<{ status: string; job_id?: string } | null>;
   clearError: () => void;
   refreshSuggestions: () => Promise<void>;
 }
@@ -160,6 +182,127 @@ export const useSuggestions = (): UseSuggestionsReturn => {
     [fetchSuggestions]
   );
 
+  const getSuggestionTopics = useCallback(
+    async (
+      suggestionId: string,
+      minConfidence: number = 0.0
+    ): Promise<SuggestionTopicAssociation[] | null> => {
+      try {
+        setError(null);
+        const response = await apiService.suggestions.getSuggestionTopics(
+          suggestionId,
+          minConfidence
+        );
+
+        if (response.ok && response.data) {
+          return response.data.topics;
+        } else {
+          setError("Failed to fetch suggestion topics");
+          return null;
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch suggestion topics"
+        );
+        return null;
+      }
+    },
+    []
+  );
+
+  const associateSuggestionWithTopic = useCallback(
+    async (
+      suggestionId: string,
+      topicId: string,
+      confidence: number = 0.5
+    ): Promise<boolean> => {
+      try {
+        setError(null);
+        const response =
+          await apiService.suggestions.associateSuggestionWithTopic(
+            suggestionId,
+            topicId,
+            confidence
+          );
+
+        if (response.ok) {
+          await fetchSuggestions(); // Refresh to show updated associations
+          return true;
+        } else {
+          setError("Failed to associate suggestion with topic");
+          return false;
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to associate suggestion with topic"
+        );
+        return false;
+      }
+    },
+    [fetchSuggestions]
+  );
+
+  const removeSuggestionFromTopic = useCallback(
+    async (suggestionId: string, topicId: string): Promise<boolean> => {
+      try {
+        setError(null);
+        const response = await apiService.suggestions.removeSuggestionFromTopic(
+          suggestionId,
+          topicId
+        );
+
+        if (response.ok) {
+          await fetchSuggestions(); // Refresh to show updated associations
+          return true;
+        } else {
+          setError("Failed to remove suggestion from topic");
+          return false;
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to remove suggestion from topic"
+        );
+        return false;
+      }
+    },
+    [fetchSuggestions]
+  );
+
+  const getSuggestionProcessingStatus = useCallback(
+    async (
+      suggestionId: string
+    ): Promise<{ status: string; job_id?: string } | null> => {
+      try {
+        setError(null);
+        const response =
+          await apiService.suggestions.getSuggestionProcessingStatus(
+            suggestionId
+          );
+
+        if (response.ok && response.data) {
+          return response.data;
+        } else {
+          setError("Failed to fetch suggestion processing status");
+          return null;
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch suggestion processing status"
+        );
+        return null;
+      }
+    },
+    []
+  );
+
   const refreshSuggestions = useCallback(async () => {
     await fetchSuggestions();
   }, [fetchSuggestions]);
@@ -179,6 +322,10 @@ export const useSuggestions = (): UseSuggestionsReturn => {
     deleteSuggestion,
     filters,
     setFilters,
+    getSuggestionTopics,
+    associateSuggestionWithTopic,
+    removeSuggestionFromTopic,
+    getSuggestionProcessingStatus,
     clearError,
     refreshSuggestions,
   };

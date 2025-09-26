@@ -1,5 +1,11 @@
 import { BaseApiService } from "./baseApi";
-import { Topic, TopicCreate, ApiResponse } from "@/types/api";
+import {
+  Topic,
+  TopicCreate,
+  ApiResponse,
+  TopicSuggestionAssociation,
+  SuggestionTopicAssociation,
+} from "@/types/api";
 
 export interface TopicFilters {
   query?: string | null;
@@ -31,6 +37,9 @@ export class TopicsApiService extends BaseApiService {
   async createTopic(topic: TopicCreate): Promise<ApiResponse<Topic>> {
     return this.requestWithRetry("/topics", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(topic),
     });
   }
@@ -47,6 +56,9 @@ export class TopicsApiService extends BaseApiService {
   ): Promise<ApiResponse<Topic>> {
     return this.requestWithRetry(`/topics/${id}`, {
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(updates),
     });
   }
@@ -55,7 +67,69 @@ export class TopicsApiService extends BaseApiService {
   async mergeTopics(mergeData: Record<string, any>): Promise<ApiResponse> {
     return this.requestWithRetry("/topics/merge", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(mergeData),
     });
+  }
+
+  // Delete Topic
+  async deleteTopic(id: string): Promise<ApiResponse> {
+    return this.requestWithRetry(`/topics/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Get suggestions for a topic
+  async getTopicSuggestions(
+    topicId: string,
+    minConfidence: number = 0.0,
+    limit: number = 100
+  ): Promise<
+    ApiResponse<{
+      topic: Topic;
+      suggestions: TopicSuggestionAssociation[];
+      total: number;
+    }>
+  > {
+    const queryParams = new URLSearchParams();
+    queryParams.append("min_confidence", minConfidence.toString());
+    queryParams.append("limit", limit.toString());
+
+    return this.request(
+      `/topics/${topicId}/suggestions?${queryParams.toString()}`
+    );
+  }
+
+  // Associate suggestion with topic
+  async associateSuggestionWithTopic(
+    topicId: string,
+    suggestionId: string,
+    confidence: number = 0.5
+  ): Promise<ApiResponse> {
+    return this.requestWithRetry(
+      `/topics/${topicId}/suggestions/${suggestionId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ confidence }),
+      }
+    );
+  }
+
+  // Remove suggestion from topic
+  async removeSuggestionFromTopic(
+    topicId: string,
+    suggestionId: string
+  ): Promise<ApiResponse> {
+    return this.requestWithRetry(
+      `/topics/${topicId}/suggestions/${suggestionId}`,
+      {
+        method: "DELETE",
+      }
+    );
   }
 }

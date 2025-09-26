@@ -1,7 +1,11 @@
 import React from 'react';
 import { LightBulbIcon, SparklesIcon, DocumentTextIcon, RocketLaunchIcon, ChartBarIcon, UsersIcon } from '@heroicons/react/24/outline';
 
-export const QuickActions: React.FC = () => {
+interface QuickActionsProps {
+    onViewClusters?: () => void;
+}
+
+export const QuickActions: React.FC<QuickActionsProps> = ({ onViewClusters }) => {
     return (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
             <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-green-50">
@@ -28,7 +32,11 @@ export const QuickActions: React.FC = () => {
                     </button>
 
                     {/* Explore AI Insights */}
-                    <button className="group flex items-center justify-center p-6 bg-white text-gray-700 border-2 border-gray-200 rounded-2xl font-semibold hover:bg-gray-50 hover:border-purple-300 hover:text-purple-700 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-lg">
+                    <button
+                        onClick={onViewClusters}
+                        className="group flex items-center justify-center p-6 bg-white text-gray-700 border-2 border-gray-200 rounded-2xl font-semibold hover:bg-gray-50 hover:border-purple-300 hover:text-purple-700 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-lg"
+                        title="View AI clusters and insights"
+                    >
                         <SparklesIcon className="h-7 w-7 mr-3 group-hover:rotate-12 transition-transform duration-300" />
                         <div className="text-left">
                             <div className="font-bold text-lg">AI Insights</div>

@@ -39,6 +39,9 @@ export class ClustersApiService extends BaseApiService {
   async createCluster(cluster: ClusterCreate): Promise<ApiResponse<Cluster>> {
     return this.requestWithRetry("/clusters", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(cluster),
     });
   }
@@ -55,6 +58,9 @@ export class ClustersApiService extends BaseApiService {
   ): Promise<ApiResponse<Cluster>> {
     return this.requestWithRetry(`/clusters/${id}`, {
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(updates),
     });
   }
@@ -66,6 +72,9 @@ export class ClustersApiService extends BaseApiService {
   ): Promise<ApiResponse> {
     return this.requestWithRetry(`/clusters/${clusterId}/members`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(memberData),
     });
   }
@@ -78,6 +87,13 @@ export class ClustersApiService extends BaseApiService {
   ): Promise<ApiResponse> {
     const endpoint = `/clusters/${clusterId}/members/${memberId}?member_type=${memberType}`;
     return this.request(endpoint, {
+      method: "DELETE",
+    });
+  }
+
+  // Delete Cluster
+  async deleteCluster(id: string): Promise<ApiResponse> {
+    return this.requestWithRetry(`/clusters/${id}`, {
       method: "DELETE",
     });
   }

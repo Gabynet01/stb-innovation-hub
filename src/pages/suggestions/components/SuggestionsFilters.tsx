@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Button, Input, Select } from '@/components/ui';
 import { SuggestionFilters } from '@/types/api';
+import { ClusterFilter } from './ClusterFilter';
 import { FunnelIcon, XMarkIcon, SparklesIcon } from '@heroicons/react/24/outline';
 
 interface SuggestionsFiltersProps {
@@ -14,6 +15,7 @@ export const SuggestionsFilters: React.FC<SuggestionsFiltersProps> = ({
     onFiltersChange,
     onClearFilters
 }) => {
+    const [showClusterFilter, setShowClusterFilter] = useState(false);
     const handleFilterChange = (field: keyof SuggestionFilters, value: string) => {
         onFiltersChange({
             ...filters,
@@ -21,7 +23,29 @@ export const SuggestionsFilters: React.FC<SuggestionsFiltersProps> = ({
         });
     };
 
-    const hasActiveFilters = Boolean(filters.search || filters.status || filters.category || filters.author_type);
+    const hasActiveFilters = Boolean(filters.search || filters.status || filters.category || filters.author_type || filters.cluster_id || filters.topic_id);
+
+    const handleClusterSelect = (clusterId: string | null) => {
+        onFiltersChange({
+            ...filters,
+            cluster_id: clusterId || undefined
+        });
+    };
+
+    const handleTopicSelect = (topicId: string | null) => {
+        onFiltersChange({
+            ...filters,
+            topic_id: topicId || undefined
+        });
+    };
+
+    const handleClearClusterFilters = () => {
+        onFiltersChange({
+            ...filters,
+            cluster_id: undefined,
+            topic_id: undefined
+        });
+    };
 
     return (
         <Card className="p-8 border-0 bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl overflow-hidden">
@@ -125,6 +149,31 @@ export const SuggestionsFilters: React.FC<SuggestionsFiltersProps> = ({
                     </div>
                 </div>
 
+                {/* AI Insights Filter Toggle */}
+                <div className="mb-6">
+                    <Button
+                        onClick={() => setShowClusterFilter(!showClusterFilter)}
+                        variant="secondary"
+                        className="w-full bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 text-purple-700 hover:from-purple-100 hover:to-indigo-100 hover:border-purple-300 transition-all duration-200"
+                    >
+                        <SparklesIcon className="h-5 w-5 mr-2" />
+                        {showClusterFilter ? 'Hide' : 'Show'} AI Insights Filter
+                    </Button>
+                </div>
+
+                {/* Cluster Filter */}
+                {showClusterFilter && (
+                    <div className="mb-6">
+                        <ClusterFilter
+                            selectedClusterId={filters.cluster_id}
+                            selectedTopicId={filters.topic_id}
+                            onClusterSelect={handleClusterSelect}
+                            onTopicSelect={handleTopicSelect}
+                            onClear={handleClearClusterFilters}
+                        />
+                    </div>
+                )}
+
                 {/* Active Filters Display */}
                 {hasActiveFilters && (
                     <div className="pt-6 border-t border-slate-200">
@@ -154,6 +203,18 @@ export const SuggestionsFilters: React.FC<SuggestionsFiltersProps> = ({
                                 <span className="px-3 py-1.5 bg-orange-100 text-orange-700 rounded-full text-sm font-medium border border-orange-200 flex items-center space-x-2">
                                     <span>👤</span>
                                     <span>{filters.author_type}</span>
+                                </span>
+                            )}
+                            {filters.cluster_id && (
+                                <span className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium border border-blue-200 flex items-center space-x-2">
+                                    <span>🔗</span>
+                                    <span>Cluster Filter</span>
+                                </span>
+                            )}
+                            {filters.topic_id && (
+                                <span className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full text-sm font-medium border border-purple-200 flex items-center space-x-2">
+                                    <span>📊</span>
+                                    <span>Topic Filter</span>
                                 </span>
                             )}
                         </div>

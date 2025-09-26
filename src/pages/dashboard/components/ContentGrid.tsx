@@ -8,9 +8,10 @@ interface ContentGridProps {
     clusters: Cluster[];
     topics: Topic[];
     suggestions: Suggestion[];
+    onViewClusters?: () => void;
 }
 
-export const ContentGrid: React.FC<ContentGridProps> = ({ clusters, topics, suggestions }) => {
+export const ContentGrid: React.FC<ContentGridProps> = ({ clusters, topics, suggestions, onViewClusters }) => {
     const [selectedIdea, setSelectedIdea] = useState<Suggestion | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -34,6 +35,7 @@ export const ContentGrid: React.FC<ContentGridProps> = ({ clusters, topics, sugg
                 <AIInsights
                     clusters={clusters}
                     topics={topics}
+                    onViewClusters={onViewClusters}
                 />
             </div>
 

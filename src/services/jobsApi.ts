@@ -1,12 +1,5 @@
 import { BaseApiService } from "./baseApi";
-import { Job, JobStats, ApiResponse } from "@/types/api";
-
-export interface JobFilters {
-  status?: string | null;
-  job_type?: string | null;
-  page?: number;
-  page_size?: number;
-}
+import { Job, JobFilters, ApiResponse } from "@/types/api";
 
 export class JobsApiService extends BaseApiService {
   // Get Jobs with filters
@@ -43,11 +36,6 @@ export class JobsApiService extends BaseApiService {
     return this.requestWithRetry(`/jobs/${id}/retry`, {
       method: "POST",
     });
-  }
-
-  // Get Job Statistics
-  async getJobStats(): Promise<ApiResponse<JobStats>> {
-    return this.request<JobStats>("/jobs/stats");
   }
 
   // Cancel Job (if supported by the API)

@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiService } from '../../services/api';
-import type { Cluster, Topic, Suggestion, ClusterMetrics, TopicMetrics } from '../../types/api';
+import type {
+    Cluster,
+    Topic,
+    Suggestion,
+    OverviewMetrics,
+    ClusterMetrics,
+    TopicMetrics,
+    GenerationMetrics
+} from '../../types/api';
 import { DashboardHero } from './components/DashboardHero';
 import { MetricsGrid } from './components/MetricsGrid';
 import { ContentGrid } from './components/ContentGrid';
 import { QuickActions } from './components/QuickActions';
 import { LoadingSpinner, ErrorState } from '../../components/ui';
 
-interface DashboardMetrics {
-    totalSuggestions: number;
-    completedSuggestions: number;
-    pendingSuggestions: number;
-    totalClusters: number;
-    totalTopics: number;
-    teamEngagement: number;
-    systemStatus: string;
-    clusterMetrics?: ClusterMetrics;
-    topicMetrics?: TopicMetrics;
-}
-
 export const Dashboard: React.FC = () => {
-    const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
+    const navigate = useNavigate();
+    const [overviewMetrics, setOverviewMetrics] = useState<OverviewMetrics | null>(null);
+    const [clusterMetrics, setClusterMetrics] = useState<ClusterMetrics | null>(null);
+    const [topicMetrics, setTopicMetrics] = useState<TopicMetrics | null>(null);
+    const [generationMetrics, setGenerationMetrics] = useState<GenerationMetrics | null>(null);
     const [clusters, setClusters] = useState<Cluster[]>([]);
     const [topics, setTopics] = useState<Topic[]>([]);
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -31,6 +32,7 @@ export const Dashboard: React.FC = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
+                setError(null);
 
                 // Fetch all data in parallel for better performance
                 const [
@@ -39,51 +41,46 @@ export const Dashboard: React.FC = () => {
                     topicsResponse,
                     overviewMetricsResponse,
                     clusterMetricsResponse,
-                    topicMetricsResponse
+                    topicMetricsResponse,
+                    generationMetricsResponse
                 ] = await Promise.all([
                     apiService.suggestions.getSuggestions({ page_size: 100 }),
                     apiService.clusters.getClusters({ page_size: 100 }),
                     apiService.topics.getTopics({ page_size: 100 }),
                     apiService.metrics.getOverviewMetrics(),
                     apiService.metrics.getClusterMetrics(),
-                    apiService.metrics.getTopicMetrics()
+                    apiService.metrics.getTopicMetrics(),
+                    apiService.metrics.getGenerationMetrics()
                 ]);
 
+                // Set data from responses
                 if (suggestionsResponse.ok && suggestionsResponse.data) {
-                    const suggestionsData = suggestionsResponse.data || [];
-                    setSuggestions(suggestionsData);
-
-                    // Calculate metrics from real data
-                    const calculatedMetrics: DashboardMetrics = {
-                        totalSuggestions: suggestionsData.length,
-                        completedSuggestions: suggestionsData.filter(s => s.status === 'PROCESSED').length,
-                        pendingSuggestions: suggestionsData.filter(s => s.status === 'NEW').length,
-                        totalClusters: clustersResponse.ok ? (clustersResponse.data?.length || 0) : 0,
-                        totalTopics: topicsResponse.ok ? (topicsResponse.data?.length || 0) : 0,
-                        teamEngagement: Math.floor(Math.random() * 20 + 80), // Mock for now
-                        systemStatus: overviewMetricsResponse.ok && overviewMetricsResponse.data
-                            ? overviewMetricsResponse.data.system_status
-                            : 'operational'
-                    };
-
-                    // Add detailed metrics if available
-                    if (clusterMetricsResponse.ok && clusterMetricsResponse.data) {
-                        calculatedMetrics.clusterMetrics = clusterMetricsResponse.data;
-                    }
-
-                    if (topicMetricsResponse.ok && topicMetricsResponse.data) {
-                        calculatedMetrics.topicMetrics = topicMetricsResponse.data;
-                    }
-
-                    setMetrics(calculatedMetrics);
+                    setSuggestions(suggestionsResponse.data);
                 }
 
                 if (clustersResponse.ok && clustersResponse.data) {
-                    setClusters(clustersResponse.data || []);
+                    setClusters(clustersResponse.data);
                 }
 
                 if (topicsResponse.ok && topicsResponse.data) {
-                    setTopics(topicsResponse.data || []);
+                    setTopics(topicsResponse.data);
+                }
+
+                // Set metrics data
+                if (overviewMetricsResponse.ok && overviewMetricsResponse.data) {
+                    setOverviewMetrics(overviewMetricsResponse.data);
+                }
+
+                if (clusterMetricsResponse.ok && clusterMetricsResponse.data) {
+                    setClusterMetrics(clusterMetricsResponse.data);
+                }
+
+                if (topicMetricsResponse.ok && topicMetricsResponse.data) {
+                    setTopicMetrics(topicMetricsResponse.data);
+                }
+
+                if (generationMetricsResponse.ok && generationMetricsResponse.data) {
+                    setGenerationMetrics(generationMetricsResponse.data);
                 }
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to fetch data');
@@ -95,6 +92,10 @@ export const Dashboard: React.FC = () => {
 
         fetchData();
     }, []);
+
+    const handleViewClusters = () => {
+        navigate('/clusters');
+    };
 
     if (loading) {
         return (
@@ -112,7 +113,7 @@ export const Dashboard: React.FC = () => {
         );
     }
 
-    if (error || !metrics) {
+    if (error) {
         return <ErrorState
             error={error}
             title="Failed to load innovation dashboard"
@@ -123,14 +124,23 @@ export const Dashboard: React.FC = () => {
 
     return (
         <div className="space-y-12">
-            <DashboardHero systemStatus={metrics.systemStatus} />
-            <MetricsGrid metrics={metrics} />
+            <DashboardHero
+                systemStatus={overviewMetrics?.system_status || 'operational'}
+            />
+            <MetricsGrid
+                overviewMetrics={overviewMetrics}
+                clusterMetrics={clusterMetrics}
+                topicMetrics={topicMetrics}
+                generationMetrics={generationMetrics}
+                suggestions={suggestions}
+            />
             <ContentGrid
                 clusters={clusters}
                 topics={topics}
                 suggestions={suggestions}
+                onViewClusters={handleViewClusters}
             />
-            <QuickActions />
+            <QuickActions onViewClusters={handleViewClusters} />
         </div>
     );
 }; 

@@ -21,6 +21,9 @@ interface ListViewProps {
     onView: (suggestion: Suggestion) => void;
     onEdit: (suggestion: Suggestion) => void;
     onDelete: (id: string) => Promise<void>;
+    onClusterClick?: (clusterId: string) => void;
+    onTopicClick?: (topicId: string) => void;
+    onManageTopics?: (suggestion: Suggestion) => void;
 }
 
 const ListViewComponent: React.FC<ListViewProps> = ({
@@ -37,7 +40,10 @@ const ListViewComponent: React.FC<ListViewProps> = ({
     onClearError,
     onView,
     onEdit,
-    onDelete
+    onDelete,
+    onClusterClick,
+    onTopicClick,
+    onManageTopics
 }) => {
 
 
@@ -136,6 +142,9 @@ const ListViewComponent: React.FC<ListViewProps> = ({
                                         onView={onView}
                                         onEdit={onEdit}
                                         onDelete={onDelete}
+                                        onClusterClick={onClusterClick}
+                                        onTopicClick={onTopicClick}
+                                        onManageTopics={onManageTopics}
                                     />
                                 </div>
                             )}

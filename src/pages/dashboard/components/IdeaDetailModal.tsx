@@ -86,22 +86,22 @@ export const IdeaDetailModal: React.FC<IdeaDetailModalProps> = ({ suggestion, is
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg max-w-4xl w-full max-h-[95vh] overflow-hidden shadow-xl border border-gray-200">
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                <div className="px-6 py-4 bg-blue-600">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                            <div className="p-2 bg-blue-100 rounded-lg">
-                                <LightBulbIcon className="h-6 w-6 text-blue-600" />
+                            <div className="p-2 bg-white bg-opacity-20 rounded-lg">
+                                <LightBulbIcon className="h-6 w-6 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-xl font-semibold text-gray-900">Idea Details</h2>
-                                <p className="text-sm text-gray-600">Innovation submission from {suggestion.author_type === 'STAFF' ? 'Staff Member' : 'Customer'}</p>
+                                <h2 className="text-xl font-semibold text-white">Idea Details</h2>
+                                <p className="text-sm text-blue-100">Innovation submission from {suggestion.author_type === 'STAFF' ? 'Staff Member' : 'Customer'}</p>
                             </div>
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+                            className="text-white hover:text-blue-100 transition-colors"
                         >
-                            <XMarkIcon className="h-5 w-5" />
+                            <XMarkIcon className="h-6 w-6" />
                         </button>
                     </div>
                 </div>

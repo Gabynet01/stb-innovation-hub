@@ -2,6 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
+/* TinyMCE Editor Styles */
+.tox-tinymce {
+  border: none !important;
+}
+
+.tox .tox-editor-header {
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+/* Force all text in template preview to be black and visible */
+.template-preview,
+.template-preview *,
+.template-preview div,
+.template-preview span,
+.template-preview p,
+.template-preview h1,
+.template-preview h2,
+.template-preview h3,
+.template-preview h4,
+.template-preview h5,
+.template-preview h6,
+.template-preview strong,
+.template-preview em,
+.template-preview li,
+.template-preview ul,
+.template-preview ol,
+.template-preview table,
+.template-preview th,
+.template-preview td,
+.template-preview code,
+.template-preview pre {
+  color: #000000 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.template-preview h1,
+.template-preview h2,
+.template-preview h3,
+.template-preview h4,
+.template-preview h5,
+.template-preview h6 {
+  font-weight: 700 !important;
+}
+
+.template-preview strong {
+  font-weight: 700 !important;
+}
+
+.template-preview p,
+.template-preview li {
+  font-weight: 400 !important;
+}
+
+/* Fix table cells specifically */
+.template-preview table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin: 1rem 0 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.template-preview th,
+.template-preview td {
+  color: #000000 !important;
+  background-color: white !important;
+  border: 1px solid #d1d5db !important;
+  padding: 0.75rem !important;
+  text-align: left !important;
+  font-weight: 400 !important;
+  vertical-align: top !important;
+}
+
+.template-preview th {
+  background-color: #f9fafb !important;
+  font-weight: 600 !important;
+  color: #000000 !important;
+  border-bottom: 2px solid #d1d5db !important;
+}
+
+.template-preview tr:nth-child(even) {
+  background-color: #f9fafb !important;
+}
+
+.template-preview tr:hover {
+  background-color: #f3f4f6 !important;
+}
+
 /* Line-clamp utilities for text truncation */
 @layer utilities {
   .line-clamp-1 {

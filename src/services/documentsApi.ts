@@ -35,6 +35,9 @@ export class DocumentsApiService extends BaseApiService {
   ): Promise<ApiResponse<Document>> {
     return this.requestWithRetry("/documents", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(document),
     });
   }
@@ -61,6 +64,9 @@ export class DocumentsApiService extends BaseApiService {
 
     return this.requestWithRetry(`/documents/${id}`, {
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(updates),
     });
   }
@@ -74,5 +80,80 @@ export class DocumentsApiService extends BaseApiService {
     return this.request(`/documents/${id}`, {
       method: "DELETE",
     });
+  }
+
+  // Generate Document from Cluster
+  async generateDocumentFromCluster(
+    clusterId: string,
+    templateId: string,
+    title?: string,
+    renderFormat?: "PDF" | "DOCX" | "HTML" | "TXT" | "MD"
+  ): Promise<ApiResponse<any>> {
+    return this.requestWithRetry("/documents/generate/cluster", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cluster_id: clusterId,
+        template_id: templateId,
+        title: title,
+        render_format: renderFormat,
+      }),
+    });
+  }
+
+  // Generate Document from Topic
+  async generateDocumentFromTopic(
+    topicId: string,
+    templateId: string,
+    title?: string,
+    renderFormat?: "PDF" | "DOCX" | "HTML" | "TXT" | "MD"
+  ): Promise<ApiResponse<any>> {
+    return this.requestWithRetry("/documents/generate/topic", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        topic_id: topicId,
+        template_id: templateId,
+        title: title,
+        render_format: renderFormat,
+      }),
+    });
+  }
+
+  // Export Document
+  async exportDocument(
+    documentId: string,
+    format: "pdf" | "docx" | "html" | "txt" | "md" = "pdf"
+  ): Promise<Blob> {
+    const response = await fetch(
+      `${this.baseUrl}/documents/${documentId}/export?format=${format}`,
+      {
+        method: "GET",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Export failed: ${response.statusText}`);
+    }
+
+    return response.blob();
+  }
+
+  // Get Document Relationships
+  async getDocumentRelationships(
+    documentId: string
+  ): Promise<ApiResponse<any>> {
+    return this.request(`/documents/${documentId}/relationships`);
+  }
+
+  // Get Document Versions
+  async getDocumentVersions(
+    documentId: string
+  ): Promise<ApiResponse<Document[]>> {
+    return this.request<Document[]>(`/documents/${documentId}/versions`);
   }
 }
