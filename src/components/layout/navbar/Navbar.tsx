@@ -75,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                         <div className="navbar__brand-text">
                             <h1 className="navbar__brand-title">Stanbic Bank</h1>
-                            {!isMobile && <p className="navbar__brand-subtitle">Ideation Hub</p>}
+                            {!isMobile && <p className="navbar__brand-subtitle">Idea Flow</p>}
                         </div>
                     </div>
 

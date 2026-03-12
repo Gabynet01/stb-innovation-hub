@@ -51,7 +51,7 @@ export const STATUS_ORDER = {
 
 // App Branding Constants
 export const APP_CONFIG = {
-  name: "Ideation Hub",
+  name: "Idea Flow",
   description: "Stanbic Bank's Innovation Platform",
   tagline: "Empowering Ideas, Driving Innovation",
   version: "2.0.0",

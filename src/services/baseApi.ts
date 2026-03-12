@@ -1,14 +1,15 @@
 import { ApiResponse } from "@/types/api";
+import { API_BASE_URL } from "@/config/environment";
 
-// API Configuration
-const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:9000";
 const API_VERSION = "v1";
-const DEFAULT_TIMEOUT = 30000; // 30 seconds
-const MAX_RETRIES = 3;
-const RETRY_DELAY = 1000; // 1 second
 
-// Custom error class for API errors
+if (process.env.NODE_ENV === "development") {
+  console.info("[baseApi] API base URL:", API_BASE_URL);
+}
+const DEFAULT_TIMEOUT = 30000;
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000;
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -21,14 +22,12 @@ export class ApiError extends Error {
   }
 }
 
-// Request timeout utility
 const createTimeoutPromise = (timeout: number): Promise<never> => {
   return new Promise((_, reject) => {
     setTimeout(() => reject(new ApiError("Request timeout")), timeout);
   });
 };
 
-// Retry utility
 const retryRequest = async <T>(
   requestFn: () => Promise<T>,
   maxRetries: number = MAX_RETRIES,
@@ -123,14 +122,11 @@ export class BaseApiService {
     return retryRequest(() => this.request<T>(endpoint, options, timeout));
   }
 
-  // Health Check
   async healthCheck(): Promise<ApiResponse> {
     return this.request("/health");
   }
 
-  // Utility methods
   setBaseUrl(url: string): void {
-    // Don't add API_VERSION again if it's already in the URL
     if (url.endsWith(`/${API_VERSION}`)) {
       this.baseUrl = url;
     } else {

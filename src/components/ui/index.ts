@@ -23,7 +23,6 @@ export {
   type ConfirmationType,
 } from "./ConfirmationModal";
 
-// Re-export types
 export type { ButtonProps } from "./Button";
 export type { CardProps } from "./Card";
 export type { BadgeProps } from "./Badge";
