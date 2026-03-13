@@ -40,7 +40,7 @@ const TopicFilters: React.FC<TopicFiltersProps> = ({
                         <Input
                             type="text"
                             placeholder="Search topics..."
-                            value={searchQuery}
+                            value={searchQuery ?? ''}
                             onChange={(e) => onSearchChange(e.target.value)}
                             className="pl-10"
                         />
@@ -49,7 +49,7 @@ const TopicFilters: React.FC<TopicFiltersProps> = ({
                     {/* Sort Dropdown */}
                     <div className="w-full sm:w-48">
                         <Select
-                            value={sortBy}
+                            value={sortBy ?? ''}
                             onChange={(e) => onSortChange(e.target.value)}
                             options={sortOptions}
                         />

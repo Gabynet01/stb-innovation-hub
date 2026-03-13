@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useTemplates } from '@/hooks';
 import { Template, TemplateCreate } from '@/types/api';
-import { Button, LoadingSpinner, CompactErrorWithToast, useSnackbar } from '@/components/ui';
+import { Button, LoadingSpinner, CompactErrorWithToast, useSnackbar, ListPagination, ITEMS_PER_PAGE } from '@/components/ui';
 import { useConfirmation } from '@/hooks';
 import { useRefreshSidebarCounts } from '@/contexts/SidebarCountsContext';
 import { TemplateFormModal, TemplateDetailModal, TemplateUploadModal } from '@/components/modals';
@@ -35,6 +35,7 @@ const TemplatesPage: React.FC = () => {
     const [showUploadModal, setShowUploadModal] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
     const [templateKinds, setTemplateKinds] = useState<string[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Load template kinds on mount
     React.useEffect(() => {
@@ -95,6 +96,20 @@ const TemplatesPage: React.FC = () => {
 
         return filtered;
     }, [templates, searchQuery, kindFilter, activeOnly]);
+
+    const paginatedTemplates = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredTemplates.slice(start, start + ITEMS_PER_PAGE);
+    }, [filteredTemplates, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, kindFilter, activeOnly]);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     // Event Handlers
     const handleCreateClick = () => {
@@ -298,10 +313,17 @@ const TemplatesPage: React.FC = () => {
 
             {/* Templates List */}
             <TemplateList
-                templates={filteredTemplates}
+                templates={paginatedTemplates}
                 onEdit={handleEditClick}
                 onDelete={handleDeleteClick}
                 onView={handleViewClick}
+            />
+            <ListPagination
+                currentPage={currentPage}
+                totalItems={filteredTemplates.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                onPageChange={handlePageChange}
+                itemLabel="templates"
             />
 
             {/* Modals */}

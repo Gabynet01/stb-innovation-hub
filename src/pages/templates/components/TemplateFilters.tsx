@@ -60,7 +60,7 @@ export const TemplateFilters: React.FC<TemplateFiltersProps> = ({
                             id="search"
                             type="text"
                             placeholder="Search by name, description, or variables..."
-                            value={searchQuery}
+                            value={searchQuery ?? ''}
                             onChange={(e) => onSearchChange(e.target.value)}
                             className="pl-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg"
                         />
@@ -73,7 +73,7 @@ export const TemplateFilters: React.FC<TemplateFiltersProps> = ({
                         Template Kind
                     </label>
                     <Select
-                        value={kindFilter}
+                        value={kindFilter ?? ''}
                         onChange={(e) => onKindFilterChange(e.target.value)}
                         options={[
                             { value: '', label: 'All Kinds' },

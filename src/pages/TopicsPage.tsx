@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useTopics } from '@/hooks';
 import { Topic, TopicCreate } from '@/types/api';
-import { Button, LoadingSpinner, CompactErrorWithToast, useSnackbar } from '@/components/ui';
+import { Button, LoadingSpinner, CompactErrorWithToast, useSnackbar, ListPagination, ITEMS_PER_PAGE } from '@/components/ui';
 import { useConfirmation } from '@/hooks';
 import { useRefreshSidebarCounts } from '@/contexts/SidebarCountsContext';
 import { TopicFormModal } from '@/components/modals/TopicFormModal';
@@ -31,6 +31,7 @@ const TopicsPage: React.FC = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Filter and sort topics
     const filteredAndSortedTopics = useMemo(() => {
@@ -65,6 +66,20 @@ const TopicsPage: React.FC = () => {
 
         return filtered;
     }, [topics, searchQuery, sortBy]);
+
+    const paginatedTopics = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredAndSortedTopics.slice(start, start + ITEMS_PER_PAGE);
+    }, [filteredAndSortedTopics, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, sortBy]);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     // Event Handlers
     const handleCreateClick = () => {
@@ -208,11 +223,18 @@ const TopicsPage: React.FC = () => {
 
             {/* Topics List */}
             <TopicList
-                topics={filteredAndSortedTopics}
+                topics={paginatedTopics}
                 viewMode={viewMode}
                 onEdit={handleEditClick}
                 onDelete={handleDeleteClick}
                 onView={handleViewClick}
+            />
+            <ListPagination
+                currentPage={currentPage}
+                totalItems={filteredAndSortedTopics.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                onPageChange={handlePageChange}
+                itemLabel="topics"
             />
 
             {/* Modals */}

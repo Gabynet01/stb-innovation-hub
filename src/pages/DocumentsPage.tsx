@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useDocuments } from '@/hooks';
 import { Document } from '@/types/api';
-import { LoadingSpinner, CompactErrorWithToast, useSnackbar } from '@/components/ui';
+import { LoadingSpinner, CompactErrorWithToast, useSnackbar, ListPagination, ITEMS_PER_PAGE } from '@/components/ui';
 import { useConfirmation } from '@/hooks';
 import { useRefreshSidebarCounts } from '@/contexts/SidebarCountsContext';
 import { DocumentGenerationModal, DocumentDetailModal } from '@/components/modals';
@@ -31,6 +31,7 @@ const DocumentsPage: React.FC = () => {
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
     const [generationType, setGenerationType] = useState<'cluster' | 'topic' | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Filter documents
     const filteredDocuments = useMemo(() => {
@@ -60,6 +61,20 @@ const DocumentsPage: React.FC = () => {
 
         return filtered;
     }, [documents, searchQuery, statusFilter]);
+
+    const paginatedDocuments = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredDocuments.slice(start, start + ITEMS_PER_PAGE);
+    }, [filteredDocuments, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, statusFilter]);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     // Event Handlers
     const handleGenerateClick = (type: 'cluster' | 'topic') => {
@@ -274,10 +289,17 @@ const DocumentsPage: React.FC = () => {
 
             {/* Documents List */}
             <DocumentList
-                documents={filteredDocuments}
+                documents={paginatedDocuments}
                 onView={handleViewClick}
                 onDelete={handleDeleteClick}
                 onExport={handleExportClick}
+            />
+            <ListPagination
+                currentPage={currentPage}
+                totalItems={filteredDocuments.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                onPageChange={handlePageChange}
+                itemLabel="documents"
             />
 
             {/* Modals */}

@@ -32,7 +32,7 @@ export const DocumentFilters: React.FC<DocumentFiltersProps> = ({
                         <Input
                             type="text"
                             placeholder="Search by title or content..."
-                            value={searchQuery}
+                            value={searchQuery ?? ''}
                             onChange={(e) => onSearchChange(e.target.value)}
                             className="pl-10"
                         />
@@ -45,7 +45,7 @@ export const DocumentFilters: React.FC<DocumentFiltersProps> = ({
                         Status
                     </label>
                     <Select
-                        value={statusFilter}
+                        value={statusFilter ?? ''}
                         onChange={(e) => onStatusFilterChange(e.target.value)}
                         options={[
                             { value: '', label: 'All Statuses' },

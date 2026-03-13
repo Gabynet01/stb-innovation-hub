@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useClusters } from '@/hooks';
 import { Cluster, ClusterCreate } from '@/types/api';
-import { LoadingSpinner, CompactErrorWithToast, useSnackbar } from '@/components/ui';
+import { LoadingSpinner, CompactErrorWithToast, useSnackbar, ListPagination, ITEMS_PER_PAGE } from '@/components/ui';
 import { useConfirmation } from '@/hooks';
 import { useRefreshSidebarCounts } from '@/contexts/SidebarCountsContext';
 import { ClusterFormModal } from '@/components/modals/ClusterFormModal';
@@ -31,6 +31,7 @@ const ClustersPage: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedCluster, setSelectedCluster] = useState<Cluster | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Filter clusters
   const filteredClusters = useMemo(() => {
@@ -61,6 +62,22 @@ const ClustersPage: React.FC = () => {
 
     return filtered;
   }, [clusters, searchQuery, kindFilter, statusFilter]);
+
+  // Paginate filtered list
+  const paginatedClusters = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredClusters.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredClusters, currentPage]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, kindFilter, statusFilter]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Event Handlers
   const handleCreateClick = () => {
@@ -208,10 +225,17 @@ const ClustersPage: React.FC = () => {
 
       {/* Clusters List */}
       <ClusterList
-        clusters={filteredClusters}
+        clusters={paginatedClusters}
         onEdit={handleEditClick}
         onDelete={handleDeleteClick}
         onView={handleViewClick}
+      />
+      <ListPagination
+        currentPage={currentPage}
+        totalItems={filteredClusters.length}
+        itemsPerPage={ITEMS_PER_PAGE}
+        onPageChange={handlePageChange}
+        itemLabel="clusters"
       />
 
       {/* Modals */}

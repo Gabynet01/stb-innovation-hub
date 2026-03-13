@@ -49,7 +49,7 @@ const ClusterFilters: React.FC<ClusterFiltersProps> = ({
                         <Input
                             type="text"
                             placeholder="Search clusters..."
-                            value={searchQuery}
+                            value={searchQuery ?? ''}
                             onChange={(e) => onSearchChange(e.target.value)}
                             className="pl-10"
                         />
@@ -58,7 +58,7 @@ const ClusterFilters: React.FC<ClusterFiltersProps> = ({
                     {/* Kind Filter */}
                     <div className="w-full sm:w-48">
                         <Select
-                            value={kindFilter}
+                            value={kindFilter ?? ''}
                             onChange={(e) => onKindFilterChange(e.target.value)}
                             options={kindOptions}
                         />
@@ -67,7 +67,7 @@ const ClusterFilters: React.FC<ClusterFiltersProps> = ({
                     {/* Status Filter */}
                     <div className="w-full sm:w-48">
                         <Select
-                            value={statusFilter}
+                            value={statusFilter ?? ''}
                             onChange={(e) => onStatusFilterChange(e.target.value)}
                             options={statusOptions}
                         />

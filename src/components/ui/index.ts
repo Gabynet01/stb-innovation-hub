@@ -5,6 +5,7 @@ export { ClusterBadge } from "./ClusterBadge";
 export { ErrorState } from "./ErrorState";
 export { CompactErrorWithToast } from "./CompactErrorWithToast";
 export { Input } from "./Input";
+export { ListPagination, ITEMS_PER_PAGE } from "./ListPagination";
 export { LoadingSpinner } from "./LoadingSpinner";
 export { Message } from "./Message";
 export { ProcessingStatus } from "./ProcessingStatus";
