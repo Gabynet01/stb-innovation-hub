@@ -41,7 +41,7 @@ export const DashboardHero: React.FC<DashboardHeroProps> = ({ systemStatus = 'op
                     <LightBulbIcon className="h-12 w-12 text-white" />
                 </div>
                 <h1 className="text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent mb-6">
-                    Ideation Hub
+                    {APP_CONFIG.name}
                 </h1>
                 <p className="text-xl text-gray-600 max-w-4xl mx-auto font-medium leading-relaxed">
                     Welcome to {APP_CONFIG.name}. Share ideas, explore AI-powered insights, and help shape the future at Stanbic Bank.
