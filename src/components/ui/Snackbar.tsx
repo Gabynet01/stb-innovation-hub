@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     CheckCircleIcon,
     ExclamationTriangleIcon,
@@ -28,20 +28,17 @@ const Snackbar: React.FC<SnackbarProps> = ({
     const [isVisible, setIsVisible] = useState(true);
     const [isExiting, setIsExiting] = useState(false);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            handleClose();
-        }, duration);
-
-        return () => clearTimeout(timer);
-    }, [duration]);
-
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setIsExiting(true);
         setTimeout(() => {
             onClose(id);
         }, 300);
-    };
+    }, [id, onClose]);
+
+    useEffect(() => {
+        const timer = setTimeout(handleClose, duration);
+        return () => clearTimeout(timer);
+    }, [duration, handleClose]);
 
     const getTypeStyles = () => {
         switch (type) {

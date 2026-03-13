@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useClusters } from '@/hooks';
 import { Cluster, ClusterCreate } from '@/types/api';
-import { Button, LoadingSpinner, ErrorState } from '@/components/ui';
+import { LoadingSpinner, CompactErrorWithToast, useSnackbar } from '@/components/ui';
 import { useConfirmation } from '@/hooks';
+import { useRefreshSidebarCounts } from '@/contexts/SidebarCountsContext';
 import { ClusterFormModal } from '@/components/modals/ClusterFormModal';
 import { ClusterDetailModal } from '@/components/modals/ClusterDetailModal';
 import { ClusterList, ClusterFilters } from './clusters/components';
@@ -19,6 +20,8 @@ const ClustersPage: React.FC = () => {
   } = useClusters();
 
   const { showConfirmation } = useConfirmation();
+  const refreshSidebarCounts = useRefreshSidebarCounts();
+  const { showSnackbar } = useSnackbar();
 
   // UI State
   const [searchQuery, setSearchQuery] = useState('');
@@ -90,7 +93,9 @@ const ClustersPage: React.FC = () => {
         title: 'Delete Cluster',
         message: `Are you sure you want to delete "${cluster.title || `Cluster ${cluster.id.slice(0, 8)}`}"? This action cannot be undone.`
       },
-      () => deleteCluster(clusterId)
+      () => {
+        deleteCluster(clusterId).then(() => refreshSidebarCounts());
+      }
     );
   };
 
@@ -98,8 +103,10 @@ const ClustersPage: React.FC = () => {
     try {
       await createCluster(clusterData as ClusterCreate);
       setShowCreateModal(false);
-    } catch (error) {
-      console.error('Failed to create cluster:', error);
+      refreshSidebarCounts();
+      showSnackbar({ type: 'success', title: 'Cluster created', message: 'The cluster has been created successfully.' });
+    } catch (err) {
+      showSnackbar({ type: 'error', title: 'Failed to create cluster', message: err instanceof Error ? err.message : 'Please try again.' });
     }
   };
 
@@ -110,8 +117,10 @@ const ClustersPage: React.FC = () => {
       await updateCluster(selectedCluster.id, clusterData);
       setShowEditModal(false);
       setSelectedCluster(null);
-    } catch (error) {
-      console.error('Failed to update cluster:', error);
+      refreshSidebarCounts();
+      showSnackbar({ type: 'success', title: 'Cluster updated', message: 'The cluster has been updated successfully.' });
+    } catch (err) {
+      showSnackbar({ type: 'error', title: 'Failed to update cluster', message: err instanceof Error ? err.message : 'Please try again.' });
     }
   };
 
@@ -138,12 +147,11 @@ const ClustersPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-96">
-        <ErrorState
-          error={error}
-          onRetry={() => window.location.reload()}
-        />
-      </div>
+      <CompactErrorWithToast
+        error={error}
+        title="Failed to load clusters"
+        onRetry={() => window.location.reload()}
+      />
     );
   }
 

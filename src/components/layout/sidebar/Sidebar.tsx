@@ -9,6 +9,7 @@ import {
     FolderIcon
 } from '@heroicons/react/24/outline';
 import { useSidebarCounts } from '@/hooks/useSidebarCounts';
+import type { SidebarCounts } from '@/hooks/useSidebarCounts';
 import './sidebar.component.scss';
 
 type ViewType = 'form' | 'list';
@@ -29,6 +30,9 @@ interface SidebarProps {
     onCollapseChange: (collapsed: boolean) => void;
     isCollapsed: boolean;
     mobileOpen?: boolean;
+    counts?: SidebarCounts;
+    countsLoading?: boolean;
+    countsError?: string | null;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -38,9 +42,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
     currentMenu,
     onCollapseChange,
     isCollapsed,
-    mobileOpen = false
+    mobileOpen = false,
+    counts: countsProp,
+    countsLoading: loadingProp,
+    countsError: errorProp
 }) => {
-    const { counts, loading, error } = useSidebarCounts();
+    const hookCounts = useSidebarCounts();
+    const counts = countsProp ?? hookCounts.counts;
+    const loading = loadingProp ?? hookCounts.loading;
+    const error = errorProp ?? hookCounts.error;
 
     const menuItems: MenuItem[] = [
         {

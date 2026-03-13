@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '@/services';
+import { CompactErrorWithToast, useSnackbar } from '@/components/ui';
 import {
     ClockIcon,
     CheckCircleIcon,
@@ -25,7 +26,7 @@ export const JobsPage: React.FC = () => {
     const [showFilters, setShowFilters] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [retryingJobs, setRetryingJobs] = useState<Set<string>>(new Set());
-    const [retryError, setRetryError] = useState<string | null>(null);
+    const { showSnackbar } = useSnackbar();
 
     const [filters, setFilters] = useState<JobFilters>({
         status: '',
@@ -160,8 +161,6 @@ export const JobsPage: React.FC = () => {
     const handleRetryJob = async (jobId: string) => {
         try {
             // Clear any previous retry errors
-            setRetryError(null);
-
             // Add job to retrying set
             setRetryingJobs(prev => new Set(prev).add(jobId));
 
@@ -174,11 +173,11 @@ export const JobsPage: React.FC = () => {
                 }
             } else {
                 console.error('Failed to retry job:', response);
-                setRetryError(`Failed to retry job: ${response.meta?.message || 'Unknown error'}`);
+                showSnackbar({ type: 'error', title: 'Retry failed', message: response.meta?.message || 'Unknown error' });
             }
         } catch (err) {
             console.error('Failed to retry job:', err);
-            setRetryError(`Failed to retry job: ${err instanceof Error ? err.message : 'Unknown error'}`);
+            showSnackbar({ type: 'error', title: 'Retry failed', message: err instanceof Error ? err.message : 'Unknown error' });
         } finally {
             // Remove job from retrying set
             setRetryingJobs(prev => {
@@ -207,19 +206,11 @@ export const JobsPage: React.FC = () => {
 
     if (error) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center max-w-md">
-                    <ExclamationTriangleIcon className="h-16 w-16 text-red-500 mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Jobs</h2>
-                    <p className="text-gray-600 mb-6">{error}</p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200"
-                    >
-                        Try Again
-                    </button>
-                </div>
-            </div>
+            <CompactErrorWithToast
+                error={error}
+                title="Unable to load jobs"
+                onRetry={() => window.location.reload()}
+            />
         );
     }
 
@@ -434,24 +425,6 @@ export const JobsPage: React.FC = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* Retry Error Display */}
-                    {retryError && (
-                        <div className="px-6 py-3 bg-red-50 border-b border-red-200">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center">
-                                    <ExclamationTriangleIcon className="h-5 w-5 text-red-500 mr-2" />
-                                    <p className="text-sm text-red-800">{retryError}</p>
-                                </div>
-                                <button
-                                    onClick={() => setRetryError(null)}
-                                    className="text-red-500 hover:text-red-700"
-                                >
-                                    <XCircleIcon className="h-4 w-4" />
-                                </button>
-                            </div>
-                        </div>
-                    )}
 
                     {filteredJobs.length === 0 ? (
                         <div className="text-center py-12">

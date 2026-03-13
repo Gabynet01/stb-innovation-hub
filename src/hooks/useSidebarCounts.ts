@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { MetricsApiService } from "@/services/metricsApi";
 import { apiService } from "@/services/api";
 
-interface SidebarCounts {
+export interface SidebarCounts {
   suggestions: number;
   clusters: number;
   topics: number;
@@ -77,7 +77,6 @@ export const useSidebarCounts = () => {
           page: 1,
           page_size: 1,
         });
-        console.log("Topics API response:", topicsApiResponse);
         if (topicsApiResponse.ok && topicsApiResponse.data) {
           // Use pagination metadata if available, otherwise fall back to array length
           const totalCount =
@@ -91,23 +90,66 @@ export const useSidebarCounts = () => {
         console.error("Failed to fetch topics count:", topicsError);
       }
 
-      // Fetch generation metrics for documents
+      // Fetch generation metrics for documents (with API fallback)
       const generationResponse = await metricsService.getGenerationMetrics();
       if (generationResponse.ok) {
         setCounts((prev) => ({
           ...prev,
-          documents: generationResponse.data.total_documents || 0,
+          documents: generationResponse.data?.total_documents ?? 0,
         }));
       }
+      try {
+        const documentsResponse = await apiService.documents.getDocuments({
+          page: 1,
+          page_size: 1,
+        });
+        if (documentsResponse.ok && documentsResponse.data) {
+          const total =
+            (documentsResponse as { meta?: { total?: number } }).meta?.total ??
+            (Array.isArray(documentsResponse.data) ? documentsResponse.data.length : 0);
+          setCounts((prev) => ({ ...prev, documents: total }));
+        }
+      } catch {
+        // Keep value from generation metrics if set
+      }
 
-      // For templates and jobs, we'll use placeholder values for now
-      // since there might not be specific count endpoints
-      // You can add specific API calls for these if they exist
-      setCounts((prev) => ({
-        ...prev,
-        templates: 0, // Placeholder - add API call when available
-        jobs: 0, // Placeholder - add API call when available
-      }));
+      // Fetch templates count
+      try {
+        const templatesResponse = await apiService.templates.getTemplates({
+          page: 1,
+          page_size: 1,
+        });
+        if (templatesResponse.ok && templatesResponse.data) {
+          const totalTemplates =
+            (templatesResponse as any).meta?.total ??
+            (Array.isArray(templatesResponse.data) ? templatesResponse.data.length : 0);
+          setCounts((prev) => ({
+            ...prev,
+            templates: totalTemplates,
+          }));
+        }
+      } catch (templatesError) {
+        console.error("Failed to fetch templates count:", templatesError);
+      }
+
+      // Fetch jobs count
+      try {
+        const jobsResponse = await apiService.jobs.getJobs({
+          page: 1,
+          page_size: 1,
+        });
+        if (jobsResponse.ok && jobsResponse.data) {
+          const totalJobs =
+            (jobsResponse as any).meta?.total ??
+            (Array.isArray(jobsResponse.data) ? jobsResponse.data.length : 0);
+          setCounts((prev) => ({
+            ...prev,
+            jobs: totalJobs,
+          }));
+        }
+      } catch (jobsError) {
+        console.error("Failed to fetch jobs count:", jobsError);
+      }
     } catch (err) {
       console.error("Error fetching sidebar counts:", err);
       setError("Failed to fetch counts");

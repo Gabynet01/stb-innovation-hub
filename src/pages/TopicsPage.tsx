@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useTopics } from '@/hooks';
 import { Topic, TopicCreate } from '@/types/api';
-import { Button, LoadingSpinner, ErrorState } from '@/components/ui';
+import { Button, LoadingSpinner, CompactErrorWithToast, useSnackbar } from '@/components/ui';
 import { useConfirmation } from '@/hooks';
+import { useRefreshSidebarCounts } from '@/contexts/SidebarCountsContext';
 import { TopicFormModal } from '@/components/modals/TopicFormModal';
 import { TopicDetailModal } from '@/components/modals/TopicDetailModal';
 import { TopicList, TopicFilters } from './topics/components';
@@ -19,6 +20,8 @@ const TopicsPage: React.FC = () => {
     } = useTopics();
 
     const { showConfirmation } = useConfirmation();
+    const refreshSidebarCounts = useRefreshSidebarCounts();
+    const { showSnackbar } = useSnackbar();
 
     // UI State
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -91,7 +94,9 @@ const TopicsPage: React.FC = () => {
                 title: 'Delete Topic',
                 message: `Are you sure you want to delete "${topic.label}"? This action cannot be undone.`
             },
-            () => deleteTopic(topic.id)
+            () => {
+                deleteTopic(topic.id).then(() => refreshSidebarCounts());
+            }
         );
     };
 
@@ -99,8 +104,10 @@ const TopicsPage: React.FC = () => {
         try {
             await createTopic(topicData as TopicCreate);
             setShowCreateModal(false);
-        } catch (error) {
-            console.error('Failed to create topic:', error);
+            refreshSidebarCounts();
+            showSnackbar({ type: 'success', title: 'Topic created', message: 'The topic has been created successfully.' });
+        } catch (err) {
+            showSnackbar({ type: 'error', title: 'Failed to create topic', message: err instanceof Error ? err.message : 'Please try again.' });
         }
     };
 
@@ -111,8 +118,10 @@ const TopicsPage: React.FC = () => {
             await updateTopic(selectedTopic.id, topicData);
             setShowEditModal(false);
             setSelectedTopic(null);
-        } catch (error) {
-            console.error('Failed to update topic:', error);
+            refreshSidebarCounts();
+            showSnackbar({ type: 'success', title: 'Topic updated', message: 'The topic has been updated successfully.' });
+        } catch (err) {
+            showSnackbar({ type: 'error', title: 'Failed to update topic', message: err instanceof Error ? err.message : 'Please try again.' });
         }
     };
 
@@ -138,12 +147,11 @@ const TopicsPage: React.FC = () => {
 
     if (error) {
         return (
-            <div className="flex items-center justify-center min-h-96">
-                <ErrorState
-                    error={error}
-                    onRetry={() => window.location.reload()}
-                />
-            </div>
+            <CompactErrorWithToast
+                error={error}
+                title="Failed to load topics"
+                onRetry={() => window.location.reload()}
+            />
         );
     }
 

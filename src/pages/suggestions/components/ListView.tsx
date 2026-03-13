@@ -3,7 +3,7 @@ import { SuggestionsHeader } from './SuggestionsHeader';
 import { SuggestionsStats } from './SuggestionsStats';
 import { SuggestionsFilters } from './SuggestionsFilters';
 import { SuggestionList } from './SuggestionList';
-import { ErrorState, LoadingSpinner } from '@/components/ui';
+import { CompactErrorWithToast, LoadingSpinner } from '@/components/ui';
 import { Suggestion, SuggestionFilters } from '@/types/api';
 
 interface ListViewProps {
@@ -78,13 +78,11 @@ const ListViewComponent: React.FC<ListViewProps> = ({
                 {/* Main Content */}
                 <div className="pb-12">
                     {error && (
-                        <div className="mb-8">
-                            <ErrorState
+                        <div className="mb-4">
+                            <CompactErrorWithToast
                                 error={error}
                                 title="Error loading suggestions"
                                 onRetry={onClearError}
-                                retryText="Dismiss"
-                                size="sm"
                             />
                         </div>
                     )}

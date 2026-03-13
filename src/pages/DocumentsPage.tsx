@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useDocuments } from '@/hooks';
 import { Document } from '@/types/api';
-import { LoadingSpinner, ErrorState, Message } from '@/components/ui';
+import { LoadingSpinner, CompactErrorWithToast, useSnackbar } from '@/components/ui';
 import { useConfirmation } from '@/hooks';
+import { useRefreshSidebarCounts } from '@/contexts/SidebarCountsContext';
 import { DocumentGenerationModal, DocumentDetailModal } from '@/components/modals';
 import { DocumentList } from './documents/components/DocumentList';
 import { DocumentFilters } from './documents/components/DocumentFilters';
@@ -20,6 +21,8 @@ const DocumentsPage: React.FC = () => {
     } = useDocuments();
 
     const { showConfirmation } = useConfirmation();
+    const refreshSidebarCounts = useRefreshSidebarCounts();
+    const { showSnackbar } = useSnackbar();
 
     // UI State
     const [searchQuery, setSearchQuery] = useState('');
@@ -28,7 +31,6 @@ const DocumentsPage: React.FC = () => {
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
     const [generationType, setGenerationType] = useState<'cluster' | 'topic' | null>(null);
-    const [generationMessage, setGenerationMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
     // Filter documents
     const filteredDocuments = useMemo(() => {
@@ -63,7 +65,6 @@ const DocumentsPage: React.FC = () => {
     const handleGenerateClick = (type: 'cluster' | 'topic') => {
         setGenerationType(type);
         setShowGenerationModal(true);
-        setGenerationMessage(null);
     };
 
     const handleViewClick = (document: Document) => {
@@ -80,7 +81,9 @@ const DocumentsPage: React.FC = () => {
                 title: 'Delete Document',
                 message: `Are you sure you want to delete "${document.title}"? This action cannot be undone.`
             },
-            () => deleteDocument(documentId)
+            () => {
+                deleteDocument(documentId).then(() => refreshSidebarCounts());
+            }
         );
     };
 
@@ -97,8 +100,8 @@ const DocumentsPage: React.FC = () => {
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
             }
-        } catch (error) {
-            console.error('Failed to export document:', error);
+        } catch (err) {
+            showSnackbar({ type: 'error', title: 'Export failed', message: err instanceof Error ? err.message : 'Please try again.' });
         }
     };
 
@@ -109,7 +112,6 @@ const DocumentsPage: React.FC = () => {
         renderFormat?: 'PDF' | 'DOCX' | 'HTML' | 'TXT' | 'MD';
     }) => {
         try {
-            setGenerationMessage(null);
 
             let success = false;
             if (generationType === 'cluster') {
@@ -119,23 +121,22 @@ const DocumentsPage: React.FC = () => {
             }
 
             if (success) {
-                setGenerationMessage({
+                showSnackbar({
                     type: 'success',
-                    message: `Document generated successfully! It will appear in the list once processing is complete.`
+                    title: 'Document generated',
+                    message: 'It will appear in the list once processing is complete.'
                 });
                 setShowGenerationModal(false);
                 setGenerationType(null);
+                refreshSidebarCounts();
             } else {
-                setGenerationMessage({
-                    type: 'error',
-                    message: 'Failed to generate document. Please try again.'
-                });
+                showSnackbar({ type: 'error', title: 'Failed to generate document', message: 'Please try again.' });
             }
-        } catch (error) {
-            console.error('Failed to generate document:', error);
-            setGenerationMessage({
+        } catch (err) {
+            showSnackbar({
                 type: 'error',
-                message: `Failed to generate document: ${error instanceof Error ? error.message : 'Unknown error'}`
+                title: 'Failed to generate document',
+                message: err instanceof Error ? err.message : 'Unknown error'
             });
         }
     };
@@ -150,7 +151,6 @@ const DocumentsPage: React.FC = () => {
         setShowDetailModal(false);
         setSelectedDocument(null);
         setGenerationType(null);
-        setGenerationMessage(null);
     };
 
     if (loading) {
@@ -163,12 +163,11 @@ const DocumentsPage: React.FC = () => {
 
     if (error) {
         return (
-            <div className="flex items-center justify-center min-h-96">
-                <ErrorState
-                    error={error}
-                    onRetry={() => window.location.reload()}
-                />
-            </div>
+            <CompactErrorWithToast
+                error={error}
+                title="Failed to load documents"
+                onRetry={() => window.location.reload()}
+            />
         );
     }
 
@@ -272,15 +271,6 @@ const DocumentsPage: React.FC = () => {
                 onStatusFilterChange={setStatusFilter}
                 onClearFilters={handleClearFilters}
             />
-
-            {/* Generation Message */}
-            {generationMessage && (
-                <Message
-                    type={generationMessage.type}
-                    message={generationMessage.message}
-                    onClose={() => setGenerationMessage(null)}
-                />
-            )}
 
             {/* Documents List */}
             <DocumentList

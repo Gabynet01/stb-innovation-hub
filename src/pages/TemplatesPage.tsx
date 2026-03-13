@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useTemplates } from '@/hooks';
 import { Template, TemplateCreate } from '@/types/api';
-import { Button, LoadingSpinner, ErrorState } from '@/components/ui';
+import { Button, LoadingSpinner, CompactErrorWithToast, useSnackbar } from '@/components/ui';
 import { useConfirmation } from '@/hooks';
+import { useRefreshSidebarCounts } from '@/contexts/SidebarCountsContext';
 import { TemplateFormModal, TemplateDetailModal, TemplateUploadModal } from '@/components/modals';
 import { TemplateList } from './templates/components/TemplateList';
 import { TemplateFilters } from './templates/components/TemplateFilters';
@@ -21,6 +22,8 @@ const TemplatesPage: React.FC = () => {
     } = useTemplates();
 
     const { showConfirmation } = useConfirmation();
+    const refreshSidebarCounts = useRefreshSidebarCounts();
+    const { showSnackbar } = useSnackbar();
 
     // UI State
     const [searchQuery, setSearchQuery] = useState('');
@@ -128,7 +131,9 @@ const TemplatesPage: React.FC = () => {
                 title: 'Delete Template',
                 message: `Are you sure you want to delete "${template.name}"? This action cannot be undone.`
             },
-            () => deleteTemplate(templateId)
+            () => {
+                deleteTemplate(templateId).then(() => refreshSidebarCounts());
+            }
         );
     };
 
@@ -136,8 +141,10 @@ const TemplatesPage: React.FC = () => {
         try {
             await createTemplate(templateData as TemplateCreate);
             setShowCreateModal(false);
-        } catch (error) {
-            console.error('Failed to create template:', error);
+            refreshSidebarCounts();
+            showSnackbar({ type: 'success', title: 'Template created', message: 'The template has been created successfully.' });
+        } catch (err) {
+            showSnackbar({ type: 'error', title: 'Failed to create template', message: err instanceof Error ? err.message : 'Please try again.' });
         }
     };
 
@@ -159,8 +166,10 @@ const TemplatesPage: React.FC = () => {
             await updateTemplate(selectedTemplate.id, updateData);
             setShowEditModal(false);
             setSelectedTemplate(null);
-        } catch (error) {
-            console.error('Failed to update template:', error);
+            refreshSidebarCounts();
+            showSnackbar({ type: 'success', title: 'Template updated', message: 'The template has been updated successfully.' });
+        } catch (err) {
+            showSnackbar({ type: 'error', title: 'Failed to update template', message: err instanceof Error ? err.message : 'Please try again.' });
         }
     };
 
@@ -168,8 +177,10 @@ const TemplatesPage: React.FC = () => {
         try {
             await uploadTemplate(data);
             setShowUploadModal(false);
-        } catch (error) {
-            console.error('Failed to upload template:', error);
+            refreshSidebarCounts();
+            showSnackbar({ type: 'success', title: 'Template uploaded', message: 'The template has been uploaded successfully.' });
+        } catch (err) {
+            showSnackbar({ type: 'error', title: 'Failed to upload template', message: err instanceof Error ? err.message : 'Please try again.' });
         }
     };
 
@@ -197,12 +208,11 @@ const TemplatesPage: React.FC = () => {
 
     if (error) {
         return (
-            <div className="flex items-center justify-center min-h-96">
-                <ErrorState
-                    error={error}
-                    onRetry={() => window.location.reload()}
-                />
-            </div>
+            <CompactErrorWithToast
+                error={error}
+                title="Failed to load templates"
+                onRetry={() => window.location.reload()}
+            />
         );
     }
 

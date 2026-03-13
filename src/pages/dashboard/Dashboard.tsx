@@ -14,7 +14,7 @@ import { DashboardHero } from './components/DashboardHero';
 import { MetricsGrid } from './components/MetricsGrid';
 import { ContentGrid } from './components/ContentGrid';
 import { QuickActions } from './components/QuickActions';
-import { LoadingSpinner, ErrorState } from '../../components/ui';
+import { LoadingSpinner, CompactErrorWithToast } from '../../components/ui';
 
 export const Dashboard: React.FC = () => {
     const navigate = useNavigate();
@@ -114,12 +114,13 @@ export const Dashboard: React.FC = () => {
     }
 
     if (error) {
-        return <ErrorState
-            error={error}
-            title="Failed to load innovation dashboard"
-            onRetry={() => window.location.reload()}
-            retryText="Try Again"
-        />;
+        return (
+            <CompactErrorWithToast
+                error={error}
+                title="Failed to load dashboard"
+                onRetry={() => window.location.reload()}
+            />
+        );
     }
 
     return (
@@ -134,12 +135,7 @@ export const Dashboard: React.FC = () => {
                 generationMetrics={generationMetrics}
                 suggestions={suggestions}
             />
-            <ContentGrid
-                clusters={clusters}
-                topics={topics}
-                suggestions={suggestions}
-                onViewClusters={handleViewClusters}
-            />
+            <ContentGrid onViewClusters={handleViewClusters} />
             <QuickActions onViewClusters={handleViewClusters} />
         </div>
     );

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Navbar } from '../navbar';
 import { Sidebar } from '../sidebar';
+import { SidebarCountsProvider } from '@/contexts/SidebarCountsContext';
+import { useSidebarCounts } from '@/hooks/useSidebarCounts';
 import './main-layout.component.scss';
 
 type ViewType = 'form' | 'list';
@@ -15,6 +17,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
+    const { counts, loading, error, refreshCounts } = useSidebarCounts();
 
     // Close mobile sidebar when route changes
     useEffect(() => {
@@ -68,45 +71,50 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const currentView: ViewType = 'list'; // Default view
 
     return (
-        <div className="main-layout">
-            {/* Navigation - Full width at top */}
-            <Navbar
-                onSidebarToggle={handleSidebarToggle}
-                onMobileSidebarToggle={handleMobileSidebarToggle}
-                mobileSidebarOpen={mobileSidebarOpen}
-            />
-
-            <div className="main-layout__content">
-                {/* Mobile Sidebar Overlay */}
-                {mobileSidebarOpen && (
-                    <div
-                        className="main-layout__mobile-overlay"
-                        onClick={() => setMobileSidebarOpen(false)}
-                    />
-                )}
-
-                {/* Sidebar */}
-                <Sidebar
-                    onViewChange={handleViewChange}
-                    currentView={currentView}
-                    onMenuChange={handleMenuChange}
-                    currentMenu={currentMenu as any}
-                    onCollapseChange={setSidebarCollapsed}
-                    isCollapsed={sidebarCollapsed}
-                    mobileOpen={mobileSidebarOpen}
+        <SidebarCountsProvider refreshCounts={refreshCounts}>
+            <div className="main-layout">
+                {/* Navigation - Full width at top */}
+                <Navbar
+                    onSidebarToggle={handleSidebarToggle}
+                    onMobileSidebarToggle={handleMobileSidebarToggle}
+                    mobileSidebarOpen={mobileSidebarOpen}
                 />
 
-                {/* Main content area */}
-                <main className={`main-layout__main ${sidebarCollapsed ? 'main-layout__main--collapsed' : ''}`}>
-                    <div className="main-layout__main-container">
-                        <div className="main-layout__main-content">
-                            <div className="main-layout__main-card">
-                                {children}
+                <div className="main-layout__content">
+                    {/* Mobile Sidebar Overlay */}
+                    {mobileSidebarOpen && (
+                        <div
+                            className="main-layout__mobile-overlay"
+                            onClick={() => setMobileSidebarOpen(false)}
+                        />
+                    )}
+
+                    {/* Sidebar */}
+                    <Sidebar
+                        onViewChange={handleViewChange}
+                        currentView={currentView}
+                        onMenuChange={handleMenuChange}
+                        currentMenu={currentMenu as any}
+                        onCollapseChange={setSidebarCollapsed}
+                        isCollapsed={sidebarCollapsed}
+                        mobileOpen={mobileSidebarOpen}
+                        counts={counts}
+                        countsLoading={loading}
+                        countsError={error}
+                    />
+
+                    {/* Main content area */}
+                    <main className={`main-layout__main ${sidebarCollapsed ? 'main-layout__main--collapsed' : ''}`}>
+                        <div className="main-layout__main-container">
+                            <div className="main-layout__main-content">
+                                <div className="main-layout__main-card">
+                                    {children}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </main>
+                    </main>
+                </div>
             </div>
-        </div>
+        </SidebarCountsProvider>
     );
 }; 

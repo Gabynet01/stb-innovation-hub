@@ -1,5 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { ExclamationTriangleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { ErrorBoundaryFallback } from './ErrorBoundaryFallback';
 
 interface Props {
     children: ReactNode;
@@ -61,69 +61,16 @@ export class ErrorBoundary extends Component<Props, State> {
 
     render() {
         if (this.state.hasError) {
-            // Custom fallback UI
             if (this.props.fallback) {
                 return this.props.fallback;
             }
-
-            // Default error UI
             return (
-                <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-                    <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
-                        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
-                            <ExclamationTriangleIcon className="h-8 w-8 text-red-600" />
-                        </div>
-
-                        <h1 className="text-2xl font-bold text-gray-900 mb-4">
-                            Something went wrong
-                        </h1>
-
-                        <p className="text-gray-600 mb-6">
-                            We're sorry, but something unexpected happened. Our team has been notified and is working to fix the issue.
-                        </p>
-
-                        {process.env.NODE_ENV === 'development' && this.state.error && (
-                            <details className="mb-6 text-left">
-                                <summary className="cursor-pointer text-sm font-medium text-gray-700 mb-2">
-                                    Error Details (Development)
-                                </summary>
-                                <div className="bg-gray-100 rounded-lg p-4 text-xs font-mono text-gray-800 overflow-auto">
-                                    <div className="mb-2">
-                                        <strong>Error:</strong> {this.state.error.toString()}
-                                    </div>
-                                    {this.state.errorInfo && (
-                                        <div>
-                                            <strong>Component Stack:</strong>
-                                            <pre className="mt-1 whitespace-pre-wrap">
-                                                {this.state.errorInfo.componentStack}
-                                            </pre>
-                                        </div>
-                                    )}
-                                </div>
-                            </details>
-                        )}
-
-                        <div className="flex flex-col sm:flex-row gap-3">
-                            <button
-                                onClick={this.handleRetry}
-                                className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200"
-                            >
-                                <ArrowPathIcon className="h-4 w-4 mr-2" />
-                                Try Again
-                            </button>
-
-                            <button
-                                onClick={() => window.location.reload()}
-                                className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200"
-                            >
-                                Reload Page
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <ErrorBoundaryFallback
+                    error={this.state.error}
+                    onRetry={this.handleRetry}
+                />
             );
         }
-
         return this.props.children;
     }
 }

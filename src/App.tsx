@@ -15,8 +15,8 @@ import { SnackbarProvider } from './components/ui';
 
 export const App: React.FC = () => {
   return (
-    <ErrorBoundary>
-      <SnackbarProvider>
+    <SnackbarProvider>
+      <ErrorBoundary>
         <Router>
           <MainLayout>
             <Routes>
@@ -31,7 +31,7 @@ export const App: React.FC = () => {
             </Routes>
           </MainLayout>
         </Router>
-      </SnackbarProvider>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </SnackbarProvider>
   );
 };
