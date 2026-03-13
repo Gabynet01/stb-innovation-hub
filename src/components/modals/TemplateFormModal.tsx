@@ -8,7 +8,7 @@ import remarkGfm from 'remark-gfm';
 interface TemplateFormModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (template: TemplateCreate | Partial<Template>) => void;
+    onSave: (template: TemplateCreate | Partial<Template>) => void | Promise<void>;
     template: Template | null;
     isEditing: boolean;
 }
@@ -31,6 +31,7 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
     });
     const [newVariable, setNewVariable] = useState('');
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [loading, setLoading] = useState(false);
 
     // Generate preview content with sample data
     const generatePreview = (content: string): string => {
@@ -132,7 +133,7 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!validateForm()) {
@@ -149,7 +150,14 @@ export const TemplateFormModal: React.FC<TemplateFormModalProps> = ({
             variables: formData.variables
         };
 
-        onSave(templateData);
+        setLoading(true);
+        try {
+            await Promise.resolve(onSave(templateData));
+        } catch (err) {
+            console.error('Failed to save template:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleAddVariable = () => {
@@ -427,8 +435,9 @@ Use double curly braces for variables: {{variable_name}}"
                     </Button>
                     <Button
                         type="submit"
-                        disabled={!formData.name.trim() || !formData.content_markdown.trim() || formData.variables.length === 0}
+                        disabled={!formData.name.trim() || !formData.content_markdown.trim() || formData.variables.length === 0 || loading}
                         onClick={handleSubmit}
+                        loading={loading}
                     >
                         {isEditing ? 'Update Template' : 'Create Template'}
                     </Button>

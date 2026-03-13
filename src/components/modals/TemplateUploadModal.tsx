@@ -13,7 +13,7 @@ interface TemplateUploadData {
 interface TemplateUploadModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onUpload: (data: TemplateUploadData) => void;
+    onUpload: (data: TemplateUploadData) => void | Promise<void>;
 }
 
 export const TemplateUploadModal: React.FC<TemplateUploadModalProps> = ({
@@ -28,6 +28,7 @@ export const TemplateUploadModal: React.FC<TemplateUploadModalProps> = ({
     const [version, setVersion] = useState('1.0');
     const [kind, setKind] = useState('document');
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [loading, setLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileSelect = (file: File) => {
@@ -57,21 +58,27 @@ export const TemplateUploadModal: React.FC<TemplateUploadModalProps> = ({
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!validateForm()) {
+        if (!validateForm() || !selectedFile) {
             return;
         }
 
-        if (selectedFile) {
-            onUpload({
+        setLoading(true);
+        try {
+            const result = onUpload({
                 file: selectedFile,
                 template_name: templateName.trim(),
                 template_description: templateDescription.trim() || undefined,
                 version: version,
                 kind: kind
             });
+            if (result && typeof (result as Promise<void>).then === 'function') {
+                await (result as Promise<void>);
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -122,9 +129,9 @@ export const TemplateUploadModal: React.FC<TemplateUploadModalProps> = ({
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
                 {/* Header */}
-                <div className="px-6 py-4 bg-blue-600 flex items-center justify-between">
+                <div className="px-6 py-4 bg-blue-600 flex items-center justify-between flex-shrink-0">
                     <div className="flex items-center space-x-3">
                         <div className="p-2 bg-white bg-opacity-20 rounded-lg">
                             <DocumentArrowUpIcon className="h-6 w-6 text-white" />
@@ -143,8 +150,8 @@ export const TemplateUploadModal: React.FC<TemplateUploadModalProps> = ({
                 </div>
 
                 {/* Content */}
-                <form onSubmit={handleSubmit} className="p-6">
-                    <div className="space-y-6">
+                <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+                    <div className="p-6 space-y-6 flex-1 min-h-0 overflow-y-auto">
                         {/* Template Information */}
                         <div className="space-y-4">
                             <h3 className="text-lg font-medium text-gray-900">Template Information</h3>
@@ -297,7 +304,7 @@ export const TemplateUploadModal: React.FC<TemplateUploadModalProps> = ({
                     </div>
 
                     {/* Actions */}
-                    <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+                    <div className="flex justify-end space-x-3 mt-6 pt-4 px-6 pb-6 border-t border-gray-200 flex-shrink-0">
                         <Button
                             type="button"
                             variant="secondary"
@@ -307,7 +314,8 @@ export const TemplateUploadModal: React.FC<TemplateUploadModalProps> = ({
                         </Button>
                         <Button
                             type="submit"
-                            disabled={!selectedFile || !templateName.trim()}
+                            disabled={!selectedFile || !templateName.trim() || loading}
+                            loading={loading}
                         >
                             Upload Template
                         </Button>

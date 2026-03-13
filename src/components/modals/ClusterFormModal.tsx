@@ -13,7 +13,7 @@ interface ClusterFormModalProps {
     cluster: Cluster | null;
     isOpen: boolean;
     onClose: () => void;
-    onSave: (clusterData: Partial<Cluster>) => void;
+    onSave: (clusterData: Partial<Cluster>) => void | Promise<void>;
     isEditing: boolean;
 }
 
@@ -36,6 +36,7 @@ export const ClusterFormModal: React.FC<ClusterFormModalProps> = ({
     });
 
     const [tagInput, setTagInput] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (cluster && isEditing) {
@@ -63,9 +64,16 @@ export const ClusterFormModal: React.FC<ClusterFormModalProps> = ({
         }
     }, [cluster, isEditing]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        onSave(formData);
+        setLoading(true);
+        try {
+            await Promise.resolve(onSave(formData));
+        } catch (err) {
+            console.error('Failed to save cluster:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const addTag = () => {
@@ -290,6 +298,7 @@ export const ClusterFormModal: React.FC<ClusterFormModalProps> = ({
                                 type="submit"
                                 onClick={handleSubmit}
                                 className="flex items-center space-x-2"
+                                loading={loading}
                             >
                                 <span>{isEditing ? 'Update Cluster' : 'Create Cluster'}</span>
                             </Button>

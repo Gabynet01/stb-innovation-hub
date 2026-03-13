@@ -13,7 +13,7 @@ interface DocumentGenerationModalProps {
         sourceId: string;
         title?: string;
         renderFormat?: 'PDF' | 'DOCX' | 'HTML' | 'TXT' | 'MD';
-    }) => void;
+    }) => void | Promise<void>;
     generationType: 'cluster' | 'topic';
 }
 
@@ -28,6 +28,7 @@ export const DocumentGenerationModal: React.FC<DocumentGenerationModalProps> = (
     const [documentTitle, setDocumentTitle] = useState('');
     const [renderFormat, setRenderFormat] = useState<'PDF' | 'DOCX' | 'HTML' | 'TXT' | 'MD'>('PDF');
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [submitting, setSubmitting] = useState(false);
 
     const { clusters, loading: clustersLoading } = useClusters();
     const { topics, loading: topicsLoading } = useTopics();
@@ -58,19 +59,27 @@ export const DocumentGenerationModal: React.FC<DocumentGenerationModalProps> = (
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!validateForm()) {
             return;
         }
 
-        onGenerate({
-            templateId: selectedTemplate,
-            sourceId: selectedSource,
-            title: documentTitle || undefined,
-            renderFormat: renderFormat
-        });
+        setSubmitting(true);
+        try {
+            const result = onGenerate({
+                templateId: selectedTemplate,
+                sourceId: selectedSource,
+                title: documentTitle || undefined,
+                renderFormat: renderFormat
+            });
+            if (result && typeof (result as Promise<void>).then === 'function') {
+                await (result as Promise<void>);
+            }
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     const isLoading = clustersLoading || topicsLoading || templatesLoading;
@@ -79,9 +88,9 @@ export const DocumentGenerationModal: React.FC<DocumentGenerationModalProps> = (
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full">
+            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
                 {/* Header */}
-                <div className="px-6 py-4 bg-blue-600 flex items-center justify-between">
+                <div className="px-6 py-4 bg-blue-600 flex items-center justify-between flex-shrink-0">
                     <div className="flex items-center space-x-3">
                         <div className="p-2 bg-white bg-opacity-20 rounded-lg">
                             <DocumentTextIcon className="h-6 w-6 text-white" />
@@ -104,8 +113,8 @@ export const DocumentGenerationModal: React.FC<DocumentGenerationModalProps> = (
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="p-6">
-                    <div className="space-y-6">
+                <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+                    <div className="p-6 space-y-6 flex-1 min-h-0 overflow-y-auto">
                         {/* Template Selection */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -213,7 +222,7 @@ export const DocumentGenerationModal: React.FC<DocumentGenerationModalProps> = (
                     </div>
 
                     {/* Actions */}
-                    <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-200">
+                    <div className="flex justify-end space-x-3 mt-6 pt-4 px-6 pb-6 border-t border-gray-200 flex-shrink-0">
                         <Button
                             type="button"
                             variant="outline"
@@ -223,7 +232,8 @@ export const DocumentGenerationModal: React.FC<DocumentGenerationModalProps> = (
                         </Button>
                         <Button
                             type="submit"
-                            disabled={!selectedTemplate || !selectedSource || isLoading}
+                            disabled={!selectedTemplate || !selectedSource || isLoading || submitting}
+                            loading={submitting}
                         >
                             {isLoading ? 'Loading...' : 'Generate Document'}
                         </Button>

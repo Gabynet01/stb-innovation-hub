@@ -84,9 +84,9 @@ export const IdeaDetailModal: React.FC<IdeaDetailModalProps> = ({ suggestion, is
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[95vh] overflow-hidden shadow-xl border border-gray-200">
+            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[95vh] overflow-hidden flex flex-col shadow-xl border border-gray-200">
                 {/* Header */}
-                <div className="px-6 py-4 bg-blue-600">
+                <div className="px-6 py-4 bg-blue-600 flex-shrink-0">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                             <div className="p-2 bg-white bg-opacity-20 rounded-lg">
@@ -107,7 +107,7 @@ export const IdeaDetailModal: React.FC<IdeaDetailModalProps> = ({ suggestion, is
                 </div>
 
                 {/* Content */}
-                <div className="p-6 space-y-6">
+                <div className="p-6 space-y-6 flex-1 min-h-0 overflow-y-auto">
                     {/* Title & Status */}
                     <div className="space-y-4">
                         <h3 className="text-2xl font-semibold text-gray-900 leading-tight">{suggestion.title}</h3>
@@ -184,7 +184,7 @@ export const IdeaDetailModal: React.FC<IdeaDetailModalProps> = ({ suggestion, is
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex-shrink-0">
                     <div className="flex justify-between items-center">
                         <div className="text-sm text-gray-600">
                             <span className="font-medium">ID:</span> {suggestion.id}

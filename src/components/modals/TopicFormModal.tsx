@@ -86,9 +86,9 @@ export const TopicFormModal: React.FC<TopicFormModalProps> = ({
             <div className="flex min-h-screen items-center justify-center p-4">
                 <div className="fixed inset-0 bg-black bg-opacity-25 transition-opacity" onClick={onClose} />
 
-                <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full">
+                <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col">
                     {/* Header */}
-                    <div className="px-6 py-4 bg-blue-600">
+                    <div className="px-6 py-4 bg-blue-600 flex-shrink-0">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
                                 <div className="p-2 bg-white bg-opacity-20 rounded-lg">
@@ -113,7 +113,8 @@ export const TopicFormModal: React.FC<TopicFormModalProps> = ({
                     </div>
 
                     {/* Form */}
-                    <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                    <form onSubmit={handleSubmit} className="p-6 space-y-4 flex flex-col flex-1 min-h-0">
+                        <div className="flex-1 min-h-0 overflow-y-auto space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Topic Label *
@@ -150,9 +151,10 @@ export const TopicFormModal: React.FC<TopicFormModalProps> = ({
                                 {formData.description.length}/1000 characters
                             </p>
                         </div>
+                        </div>
 
                         {/* Actions */}
-                        <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+                        <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200 flex-shrink-0">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -165,6 +167,7 @@ export const TopicFormModal: React.FC<TopicFormModalProps> = ({
                                 type="submit"
                                 disabled={loading || !formData.label.trim()}
                                 className="min-w-[100px]"
+                                loading={loading}
                             >
                                 {loading ? 'Saving...' : isEditing ? 'Update' : 'Create'}
                             </Button>
