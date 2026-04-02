@@ -1,159 +1,46 @@
-import { BaseApiService } from "./baseApi";
-import { Document, DocumentCreate, ApiResponse } from "@/types/api";
+import { ApiError, BaseApiService } from "./baseApi";
+import type { ApiResponse } from "@/types/api";
+import type { IdeahubDocument, IdeahubDocumentCreate } from "@/types/ideahub";
 
-export interface DocumentFilters {
-  template_id?: string | null;
-  status?: string | null;
-  page?: number;
-  page_size?: number;
-}
-
+/** IdeaHub `/documents` — generation runs async; poll until `generation_status === completed`. */
 export class DocumentsApiService extends BaseApiService {
-  // Get Documents with filters
-  async getDocuments(
-    filters: DocumentFilters = {}
-  ): Promise<ApiResponse<Document[]>> {
-    const queryParams = new URLSearchParams();
-
-    if (filters.template_id)
-      queryParams.append("template_id", filters.template_id);
-    if (filters.status) queryParams.append("status", filters.status);
-    if (filters.page) queryParams.append("page", filters.page.toString());
-    if (filters.page_size)
-      queryParams.append("page_size", filters.page_size.toString());
-
-    const endpoint = queryParams.toString()
-      ? `/documents?${queryParams.toString()}`
-      : "/documents";
-
-    return this.request<Document[]>(endpoint);
+  list(): Promise<ApiResponse<IdeahubDocument[]>> {
+    return this.request<IdeahubDocument[]>("/documents/");
   }
 
-  // Create Document
-  async createDocument(
-    document: DocumentCreate
-  ): Promise<ApiResponse<Document>> {
-    return this.requestWithRetry("/documents", {
+  get(id: number): Promise<ApiResponse<IdeahubDocument>> {
+    return this.request<IdeahubDocument>(`/documents/${id}`);
+  }
+
+  create(
+    body: IdeahubDocumentCreate
+  ): Promise<ApiResponse<IdeahubDocument>> {
+    return this.requestAuthWithRetry<IdeahubDocument>("/documents/", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(document),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
     });
   }
 
-  // Get Single Document
-  async getDocument(id: string): Promise<ApiResponse<Document>> {
-    if (!id || typeof id !== "string") {
-      throw new Error("Invalid document ID provided");
-    }
-    return this.request<Document>(`/documents/${id}`);
-  }
-
-  // Update Document
-  async updateDocument(
-    id: string,
-    updates: Partial<Document>
-  ): Promise<ApiResponse<Document>> {
-    if (!id || typeof id !== "string") {
-      throw new Error("Invalid document ID provided");
-    }
-    if (!updates || Object.keys(updates).length === 0) {
-      throw new Error("No updates provided");
-    }
-
-    return this.requestWithRetry(`/documents/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updates),
-    });
-  }
-
-  // Delete Document
-  async deleteDocument(id: string): Promise<ApiResponse> {
-    if (!id || typeof id !== "string") {
-      throw new Error("Invalid document ID provided");
-    }
-
-    return this.request(`/documents/${id}`, {
+  delete(id: number): Promise<ApiResponse<null>> {
+    return this.requestAuth<null>(`/documents/${id}`, {
       method: "DELETE",
     });
   }
 
-  // Generate Document from Cluster
-  async generateDocumentFromCluster(
-    clusterId: string,
-    templateId: string,
-    title?: string,
-    renderFormat?: "PDF" | "DOCX" | "HTML" | "TXT" | "MD"
-  ): Promise<ApiResponse<any>> {
-    return this.requestWithRetry("/documents/generate/cluster", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        cluster_id: clusterId,
-        template_id: templateId,
-        title: title,
-        render_format: renderFormat,
-      }),
-    });
+  downloadUrl(id: number): string {
+    return `${this.baseUrl}/documents/${id}/download`;
   }
 
-  // Generate Document from Topic
-  async generateDocumentFromTopic(
-    topicId: string,
-    templateId: string,
-    title?: string,
-    renderFormat?: "PDF" | "DOCX" | "HTML" | "TXT" | "MD"
-  ): Promise<ApiResponse<any>> {
-    return this.requestWithRetry("/documents/generate/topic", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        topic_id: topicId,
-        template_id: templateId,
-        title: title,
-        render_format: renderFormat,
-      }),
-    });
-  }
-
-  // Export Document
-  async exportDocument(
-    documentId: string,
-    format: "pdf" | "docx" | "html" | "txt" | "md" = "pdf"
-  ): Promise<Blob> {
-    const response = await fetch(
-      `${this.baseUrl}/documents/${documentId}/export?format=${format}`,
-      {
-        method: "GET",
+  /** GET `/documents/{id}/download` with Bearer token; returns null if not ready or missing. */
+  async downloadFile(id: number): Promise<Blob | null> {
+    try {
+      return await this.requestBlob(`/documents/${id}/download`);
+    } catch (e) {
+      if (e instanceof ApiError && e.status && [404, 409].includes(e.status)) {
+        return null;
       }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Export failed: ${response.statusText}`);
+      throw e;
     }
-
-    return response.blob();
-  }
-
-  // Get Document Relationships
-  async getDocumentRelationships(
-    documentId: string
-  ): Promise<ApiResponse<any>> {
-    return this.request(`/documents/${documentId}/relationships`);
-  }
-
-  // Get Document Versions
-  async getDocumentVersions(
-    documentId: string
-  ): Promise<ApiResponse<Document[]>> {
-    return this.request<Document[]>(`/documents/${documentId}/versions`);
   }
 }

@@ -1,5 +1,10 @@
 import React from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import {
+    formFieldDefaultVariant,
+    formFieldEmphasisVariant,
+    formFieldErrorClasses,
+} from './formFieldClasses';
 
 export interface SelectOption {
     value: string;
@@ -30,10 +35,9 @@ export const Select: React.FC<SelectProps> = ({
     className,
     ...props
 }) => {
-    // Base classes
     const baseClasses = [
         'w-full',
-        'border transition-all duration-200',
+        'bg-white border transition-all duration-200',
         'focus:outline-none focus:ring-2 focus:ring-offset-0',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         'appearance-none'
@@ -41,21 +45,19 @@ export const Select: React.FC<SelectProps> = ({
 
     // Size classes
     const sizeClasses = {
-        sm: 'px-3 py-2 text-sm',
-        md: 'px-4 py-2.5 text-sm',
-        lg: 'px-4 py-3 text-base'
+        sm: 'px-3 py-2.5 text-sm min-h-[40px]',
+        md: 'px-4 py-3 text-sm min-h-[44px]',
+        lg: 'px-4 py-3.5 text-base min-h-[48px]'
     };
 
-    // Variant classes - using Stanbic Bank electric blue
     const variantClasses = {
-        default: 'border-slate-300 focus:border-[#0051FF] focus:ring-[#0051FF]/20',
-        success: 'border-[#0051FF] focus:border-[#0051FF] focus:ring-[#0051FF]/20',
-        warning: 'border-[#0051FF] focus:border-[#0051FF] focus:ring-[#0051FF]/20',
-        danger: 'border-[#0051FF] focus:border-[#0051FF] focus:ring-[#0051FF]/20'
+        default: formFieldDefaultVariant,
+        success: formFieldEmphasisVariant,
+        warning: formFieldEmphasisVariant,
+        danger: formFieldEmphasisVariant,
     };
 
-    // Error state - using Stanbic Bank electric blue
-    const errorClasses = error ? 'border-[#0051FF] focus:border-[#0051FF] focus:ring-[#0051FF]/20' : '';
+    const errorClasses = error ? formFieldErrorClasses : '';
 
     // Icon padding
     const iconPadding = LeftIcon ? 'pl-10' : '';
@@ -113,12 +115,7 @@ export const Select: React.FC<SelectProps> = ({
             </div>
 
             {error && (
-                <p className="text-sm text-[#0051FF] flex items-center">
-                    <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    {error}
-                </p>
+                <p className="text-sm text-red-600">{error}</p>
             )}
 
             {helperText && !error && (

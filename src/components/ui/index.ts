@@ -1,6 +1,13 @@
 export { Badge } from "./Badge";
 export { Button } from "./Button";
 export { Card } from "./Card";
+export {
+  DataTable,
+  type DataTableColumn,
+  type DataTableProps,
+} from "./DataTable";
+export { RowActionsMenu, type RowActionItem, type RowActionsMenuProps } from "./RowActionsMenu";
+export { SimpleModal, type SimpleModalProps } from "./SimpleModal";
 export { ClusterBadge } from "./ClusterBadge";
 export { ErrorState } from "./ErrorState";
 export { CompactErrorWithToast } from "./CompactErrorWithToast";
@@ -24,6 +31,11 @@ export {
   default as ConfirmationModal,
   type ConfirmationType,
 } from "./ConfirmationModal";
+export {
+  SegmentedTabs,
+  type SegmentedTabItem,
+  type SegmentedTabsProps,
+} from "./SegmentedTabs";
 
 export type { ButtonProps } from "./Button";
 export type { CardProps } from "./Card";

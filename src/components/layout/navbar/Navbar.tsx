@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserCircleIcon, MagnifyingGlassIcon, PlusIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import stanbicLogo from '@/assets/images/stanbic-logo.png';
+import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { initialsFromName } from '@/utils/userInitials';
+import { MagnifyingGlassIcon, PlusIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import stanbicLogo from '@/assets/images/stanbic_logo.svg';
 import './navbar.component.scss';
 
 interface NavbarProps {
@@ -16,8 +18,11 @@ export const Navbar: React.FC<NavbarProps> = ({
     mobileSidebarOpen
 }) => {
     const navigate = useNavigate();
+    const { isAuthenticated, displayName, username, provider, logout } = useAuth();
     const [isMobile, setIsMobile] = useState(false);
     const [showMobileSearch, setShowMobileSearch] = useState(false);
+    const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const userMenuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const checkScreenSize = () => {
@@ -34,13 +39,45 @@ export const Navbar: React.FC<NavbarProps> = ({
         return () => window.removeEventListener('resize', checkScreenSize);
     }, []);
 
+    useEffect(() => {
+        if (!userMenuOpen) return;
+
+        const onDocMouseDown = (e: MouseEvent) => {
+            if (
+                userMenuRef.current &&
+                !userMenuRef.current.contains(e.target as Node)
+            ) {
+                setUserMenuOpen(false);
+            }
+        };
+
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setUserMenuOpen(false);
+        };
+
+        document.addEventListener('mousedown', onDocMouseDown);
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', onDocMouseDown);
+            document.removeEventListener('keydown', onKeyDown);
+        };
+    }, [userMenuOpen]);
+
     const handleNewIdea = () => {
-        navigate('/suggestions?view=form');
+        navigate('/ideas?view=form');
     };
 
-    const handleUserProfile = () => {
-        console.log('User profile clicked');
-        // Add your user profile logic here
+    const sessionName = (displayName?.trim() || username?.trim() || '').trim();
+    const avatarInitials = initialsFromName(sessionName);
+
+    const handleUserProfileClick = () => {
+        setUserMenuOpen((open) => !open);
+    };
+
+    const handleLogout = async () => {
+        setUserMenuOpen(false);
+        await logout();
+        navigate('/dashboard');
     };
 
     const handleSidebarToggle = () => {
@@ -75,44 +112,43 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                         <div className="navbar__brand-text">
                             <h1 className="navbar__brand-title">Stanbic Bank</h1>
-                            {!isMobile && <p className="navbar__brand-subtitle">Idea Flow</p>}
+                            <p className="navbar__brand-subtitle">Idea Flow</p>
                         </div>
                     </div>
 
-                    {/* Center section - Search and Quick Actions */}
-                    <div className="navbar__center">
-                        <div className="navbar__search-section">
-                            {/* Search Bar - Only show on desktop/tablet */}
-                            {!isMobile && (
-                                <div className="navbar__search-container">
-                                    <div className="navbar__search-icon">
-                                        <MagnifyingGlassIcon className="navbar__search-icon-svg" />
+                    {/* Center section — staff only (search + new idea) */}
+                    {isAuthenticated ? (
+                        <div className="navbar__center">
+                            <div className="navbar__search-section">
+                                {!isMobile && (
+                                    <div className="navbar__search-container">
+                                        <div className="navbar__search-icon">
+                                            <MagnifyingGlassIcon className="navbar__search-icon-svg" />
+                                        </div>
+                                        <input
+                                            type="text"
+                                            placeholder="Search ideas…"
+                                            className="navbar__search-input"
+                                        />
                                     </div>
-                                    <input
-                                        type="text"
-                                        placeholder="Search ideas, topics, or users..."
-                                        className="navbar__search-input"
-                                    />
-                                </div>
-                            )}
+                                )}
 
-                            {/* Quick Action Button - Only show on desktop/tablet */}
-                            {!isMobile && (
-                                <button
-                                    onClick={handleNewIdea}
-                                    className="navbar__new-idea-btn"
-                                >
-                                    <PlusIcon className="navbar__new-idea-icon" />
-                                    <span className="navbar__new-idea-text">New Idea</span>
-                                </button>
-                            )}
+                                {!isMobile && (
+                                    <button
+                                        onClick={handleNewIdea}
+                                        className="navbar__new-idea-btn"
+                                    >
+                                        <PlusIcon className="navbar__new-idea-icon" />
+                                        <span className="navbar__new-idea-text">New Idea</span>
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    ) : null}
 
                     {/* Right section - Actions and user */}
                     <div className="navbar__actions">
-                        {/* Mobile Search Icon (only visible on mobile) */}
-                        {isMobile && !showMobileSearch && (
+                        {isAuthenticated && isMobile && !showMobileSearch && (
                             <button
                                 onClick={toggleMobileSearch}
                                 className="navbar__mobile-search-toggle"
@@ -122,8 +158,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                             </button>
                         )}
 
-                        {/* New Idea Button - Only show on mobile */}
-                        {isMobile && (
+                        {isAuthenticated && isMobile && (
                             <button
                                 onClick={handleNewIdea}
                                 className="navbar__new-idea-btn navbar__new-idea-btn--mobile"
@@ -133,36 +168,80 @@ export const Navbar: React.FC<NavbarProps> = ({
                             </button>
                         )}
 
-                        {/* Sidebar Toggle Button */}
-                        <button
-                            onClick={handleSidebarToggle}
-                            className={`navbar__sidebar-toggle ${mobileSidebarOpen ? 'navbar__sidebar-toggle--active' : ''}`}
-                            title="Toggle sidebar"
-                        >
-                            <Bars3Icon className="navbar__sidebar-toggle-icon" />
-                        </button>
+                        {isAuthenticated ? (
+                            <button
+                                onClick={handleSidebarToggle}
+                                className={`navbar__sidebar-toggle ${mobileSidebarOpen ? 'navbar__sidebar-toggle--active' : ''}`}
+                                title="Toggle sidebar"
+                            >
+                                <Bars3Icon className="navbar__sidebar-toggle-icon" />
+                            </button>
+                        ) : null}
 
-                        {/* User Profile */}
-                        <button
-                            onClick={handleUserProfile}
-                            className="navbar__user-profile"
-                        >
-                            <div className="navbar__user-avatar">
-                                <div className="navbar__user-avatar-container">
-                                    <UserCircleIcon className="navbar__user-avatar-icon" />
-                                </div>
-                                <div className="navbar__user-status"></div>
+                        {/* Auth — staff sign-in, or profile + account menu (Sign out inside menu) */}
+                        {!isAuthenticated ? (
+                            <Link
+                                to="/login"
+                                className="navbar__auth-link"
+                            >
+                                Staff sign in
+                            </Link>
+                        ) : null}
+
+                        {isAuthenticated ? (
+                            <div className="navbar__user-menu" ref={userMenuRef}>
+                                <button
+                                    type="button"
+                                    onClick={handleUserProfileClick}
+                                    className="navbar__user-profile"
+                                    aria-expanded={userMenuOpen}
+                                    aria-haspopup="menu"
+                                    aria-controls="navbar-user-menu"
+                                    id="navbar-user-menu-button"
+                                    aria-label={sessionName || username || undefined}
+                                >
+                                    <div className="navbar__user-avatar">
+                                        <div className="navbar__user-avatar-container" aria-hidden={!avatarInitials}>
+                                            {avatarInitials ? (
+                                                <span className="navbar__user-avatar-initials">{avatarInitials}</span>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                    <div className="navbar__user-info">
+                                        {sessionName ? (
+                                            <div className="navbar__user-name">{sessionName}</div>
+                                        ) : null}
+                                        {provider ? (
+                                            <div className="navbar__user-role capitalize">{provider}</div>
+                                        ) : null}
+                                    </div>
+                                </button>
+                                {userMenuOpen ? (
+                                    <div
+                                        id="navbar-user-menu"
+                                        role="menu"
+                                        aria-labelledby="navbar-user-menu-button"
+                                        className="navbar__user-dropdown"
+                                    >
+                                        <button
+                                            type="button"
+                                            role="menuitem"
+                                            className="navbar__user-dropdown-item"
+                                            onClick={() => {
+                                                void handleLogout();
+                                            }}
+                                        >
+                                            Sign out
+                                        </button>
+                                    </div>
+                                ) : null}
                             </div>
-                            <div className="navbar__user-info">
-                                <div className="navbar__user-name">Admin User</div>
-                                <div className="navbar__user-role">Administrator</div>
-                            </div>
-                        </button>
+                        ) : null}
                     </div>
                 </div>
 
                 {/* Mobile Search Row - New row when search is active on mobile */}
-                {isMobile && showMobileSearch && (
+                {isAuthenticated && isMobile && showMobileSearch && (
                     <div className="navbar__mobile-search-row">
                         <div className="navbar__mobile-search-container">
                             <div className="navbar__mobile-search-icon-container">
@@ -170,7 +249,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                             </div>
                             <input
                                 type="text"
-                                placeholder="Search ideas, topics, or users..."
+                                placeholder="Search ideas…"
                                 className="navbar__mobile-search-input"
                                 autoFocus
                             />

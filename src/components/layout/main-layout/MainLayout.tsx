@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Navbar } from '../navbar';
-import { Sidebar } from '../sidebar';
+import { Sidebar, type MenuId } from '../sidebar';
 import { SidebarCountsProvider } from '@/contexts/SidebarCountsContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useSidebarCounts } from '@/hooks/useSidebarCounts';
 import './main-layout.component.scss';
 
@@ -17,14 +18,22 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
-    const { counts, loading, error, refreshCounts } = useSidebarCounts();
+    const { isAuthenticated } = useAuth();
+    const { counts, loading, error, refreshCounts } = useSidebarCounts(isAuthenticated);
 
-    // Close mobile sidebar when route changes
+    const normalizedPath = (location.pathname.replace(/\/$/, '') || '/') as string;
+    /** Avoid mounting staff routes for guests (prevents e.g. Assessments redirecting to /login). */
+    const guestMayRenderPage = isAuthenticated || normalizedPath === '/ideas';
+
+    useLayoutEffect(() => {
+        if (guestMayRenderPage) return;
+        navigate('/ideas?view=form', { replace: true });
+    }, [guestMayRenderPage, navigate]);
+
     useEffect(() => {
         setMobileSidebarOpen(false);
     }, [location.pathname]);
 
-    // Handle escape key to close mobile sidebar
     useEffect(() => {
         const handleEscape = (event: KeyboardEvent) => {
             if (event.key === 'Escape' && mobileSidebarOpen) {
@@ -34,7 +43,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
         if (mobileSidebarOpen) {
             document.addEventListener('keydown', handleEscape);
-            // Prevent body scroll when mobile sidebar is open
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
@@ -54,21 +62,26 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         setMobileSidebarOpen(!mobileSidebarOpen);
     };
 
-    const handleViewChange = (view: ViewType) => {
-        // Handle view changes if needed
-        console.log('View changed to:', view);
-    };
+    const handleViewChange = (_view: ViewType) => {};
 
     const handleMenuChange = (menu: string) => {
-        // Navigate to the selected menu
         navigate(`/${menu}`);
-        // Close mobile sidebar after navigation
         setMobileSidebarOpen(false);
     };
 
-    // Extract current menu from pathname
-    const currentMenu = location.pathname.split('/')[1] || 'dashboard';
-    const currentView: ViewType = 'list'; // Default view
+    const validMenus: MenuId[] = [
+        'dashboard',
+        'ideas',
+        'assessments',
+        'document-templates',
+        'documents',
+        'administration',
+    ];
+    const segment = (location.pathname.split('/')[1] || 'dashboard') as string;
+    const currentMenu: MenuId = validMenus.includes(segment as MenuId)
+        ? (segment as MenuId)
+        : 'dashboard';
+    const currentView: ViewType = 'list';
 
     return (
         <SidebarCountsProvider refreshCounts={refreshCounts}>
@@ -82,33 +95,37 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
                 <div className="main-layout__content">
                     {/* Mobile Sidebar Overlay */}
-                    {mobileSidebarOpen && (
+                    {isAuthenticated && mobileSidebarOpen && (
                         <div
                             className="main-layout__mobile-overlay"
                             onClick={() => setMobileSidebarOpen(false)}
                         />
                     )}
 
-                    {/* Sidebar */}
-                    <Sidebar
-                        onViewChange={handleViewChange}
-                        currentView={currentView}
-                        onMenuChange={handleMenuChange}
-                        currentMenu={currentMenu as any}
-                        onCollapseChange={setSidebarCollapsed}
-                        isCollapsed={sidebarCollapsed}
-                        mobileOpen={mobileSidebarOpen}
-                        counts={counts}
-                        countsLoading={loading}
-                        countsError={error}
-                    />
+                    {/* Sidebar — staff only */}
+                    {isAuthenticated ? (
+                        <Sidebar
+                            onViewChange={handleViewChange}
+                            currentView={currentView}
+                            onMenuChange={handleMenuChange}
+                            currentMenu={currentMenu}
+                            onCollapseChange={setSidebarCollapsed}
+                            isCollapsed={sidebarCollapsed}
+                            mobileOpen={mobileSidebarOpen}
+                            counts={counts}
+                            countsLoading={loading}
+                            countsError={error}
+                        />
+                    ) : null}
 
                     {/* Main content area */}
-                    <main className={`main-layout__main ${sidebarCollapsed ? 'main-layout__main--collapsed' : ''}`}>
+                    <main
+                        className={`main-layout__main ${sidebarCollapsed ? 'main-layout__main--collapsed' : ''} ${!isAuthenticated ? 'main-layout__main--guest' : ''}`}
+                    >
                         <div className="main-layout__main-container">
                             <div className="main-layout__main-content">
                                 <div className="main-layout__main-card">
-                                    {children}
+                                    {guestMayRenderPage ? children : null}
                                 </div>
                             </div>
                         </div>

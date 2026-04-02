@@ -1,7 +1,7 @@
 export { Dashboard } from "./dashboard";
-export { SuggestionsPage } from "./suggestions";
-export { ClustersPage } from "./ClustersPage";
-export { TopicsPage } from "./TopicsPage";
+export { LoginPage } from "./LoginPage";
+export { IdeasPage } from "./ideas";
+export { AssessmentsPage } from "./assessments/AssessmentsPage";
+export { AdministrationPage } from "./AdministrationPage";
+export { DocumentTemplatesPage } from "./DocumentTemplatesPage";
 export { DocumentsPage } from "./DocumentsPage";
-export { TemplatesPage } from "./TemplatesPage";
-export { JobsPage } from "./JobsPage";

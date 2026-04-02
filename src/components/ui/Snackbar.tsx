@@ -25,7 +25,6 @@ const Snackbar: React.FC<SnackbarProps> = ({
     duration = 5000,
     onClose
 }) => {
-    const [isVisible, setIsVisible] = useState(true);
     const [isExiting, setIsExiting] = useState(false);
 
     const handleClose = useCallback(() => {
@@ -104,7 +103,7 @@ const Snackbar: React.FC<SnackbarProps> = ({
 
     return (
         <div
-            className={`fixed top-4 right-4 z-50 max-w-sm w-full transform transition-all duration-300 ease-in-out ${isVisible && !isExiting
+            className={`fixed top-4 right-4 z-50 max-w-sm w-full transform transition-all duration-300 ease-in-out ${!isExiting
                     ? 'translate-x-0 opacity-100 scale-100'
                     : 'translate-x-full opacity-0 scale-95'
                 }`}

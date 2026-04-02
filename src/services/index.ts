@@ -1,12 +1,13 @@
 export { apiService, ApiService } from "./api";
-export { SuggestionsApiService } from "./suggestionsApi";
-export { ClustersApiService } from "./clustersApi";
-export { TopicsApiService } from "./topicsApi";
-export { MetricsApiService } from "./metricsApi";
-export { DocumentsApiService } from "./documentsApi";
-export { TemplatesApiService } from "./templatesApi";
-export { JobsApiService } from "./jobsApi";
+export { IdeasApiService } from "./ideasApi";
+export { AuthApiService } from "./authApi";
+export { IdeaCatalogApiService } from "./ideaCatalogApi";
+export { IdeaAssessmentsApiService } from "./ideaAssessmentsApi";
+export {
+  UsersApiService,
+  RolesApiService,
+  GroupsApiService,
+  PermissionsApiService,
+  AdMappingsApiService,
+} from "./directoryApi";
 export { BaseApiService, ApiError } from "./baseApi";
-export type { ClusterFilters } from "./clustersApi";
-export type { TopicFilters } from "./topicsApi";
-export type { DocumentFilters } from "./documentsApi";

@@ -1,8 +1,7 @@
 import React from 'react';
-import { Topic } from '@/types/api';
 
 interface TopicConfidenceProps {
-    topic: Topic;
+    label: string;
     confidence: number;
     showLabel?: boolean;
     size?: 'sm' | 'md' | 'lg';
@@ -10,7 +9,7 @@ interface TopicConfidenceProps {
 }
 
 export const TopicConfidence: React.FC<TopicConfidenceProps> = ({
-    topic,
+    label,
     confidence,
     showLabel = true,
     size = 'sm',
@@ -43,7 +42,7 @@ export const TopicConfidence: React.FC<TopicConfidenceProps> = ({
     return (
         <div className={`inline-flex items-center rounded-full border ${colorClasses} ${sizeClasses} ${className}`}>
             {showLabel && (
-                <span className="font-medium mr-1">{topic.label}</span>
+                <span className="font-medium mr-1">{label}</span>
             )}
             <span className="text-xs opacity-75">
                 {confidencePercentage}%

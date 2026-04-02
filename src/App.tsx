@@ -2,36 +2,52 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { MainLayout } from './components/layout';
 import {
-  SuggestionsPage,
+  IdeasPage,
   Dashboard,
-  ClustersPage,
-  TopicsPage,
+  LoginPage,
+  AssessmentsPage,
+  AdministrationPage,
+  DocumentTemplatesPage,
   DocumentsPage,
-  TemplatesPage,
-  JobsPage
 } from './pages';
 import { ErrorBoundary } from './components';
 import { SnackbarProvider } from './components/ui';
+import { AuthProvider } from './contexts/AuthContext';
 
 export const App: React.FC = () => {
   return (
-    <SnackbarProvider>
-      <ErrorBoundary>
-        <Router>
-          <MainLayout>
+    <Router>
+      <AuthProvider>
+        <SnackbarProvider>
+          <ErrorBoundary>
             <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/suggestions" element={<SuggestionsPage />} />
-              <Route path="/clusters" element={<ClustersPage />} />
-              <Route path="/topics" element={<TopicsPage />} />
-              <Route path="/documents" element={<DocumentsPage />} />
-              <Route path="/templates" element={<TemplatesPage />} />
-              <Route path="/jobs" element={<JobsPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route
+                path="/*"
+                element={
+                  <MainLayout>
+                    <Routes>
+                      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/ideas" element={<IdeasPage />} />
+                      <Route path="/suggestions" element={<Navigate to="/ideas" replace />} />
+                      <Route path="/assessments" element={<AssessmentsPage />} />
+                      <Route
+                        path="/document-templates"
+                        element={<DocumentTemplatesPage />}
+                      />
+                      <Route path="/documents" element={<DocumentsPage />} />
+                      <Route path="/administration" element={<AdministrationPage />} />
+                      <Route path="/strategy" element={<Navigate to="/dashboard" replace />} />
+                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                    </Routes>
+                  </MainLayout>
+                }
+              />
             </Routes>
-          </MainLayout>
-        </Router>
-      </ErrorBoundary>
-    </SnackbarProvider>
+          </ErrorBoundary>
+        </SnackbarProvider>
+      </AuthProvider>
+    </Router>
   );
 };

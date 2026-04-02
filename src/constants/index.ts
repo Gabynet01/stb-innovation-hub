@@ -1,4 +1,3 @@
-// Status Colors for UI badges - Clean Professional Design
 export const STATUS_COLORS = {
   pending: "border-blue-200 bg-blue-50 text-blue-800",
   approved: "border-green-200 bg-green-50 text-green-800",
@@ -7,7 +6,6 @@ export const STATUS_COLORS = {
   completed: "border-emerald-200 bg-emerald-50 text-emerald-800",
 } as const;
 
-// Priority Colors for UI badges - Clean Professional Design
 export const PRIORITY_COLORS = {
   low: "border-gray-200 bg-gray-50 text-gray-800",
   medium: "border-blue-200 bg-blue-50 text-blue-800",
@@ -15,7 +13,6 @@ export const PRIORITY_COLORS = {
   critical: "border-red-200 bg-red-50 text-red-800",
 } as const;
 
-// Status Labels for UI display
 export const STATUS_LABELS = {
   pending: "Pending",
   approved: "Approved",
@@ -24,7 +21,6 @@ export const STATUS_LABELS = {
   completed: "Completed",
 } as const;
 
-// Sort Options for suggestions
 export const SORT_OPTIONS = [
   { value: "newest", label: "Newest First" },
   { value: "oldest", label: "Oldest First" },
@@ -32,7 +28,6 @@ export const SORT_OPTIONS = [
   { value: "status", label: "Status" },
 ] as const;
 
-// Priority Order for sorting
 export const PRIORITY_ORDER = {
   critical: 4,
   high: 3,
@@ -40,7 +35,6 @@ export const PRIORITY_ORDER = {
   low: 1,
 } as const;
 
-// Status Order for sorting
 export const STATUS_ORDER = {
   pending: 1,
   in_progress: 2,
@@ -49,13 +43,13 @@ export const STATUS_ORDER = {
   rejected: 5,
 } as const;
 
-// App Branding Constants
 export const APP_CONFIG = {
   name: "Idea Flow",
   description: "Stanbic Bank's Innovation Platform",
   tagline: "Empowering Ideas, Driving Innovation",
-  version: "2.0.0",
+  version: "1.0.0",
 } as const;
 
-// Export suggestion form constants
-export * from "./suggestion-form";
+export * from "./idea-form";
+export * from "./pageHero";
+export * from "./referenceData";

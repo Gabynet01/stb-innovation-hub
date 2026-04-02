@@ -154,13 +154,13 @@
 @layer components {
 
   /* Performance optimizations for smooth scrolling */
-  .suggestions-container {
+  .ideas-container {
     will-change: scroll-position;
     transform: translateZ(0);
     -webkit-overflow-scrolling: touch;
   }
 
-  .suggestion-card {
+  .idea-card {
     will-change: transform;
     transform: translateZ(0);
     backface-visibility: hidden;

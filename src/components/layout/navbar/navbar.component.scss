@@ -1,38 +1,39 @@
-// Navbar Component Styles using Tailwind CSS
+// Navbar — Stanbic blue bar (readable with light chrome)
 .navbar {
-  @apply bg-white border-b border-gray-200 shadow-sm w-full fixed top-0 left-0 z-50 overflow-hidden;
+  /* Do not set overflow-x: hidden here — it forces overflow-y to clip and hides the user dropdown */
+  @apply bg-[#0033A1] border-b border-white/15 shadow-md w-full fixed top-0 left-0 z-50 overflow-visible;
 
   &__container {
-    @apply w-full px-2;
+    @apply w-full overflow-visible px-2;
   }
 
   &__content {
-    @apply flex justify-between items-center h-24 w-full;
+    @apply flex h-24 w-full items-center justify-between overflow-visible;
   }
 
-  // Brand Section (Left)
+  // Brand Section (Left) — logo on navy, no white tile; text always visible
   &__brand {
-    @apply flex items-center space-x-0 flex-shrink-0;
+    @apply flex min-w-0 flex-shrink-0 items-center gap-2 sm:gap-3 pr-1;
   }
 
   &__logo {
-    @apply w-20 h-20 bg-white flex items-center justify-center overflow-hidden rounded-lg mr-0;
+    @apply flex flex-shrink-0 items-center justify-center p-0.5;
   }
 
   &__logo-image {
-    @apply w-16 h-16 object-contain;
+    @apply h-12 w-12 object-contain sm:h-14 sm:w-14;
   }
 
   &__brand-text {
-    @apply space-y-1 -ml-2;
+    @apply flex min-w-0 flex-col justify-center gap-0.5 leading-tight;
   }
 
   &__brand-title {
-    @apply text-xl font-bold text-[#0051FF] m-0 -ml-3;
+    @apply m-0 truncate text-base font-bold text-white sm:text-lg md:text-xl;
   }
 
   &__brand-subtitle {
-    @apply text-xs text-[#0051FF]/70 font-medium m-0 -ml-3;
+    @apply m-0 truncate text-[10px] font-medium text-white/80 sm:text-xs;
   }
 
   // Center Section
@@ -53,27 +54,27 @@
   }
 
   &__search-icon-svg {
-    @apply h-5 w-5 text-gray-400;
+    @apply h-5 w-5 text-slate-400;
   }
 
   &__search-input {
-    @apply block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-2xl leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0051FF] focus:border-[#0051FF] focus:bg-white transition-all duration-200 text-sm font-medium;
+    @apply block w-full pl-12 pr-4 py-3.5 border border-slate-200/90 rounded-2xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0051FF] focus:border-[#0051FF] transition-all duration-200 text-sm font-medium text-slate-900 shadow-sm;
 
     &::placeholder {
-      @apply text-gray-400;
+      @apply text-slate-400;
     }
 
     &:focus {
-      @apply outline-none border-[#0051FF] bg-white ring-2 ring-[#0051FF] ring-opacity-20;
+      @apply outline-none border-[#0051FF] bg-white ring-2 ring-[#0051FF]/25;
     }
   }
 
   // Mobile Search Toggle Button
   &__mobile-search-toggle {
-    @apply p-2.5 text-gray-600 bg-gray-100 hover:text-[#0051FF] hover:bg-[#0051FF]/10 rounded-lg transition-all duration-200 ease-in-out border border-gray-200 cursor-pointer transform hover:scale-105 active:scale-95;
+    @apply p-2.5 text-white bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 ease-in-out border border-white/25 cursor-pointer transform hover:scale-105 active:scale-95;
 
     &:hover {
-      @apply text-[#0051FF] bg-[#0051FF]/10;
+      @apply text-white bg-white/20;
     }
 
     &:active {
@@ -100,7 +101,7 @@
 
   // Mobile Search Row - New row below main navbar
   &__mobile-search-row {
-    @apply w-full bg-white border-t border-gray-200 px-4 py-3;
+    @apply w-full bg-[#0033A1] border-t border-white/15 px-4 py-3;
   }
 
   &__mobile-search-container {
@@ -136,10 +137,10 @@
   }
 
   &__new-idea-btn {
-    @apply px-6 py-3.5 bg-[#0051FF] text-white rounded-2xl font-semibold shadow-md hover:bg-[#0033A1] hover:shadow-lg transition-all duration-200 flex items-center space-x-2 flex-shrink-0 border-none cursor-pointer;
+    @apply px-6 py-3.5 bg-white text-[#0033A1] rounded-2xl font-semibold shadow-md hover:bg-white/95 hover:shadow-lg transition-all duration-200 flex items-center space-x-2 flex-shrink-0 border border-white/30 cursor-pointer;
 
     &:hover {
-      @apply bg-[#0033A1] shadow-lg;
+      @apply bg-white shadow-lg;
     }
 
     // Mobile version - icon only
@@ -158,14 +159,14 @@
 
   // Actions Section (Right)
   &__actions {
-    @apply flex items-center space-x-4 flex-shrink-0;
+    @apply flex flex-shrink-0 items-center space-x-4 overflow-visible;
   }
 
   &__sidebar-toggle {
-    @apply p-2.5 text-gray-700 bg-gray-100 hover:text-[#0051FF] hover:bg-[#0051FF]/10 rounded-lg transition-all duration-200 ease-in-out border border-gray-200 cursor-pointer transform hover:scale-105 active:scale-95;
+    @apply p-2.5 text-white bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 ease-in-out border border-white/25 cursor-pointer transform hover:scale-105 active:scale-95;
 
     &:hover {
-      @apply text-[#0051FF] bg-[#0051FF]/10;
+      @apply text-white bg-white/20;
     }
 
     &:active {
@@ -173,7 +174,7 @@
     }
 
     &--active {
-      @apply text-[#0051FF] bg-[#0051FF]/20 border-[#0051FF];
+      @apply text-[#0033A1] bg-white border-white;
     }
   }
 
@@ -182,10 +183,10 @@
   }
 
   &__user-profile {
-    @apply flex items-center space-x-4 p-3 rounded-2xl hover:bg-gray-50 transition-all duration-200 cursor-pointer border-none bg-transparent;
+    @apply flex items-center space-x-4 p-3 rounded-2xl hover:bg-white/10 transition-all duration-200 cursor-pointer border-none bg-transparent;
 
     &:hover {
-      @apply bg-gray-50;
+      @apply bg-white/10;
     }
   }
 
@@ -194,15 +195,11 @@
   }
 
   &__user-avatar-container {
-    @apply w-11 h-11 bg-gray-100 rounded-2xl flex items-center justify-center border border-gray-200;
+    @apply w-11 h-11 bg-white/15 rounded-2xl flex items-center justify-center border border-white/30;
   }
 
-  &__user-avatar-icon {
-    @apply h-6 w-6 text-gray-600;
-  }
-
-  &__user-status {
-    @apply absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white;
+  &__user-avatar-initials {
+    @apply select-none text-sm font-semibold uppercase leading-none tracking-tight text-white;
   }
 
   &__user-info {
@@ -210,11 +207,32 @@
   }
 
   &__user-name {
-    @apply text-sm font-semibold text-gray-900;
+    @apply text-sm font-semibold text-white;
   }
 
   &__user-role {
-    @apply text-xs text-gray-500 font-medium;
+    @apply text-xs text-white/70 font-medium;
+  }
+
+  &__auth-link {
+    @apply px-3 py-2 text-sm font-semibold text-white border border-white/30 rounded-lg whitespace-nowrap transition hover:bg-white/10 hover:border-white/50;
+    text-decoration: none;
+  }
+
+  &__user-menu {
+    @apply relative flex flex-shrink-0 items-center;
+  }
+
+  &__user-dropdown {
+    @apply absolute right-0 top-full z-[100] mt-1.5 min-w-[200px] rounded-xl border border-white/15 bg-[#0033A1] py-1 shadow-xl ring-1 ring-black/10;
+  }
+
+  &__user-dropdown-item {
+    @apply flex w-full items-center px-4 py-3 text-left text-sm font-medium text-white transition hover:bg-white/10;
+  }
+
+  &__user-dropdown-divider {
+    @apply my-1 border-t border-white/15;
   }
 }
 
@@ -257,12 +275,8 @@
       @apply space-x-2;
     }
 
-    &__logo {
-      @apply w-16 h-16;
-    }
-
     &__logo-image {
-      @apply w-14 h-14;
+      @apply h-12 w-12;
     }
 
     &__brand-title {
@@ -353,12 +367,8 @@
       @apply text-xs;
     }
 
-    &__logo {
-      @apply w-14 h-14;
-    }
-
     &__logo-image {
-      @apply w-12 h-12;
+      @apply h-11 w-11;
     }
 
     &__center {
@@ -433,12 +443,8 @@
       @apply text-xs;
     }
 
-    &__logo {
-      @apply w-12 h-12;
-    }
-
     &__logo-image {
-      @apply w-10 h-10;
+      @apply h-10 w-10;
     }
   }
 }

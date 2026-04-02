@@ -1,83 +1,108 @@
-import { SuggestionsApiService } from "./suggestionsApi";
-import { ClustersApiService } from "./clustersApi";
-import { TopicsApiService } from "./topicsApi";
-import { MetricsApiService } from "./metricsApi";
+import { IdeasApiService } from "./ideasApi";
+import { AuthApiService } from "./authApi";
+import { IdeaCatalogApiService } from "./ideaCatalogApi";
+import { IdeaAssessmentsApiService } from "./ideaAssessmentsApi";
+import {
+  UsersApiService,
+  RolesApiService,
+  GroupsApiService,
+  PermissionsApiService,
+  AdMappingsApiService,
+} from "./directoryApi";
+import { DocumentTemplatesApiService } from "./documentTemplatesApi";
 import { DocumentsApiService } from "./documentsApi";
-import { TemplatesApiService } from "./templatesApi";
-import { JobsApiService } from "./jobsApi";
+import { IdeaInsightsApiService } from "./ideaInsightsApi";
 import { BaseApiService } from "./baseApi";
 
-// Main API Service that aggregates all specialized services
 export class ApiService extends BaseApiService {
-  public suggestions: SuggestionsApiService;
-  public clusters: ClustersApiService;
-  public topics: TopicsApiService;
-  public metrics: MetricsApiService;
+  public ideas: IdeasApiService;
+  public auth: AuthApiService;
+  public catalog: IdeaCatalogApiService;
+  public assessments: IdeaAssessmentsApiService;
+  public documentTemplates: DocumentTemplatesApiService;
   public documents: DocumentsApiService;
-  public templates: TemplatesApiService;
-  public jobs: JobsApiService;
+  public ideaInsights: IdeaInsightsApiService;
+  public users: UsersApiService;
+  public roles: RolesApiService;
+  public groups: GroupsApiService;
+  public permissions: PermissionsApiService;
+  public adMappings: AdMappingsApiService;
 
   constructor(timeout?: number) {
     super(timeout);
-
-    // Initialize all specialized services with the same base URL
-    this.suggestions = new SuggestionsApiService(timeout);
-    this.clusters = new ClustersApiService(timeout);
-    this.topics = new TopicsApiService(timeout);
-    this.metrics = new MetricsApiService(timeout);
+    this.ideas = new IdeasApiService(timeout);
+    this.auth = new AuthApiService(timeout);
+    this.catalog = new IdeaCatalogApiService(timeout);
+    this.assessments = new IdeaAssessmentsApiService(timeout);
+    this.documentTemplates = new DocumentTemplatesApiService(timeout);
     this.documents = new DocumentsApiService(timeout);
-    this.templates = new TemplatesApiService(timeout);
-    this.jobs = new JobsApiService(timeout);
+    this.ideaInsights = new IdeaInsightsApiService(timeout);
+    this.users = new UsersApiService(timeout);
+    this.roles = new RolesApiService(timeout);
+    this.groups = new GroupsApiService(timeout);
+    this.permissions = new PermissionsApiService(timeout);
+    this.adMappings = new AdMappingsApiService(timeout);
 
-    // Set the base URL for all services to match the parent
-    // Use the parent's baseUrl directly instead of calling getBaseUrl()
-    this.suggestions.setBaseUrl(this.baseUrl);
-    this.clusters.setBaseUrl(this.baseUrl);
-    this.topics.setBaseUrl(this.baseUrl);
-    this.metrics.setBaseUrl(this.baseUrl);
-    this.documents.setBaseUrl(this.baseUrl);
-    this.templates.setBaseUrl(this.baseUrl);
-    this.jobs.setBaseUrl(this.baseUrl);
+    const sync = (s: BaseApiService) => s.setBaseUrl(this.baseUrl);
+    sync(this.ideas);
+    sync(this.auth);
+    sync(this.catalog);
+    sync(this.assessments);
+    sync(this.documentTemplates);
+    sync(this.documents);
+    sync(this.ideaInsights);
+    sync(this.users);
+    sync(this.roles);
+    sync(this.groups);
+    sync(this.permissions);
+    sync(this.adMappings);
   }
 
-  // Override setBaseUrl to update all services
   setBaseUrl(url: string): void {
     super.setBaseUrl(url);
-    this.suggestions.setBaseUrl(url);
-    this.clusters.setBaseUrl(url);
-    this.topics.setBaseUrl(url);
-    this.metrics.setBaseUrl(url);
+    this.ideas.setBaseUrl(url);
+    this.auth.setBaseUrl(url);
+    this.catalog.setBaseUrl(url);
+    this.assessments.setBaseUrl(url);
+    this.documentTemplates.setBaseUrl(url);
     this.documents.setBaseUrl(url);
-    this.templates.setBaseUrl(url);
-    this.jobs.setBaseUrl(url);
+    this.ideaInsights.setBaseUrl(url);
+    this.users.setBaseUrl(url);
+    this.roles.setBaseUrl(url);
+    this.groups.setBaseUrl(url);
+    this.permissions.setBaseUrl(url);
+    this.adMappings.setBaseUrl(url);
   }
 
-  // Override setTimeout to update all services
   setTimeout(timeout: number): void {
     super.setTimeout(timeout);
-    this.suggestions.setTimeout(timeout);
-    this.clusters.setTimeout(timeout);
-    this.topics.setTimeout(timeout);
-    this.metrics.setTimeout(timeout);
+    this.ideas.setTimeout(timeout);
+    this.auth.setTimeout(timeout);
+    this.catalog.setTimeout(timeout);
+    this.assessments.setTimeout(timeout);
+    this.documentTemplates.setTimeout(timeout);
     this.documents.setTimeout(timeout);
-    this.templates.setTimeout(timeout);
-    this.jobs.setTimeout(timeout);
+    this.ideaInsights.setTimeout(timeout);
+    this.users.setTimeout(timeout);
+    this.roles.setTimeout(timeout);
+    this.groups.setTimeout(timeout);
+    this.permissions.setTimeout(timeout);
+    this.adMappings.setTimeout(timeout);
   }
 }
 
-// Export singleton instance
 export const apiService = new ApiService();
 
-// Export individual services for direct use if needed
 export {
-  SuggestionsApiService,
-  ClustersApiService,
-  TopicsApiService,
-  MetricsApiService,
-  DocumentsApiService,
-  TemplatesApiService,
-  JobsApiService,
+  IdeasApiService,
+  AuthApiService,
+  IdeaCatalogApiService,
+  IdeaAssessmentsApiService,
+  UsersApiService,
+  RolesApiService,
+  GroupsApiService,
+  PermissionsApiService,
+  AdMappingsApiService,
 };
 
-// Export base service for custom implementations
 export { BaseApiService };

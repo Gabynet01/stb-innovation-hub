@@ -2,25 +2,33 @@ import React from 'react';
 import {
     HomeIcon,
     LightBulbIcon,
-    TagIcon,
-    ChartBarIcon,
+    ClipboardDocumentCheckIcon,
+    Cog6ToothIcon,
     DocumentTextIcon,
-    ClockIcon,
-    FolderIcon
+    DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
 import { useSidebarCounts } from '@/hooks/useSidebarCounts';
 import type { SidebarCounts } from '@/hooks/useSidebarCounts';
 import './sidebar.component.scss';
 
 type ViewType = 'form' | 'list';
-type MenuId = 'dashboard' | 'suggestions' | 'clusters' | 'topics' | 'documents' | 'templates' | 'jobs';
+export type MenuId =
+    | 'dashboard'
+    | 'ideas'
+    | 'assessments'
+    | 'document-templates'
+    | 'documents'
+    | 'administration';
 
-interface MenuItem {
+type NavSection = { kind: 'section'; label: string };
+type NavItem = {
+    kind: 'item';
     id: MenuId;
     name: string;
     icon: React.ComponentType<{ className?: string }>;
     count?: number;
-}
+};
+type NavEntry = NavSection | NavItem;
 
 interface SidebarProps {
     onViewChange: (view: ViewType) => void;
@@ -37,10 +45,10 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({
     onViewChange,
-    currentView,
+    currentView: _currentView,
     onMenuChange,
     currentMenu,
-    onCollapseChange,
+    onCollapseChange: _onCollapseChange,
     isCollapsed,
     mobileOpen = false,
     counts: countsProp,
@@ -52,59 +60,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
     const loading = loadingProp ?? hookCounts.loading;
     const error = errorProp ?? hookCounts.error;
 
-    const menuItems: MenuItem[] = [
-        {
-            id: 'dashboard',
-            name: 'Dashboard',
-            icon: HomeIcon,
-            count: undefined
-        },
-        {
-            id: 'suggestions',
-            name: 'Suggestions',
-            icon: LightBulbIcon,
-            count: counts.suggestions
-        },
-        {
-            id: 'clusters',
-            name: 'AI Clusters',
-            icon: TagIcon,
-            count: counts.clusters
-        },
-        {
-            id: 'topics',
-            name: 'Topics',
-            icon: ChartBarIcon,
-            count: counts.topics
-        },
-        {
-            id: 'documents',
-            name: 'Documents',
-            icon: DocumentTextIcon,
-            count: counts.documents
-        },
-        {
-            id: 'templates',
-            name: 'Templates',
-            icon: FolderIcon,
-            count: counts.templates
-        },
-        {
-            id: 'jobs',
-            name: 'Jobs',
-            icon: ClockIcon,
-            count: counts.jobs
-        }
+    const navStructure: NavEntry[] = [
+        { kind: 'section', label: 'Overview' },
+        { kind: 'item', id: 'dashboard', name: 'Dashboard', icon: HomeIcon },
+        { kind: 'section', label: 'Idea Bank' },
+        { kind: 'item', id: 'ideas', name: 'Ideas', icon: LightBulbIcon, count: counts.ideas },
+        { kind: 'item', id: 'assessments', name: 'Assessments', icon: ClipboardDocumentCheckIcon },
+        { kind: 'item', id: 'document-templates', name: 'Templates', icon: DocumentTextIcon },
+        { kind: 'item', id: 'documents', name: 'Documents', icon: DocumentDuplicateIcon },
+        { kind: 'item', id: 'administration', name: 'Administration', icon: Cog6ToothIcon },
     ];
 
     const handleMenuClick = (menuId: MenuId) => {
         onMenuChange(menuId);
-        if (menuId === 'suggestions') {
+        if (menuId === 'ideas') {
             onViewChange('list');
         }
     };
 
-    const renderMenuItem = (item: MenuItem) => {
+    const renderMenuItem = (item: NavItem) => {
         const isActive = currentMenu === item.id;
 
         return (
@@ -140,7 +114,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : ''} ${mobileOpen ? 'sidebar--mobile-open' : ''}`}>
             <div className="sidebar__container">
                 <nav className="sidebar__navigation">
-                    {menuItems.map(renderMenuItem)}
+                    {navStructure.map((entry) => {
+                        if (entry.kind === 'section') {
+                            return (
+                                <div
+                                    key={entry.label}
+                                    className="sidebar__section-label"
+                                    aria-hidden={isCollapsed}
+                                >
+                                    {!isCollapsed ? entry.label : '\u00a0'}
+                                </div>
+                            );
+                        }
+                        return renderMenuItem(entry);
+                    })}
                 </nav>
                 {error && (
                     <div className="sidebar__error">
@@ -152,4 +139,4 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
         </div>
     );
-}; 
+};

@@ -4,9 +4,6 @@ export * from "./ui";
 // Layout Components
 export * from "./layout";
 
-// Feature Components
-export { TopicAssociationManager } from "./TopicAssociationManager";
-
 // Pages
 export * from "../pages";
 

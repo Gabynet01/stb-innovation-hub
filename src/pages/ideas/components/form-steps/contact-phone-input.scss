@@ -1,0 +1,40 @@
+/* Extends react-phone-number-input/style.css — imported from ContactInfoStep */
+
+.contact-phone-field {
+  --PhoneInput-color--focus: #0051ff;
+}
+
+.contact-phone-field .PhoneInput {
+  border: 1px solid rgb(226 232 240);
+  border-radius: 0.5rem;
+  padding: 0 0.625rem 0 0.5rem;
+  min-height: 44px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  background-color: #fff;
+}
+
+.contact-phone-field .PhoneInput:focus-within {
+  border-color: #0051ff;
+  box-shadow: 0 0 0 2px rgba(0, 81, 255, 0.2);
+}
+
+.contact-phone-field--error .PhoneInput {
+  border-color: rgb(248 113 113);
+}
+
+.contact-phone-field--error .PhoneInput:focus-within {
+  box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.25);
+}
+
+.contact-phone-field .PhoneInputInput {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  padding: 0.625rem 0.25rem;
+  background: transparent;
+}
+
+.contact-phone-field .PhoneInputInput::placeholder {
+  color: rgb(148 163 184);
+}
