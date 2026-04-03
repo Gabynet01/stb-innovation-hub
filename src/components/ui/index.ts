@@ -35,7 +35,17 @@ export {
   SegmentedTabs,
   type SegmentedTabItem,
   type SegmentedTabsProps,
+  type SegmentedTabsVariant,
 } from "./SegmentedTabs";
+export { Breadcrumbs, type BreadcrumbItem, type BreadcrumbsProps } from "./Breadcrumbs";
+export { PageHeader, type PageHeaderProps } from "./PageHeader";
+export { DataTableToolbar, type DataTableToolbarProps } from "./DataTableToolbar";
+export {
+  StatusDotBadge,
+  statusToneFromString,
+  type StatusDotBadgeProps,
+  type StatusDotTone,
+} from "./StatusDotBadge";
 
 export type { ButtonProps } from "./Button";
 export type { CardProps } from "./Card";

@@ -112,9 +112,10 @@ const IdeaListComponent: React.FC<IdeaListProps> = ({
   const hideCategoryColumn = activeCategoryKey !== "all";
 
   return (
-    <div className="space-y-4" role="region" aria-label="Ideas by category">
+    <div className="space-y-6" role="region" aria-label="Ideas by category">
       <SegmentedTabs<CategoryTabKey>
         aria-label="Idea categories"
+        variant="filled"
         panelId="idea-category-panel"
         nowrap
         items={categoryTabItems}
@@ -130,11 +131,10 @@ const IdeaListComponent: React.FC<IdeaListProps> = ({
         <Card
           padding="none"
           rounded="xl"
-          className="overflow-hidden border-slate-200 shadow-sm shadow-slate-900/[0.04]"
+          className="border-stanbic-border shadow-sm shadow-stanbic-text/[0.04]"
         >
           {viewMode === "table" ? (
             <IdeaTable
-              flush
               ideas={filteredIdeas}
               onEdit={onEdit}
               onDelete={onDelete}
@@ -143,11 +143,11 @@ const IdeaListComponent: React.FC<IdeaListProps> = ({
               hideCategoryColumn={hideCategoryColumn}
             />
           ) : filteredIdeas.length === 0 ? (
-            <div className="px-6 py-16 sm:px-10 sm:py-20">
+            <div className="px-4 py-16 sm:px-6 sm:py-20">
               <EmptyState hasFilters={emptyDueToFilters} />
             </div>
           ) : (
-            <div className="space-y-8 p-6 sm:p-8 lg:p-10">
+            <div className="space-y-8 px-4 py-5 sm:px-6 sm:py-6">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:gap-10">
                 {pageIdeas.map((idea) => (
                   <IdeaCard

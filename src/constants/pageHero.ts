@@ -1,6 +1,6 @@
 /**
- * Matches `DashboardHero`: soft cool gradient — not solid Stanbic navy.
- * Use for in-app page heroes (Ideas, Assessments, Idea form, Administration).
+ * Legacy gradient hero surface (light blue / slate). Prefer the shared
+ * `PageHeader` component for new screens; these tokens remain for any stragglers.
  */
 export const PAGE_HERO_SURFACE =
   "absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-50";

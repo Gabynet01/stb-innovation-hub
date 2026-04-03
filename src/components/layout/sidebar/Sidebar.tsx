@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useSidebarCounts } from '@/hooks/useSidebarCounts';
 import type { SidebarCounts } from '@/hooks/useSidebarCounts';
+import { LoadingSpinner } from '@/components/ui';
 import './sidebar.component.scss';
 
 type ViewType = 'form' | 'list';
@@ -99,7 +100,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 </h3>
                                 {item.count !== undefined && item.count > 0 && (
                                     <span className={`sidebar__menu-item-count ${isActive ? 'sidebar__menu-item-count--active' : ''}`}>
-                                        {loading ? '...' : item.count}
+                                        {loading ? (
+                                            <span
+                                                className="inline-flex items-center justify-center py-0.5"
+                                                aria-hidden
+                                            >
+                                                <LoadingSpinner
+                                                    size="sm"
+                                                    color="primary"
+                                                    className="scale-[0.65]"
+                                                />
+                                            </span>
+                                        ) : (
+                                            item.count
+                                        )}
                                     </span>
                                 )}
                             </div>

@@ -1,11 +1,12 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
-import { IdeasHeader } from "./IdeasHeader";
+import { IdeasListToolbar } from "./IdeasListToolbar";
 import { IdeasFilters } from "./IdeasFilters";
 import { IdeaList, type IdeaListViewMode } from "./IdeaList";
 import {
   Button,
   CompactErrorWithToast,
   LoadingSpinner,
+  PageHeader,
   SimpleModal,
 } from "@/components/ui";
 import {
@@ -118,17 +119,27 @@ const IdeasListViewComponent: React.FC<IdeasListViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50/40 via-slate-50 to-neutral-100/85 ideas-container">
-      <IdeasHeader
-        showFilters={showFilters}
-        onToggleFilters={onToggleFilters}
-        onNewIdea={onNewIdea}
-        viewMode={viewMode}
-        onViewModeChange={handleViewModeChange}
-        filtersActive={hasActiveFilters}
+    <div className="min-h-screen bg-stanbic-canvas ideas-container">
+      <PageHeader
+        breadcrumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Idea Bank" },
+        ]}
+        title="Idea Bank"
+        description="Capture and track ideas across the organisation — from concept to user stories and pipeline stages."
+        actions={
+          <IdeasListToolbar
+            showFilters={showFilters}
+            onToggleFilters={onToggleFilters}
+            onNewIdea={onNewIdea}
+            viewMode={viewMode}
+            onViewModeChange={handleViewModeChange}
+            filtersActive={hasActiveFilters}
+          />
+        }
       />
 
-      <div className="mx-auto max-w-6xl px-4 pb-16 pt-3 sm:px-6 sm:pt-4">
+      <div className="mx-auto max-w-6xl space-y-6 px-4 pb-16 pt-8 sm:px-6">
         <SimpleModal
           isOpen={showFilters}
           onClose={closeFiltersModal}

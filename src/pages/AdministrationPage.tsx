@@ -7,15 +7,17 @@ import { ApiError } from "@/services/baseApi";
 import {
   Button,
   Card,
+  DataTable,
+  DataTableToolbar,
   Input,
   Textarea,
   Select,
-  DataTable,
   RowActionsMenu,
   SimpleModal,
   LoadingSpinner,
   CompactErrorWithToast,
   ConfirmationModal,
+  PageHeader,
   SegmentedTabs,
   useSnackbar,
   type DataTableColumn,
@@ -29,7 +31,6 @@ import type {
   IdeahubPermissionRead,
   IdeahubADMappingRead,
 } from "@/types/ideahub";
-import { PAGE_HERO_PATTERN_LIGHT, PAGE_HERO_SURFACE } from "@/constants/pageHero";
 type Tab = "sources" | "categories" | "directory";
 
 type PendingDelete =
@@ -1173,26 +1174,15 @@ export const AdministrationPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen pb-16">
-      <div className="relative overflow-hidden border-b border-slate-200/90">
-        <div className={PAGE_HERO_SURFACE} aria-hidden />
-        <div
-          className="absolute inset-0 opacity-80"
-          style={{ backgroundImage: PAGE_HERO_PATTERN_LIGHT }}
-          aria-hidden
-        />
-        <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
-            Administration
-          </h1>
-          <p className="mt-2 max-w-2xl text-base text-gray-600">
-            Manage idea sources, assessment categories, and directory records.
-            Templates and generated documents live under their own sidebar
-            entries. Use row menus for destructive actions — confirmations
-            protect your data.
-          </p>
-        </div>
-      </div>
+    <div className="min-h-screen bg-stanbic-canvas pb-16">
+      <PageHeader
+        breadcrumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Administration" },
+        ]}
+        title="Administration"
+        description="Manage idea sources, assessment categories, and directory records. Templates and generated documents live under their own sidebar entries. Use row menus for destructive actions — confirmations protect your data."
+      />
 
       <div className="mx-auto mt-8 max-w-6xl space-y-6 px-4 sm:px-6">
         {error && (
@@ -1205,6 +1195,7 @@ export const AdministrationPage: React.FC = () => {
 
         <SegmentedTabs<Tab>
           aria-label="Administration sections"
+          variant="filled"
           items={[
             { id: "sources", label: "Idea sources" },
             { id: "categories", label: "Categories" },
@@ -1215,7 +1206,7 @@ export const AdministrationPage: React.FC = () => {
         />
 
         {tab === "sources" && (
-          <Card className="border-slate-200 p-6 shadow-sm">
+          <Card className="border-stanbic-border p-6 shadow-sm">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-slate-900">
@@ -1238,6 +1229,7 @@ export const AdministrationPage: React.FC = () => {
               </Button>
             </div>
             <div className="mt-6">
+              <DataTableToolbar total={sources.length} totalLabel="sources" />
               <DataTable
                 columns={sourceColumns}
                 rows={sources}
@@ -1249,7 +1241,7 @@ export const AdministrationPage: React.FC = () => {
         )}
 
         {tab === "categories" && (
-          <Card className="border-slate-200 p-6 shadow-sm">
+          <Card className="border-stanbic-border p-6 shadow-sm">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-slate-900">
@@ -1272,6 +1264,7 @@ export const AdministrationPage: React.FC = () => {
               </Button>
             </div>
             <div className="mt-6">
+              <DataTableToolbar total={categories.length} totalLabel="categories" />
               <DataTable
                 columns={categoryColumns}
                 rows={[...categories].sort(
@@ -1329,6 +1322,7 @@ export const AdministrationPage: React.FC = () => {
                   </p>
                 )}
               </div>
+              <DataTableToolbar total={users.length} totalLabel="users" />
               <DataTable
                 columns={userColumns}
                 rows={users}
@@ -1364,6 +1358,7 @@ export const AdministrationPage: React.FC = () => {
                   </Button>
                 ) : null}
               </div>
+              <DataTableToolbar total={roles.length} totalLabel="roles" />
               <DataTable
                 columns={roleColumns}
                 rows={roles}
@@ -1399,6 +1394,7 @@ export const AdministrationPage: React.FC = () => {
                   </Button>
                 ) : null}
               </div>
+              <DataTableToolbar total={groups.length} totalLabel="groups" />
               <DataTable
                 columns={groupColumns}
                 rows={groups}
@@ -1436,6 +1432,10 @@ export const AdministrationPage: React.FC = () => {
                   </Button>
                 ) : null}
               </div>
+              <DataTableToolbar
+                total={permissions.length}
+                totalLabel="permissions"
+              />
               <DataTable
                 columns={permColumns}
                 rows={permissions}
@@ -1475,6 +1475,10 @@ export const AdministrationPage: React.FC = () => {
                   </Button>
                 ) : null}
               </div>
+              <DataTableToolbar
+                total={adMappings.length}
+                totalLabel="AD mappings"
+              />
               <DataTable
                 columns={adColumns}
                 rows={adMappings}

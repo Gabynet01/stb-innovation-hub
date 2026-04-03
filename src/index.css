@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    @apply font-sans antialiased;
+    color: #222e37;
+  }
+}
+
 /* TinyMCE Editor Styles */
 .tox-tinymce {
   border: none !important;

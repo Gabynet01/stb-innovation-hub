@@ -1,8 +1,64 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Idea } from "@/types/api";
-import { DataTable, RowActionsMenu, type DataTableColumn } from "@/components/ui";
+import {
+  DataTable,
+  DataTableToolbar,
+  RowActionsMenu,
+  StatusDotBadge,
+  statusToneFromString,
+  type DataTableColumn,
+} from "@/components/ui";
 import { EmptyState } from "./EmptyState";
 import { Pagination } from "./Pagination";
+import { IdeaTableSimilarPanel } from "./IdeaTableSimilarPanel";
+
+/** Native `title` tooltip only when text is visually truncated (ellipsis). */
+const EllipsisTip: React.FC<{
+  text: string;
+  className?: string;
+  children: React.ReactNode;
+}> = ({ text, className, children }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [truncated, setTruncated] = useState(false);
+
+  const measure = useCallback(() => {
+    const el = ref.current;
+    if (!el || !text) {
+      setTruncated(false);
+      return;
+    }
+    setTruncated(el.scrollWidth > el.clientWidth + 1);
+  }, [text]);
+
+  useLayoutEffect(() => {
+    measure();
+  }, [measure, text]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => measure());
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [measure]);
+
+  return (
+    <span ref={ref} className={className} title={truncated ? text : undefined}>
+      {children}
+    </span>
+  );
+};
 
 interface IdeaTableProps {
   ideas: Idea[];
@@ -12,23 +68,12 @@ interface IdeaTableProps {
   emptyDueToFilters?: boolean;
   /** Hide category column when a single category tab is active */
   hideCategoryColumn?: boolean;
-  /** Table sits inside category card — no double border */
-  flush?: boolean;
 }
 
-function statusBadge(status: Idea["status"]) {
-  const map: Record<Idea["status"], string> = {
-    NEW: "bg-[#0051FF]/10 text-[#0033A1] ring-1 ring-[#0051FF]/15",
-    PROCESSED: "bg-emerald-50 text-emerald-800 ring-1 ring-emerald-100",
-    ARCHIVED: "bg-slate-100 text-slate-600 ring-1 ring-slate-200",
-  };
-  return (
-    <span
-      className={`inline-flex rounded-md px-2 py-0.5 text-xs font-medium ${map[status]}`}
-    >
-      {status}
-    </span>
-  );
+function ideaStatusTone(status: Idea["status"]) {
+  if (status === "NEW") return "pending" as const;
+  if (status === "PROCESSED") return "success" as const;
+  return "neutral" as const;
 }
 
 const IdeaTableComponent: React.FC<IdeaTableProps> = ({
@@ -38,10 +83,19 @@ const IdeaTableComponent: React.FC<IdeaTableProps> = ({
   onView,
   emptyDueToFilters = false,
   hideCategoryColumn = false,
-  flush = false,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
+  /** At most one expand panel open (accordion). */
+  const [expandedRowKey, setExpandedRowKey] = useState<string | null>(null);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+
+  const toggleRowExpand = useCallback((rowKey: string) => {
+    setExpandedRowKey((prev) => (prev === rowKey ? null : rowKey));
+  }, []);
+
+  React.useEffect(() => {
+    setExpandedRowKey(null);
+  }, [currentPage]);
 
   const { totalPages, pageIdeas } = useMemo(() => {
     const totalPages = Math.ceil(ideas.length / itemsPerPage);
@@ -52,7 +106,7 @@ const IdeaTableComponent: React.FC<IdeaTableProps> = ({
 
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [ideas.length]);
+  }, [ideas.length, itemsPerPage]);
 
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
@@ -64,17 +118,20 @@ const IdeaTableComponent: React.FC<IdeaTableProps> = ({
       {
         id: "ref",
         header: "Reference",
-        className: "whitespace-nowrap font-mono text-xs text-slate-600",
+        headerClassName: "w-32",
+        className: "whitespace-nowrap font-mono text-xs text-stanbic-text/65",
         cell: (row) => row.reference_number ?? "—",
       },
       {
         id: "title",
         header: "Title",
+        headerClassName: "min-w-[14rem] w-[36%] lg:w-[40%]",
+        className: "align-top",
         cell: (row) => (
           <button
             type="button"
             onClick={() => onView(row)}
-            className="max-w-[220px] truncate text-left font-medium text-[#0033A1] decoration-[#0051FF]/30 underline-offset-4 hover:text-[#0051FF] hover:underline sm:max-w-xs"
+            className="w-full whitespace-normal break-words py-2 text-left font-medium leading-snug text-stanbic-primary decoration-stanbic-secondary/30 underline-offset-4 hover:text-stanbic-secondary hover:underline"
           >
             {row.title}
           </button>
@@ -85,36 +142,62 @@ const IdeaTableComponent: React.FC<IdeaTableProps> = ({
       base.push({
         id: "category",
         header: "Idea Category",
-        className: "text-slate-600",
-        cell: (row) => row.category_label,
+        headerClassName: "w-36 lg:w-40",
+        className: "max-w-[10rem] text-stanbic-text/75 lg:max-w-[11rem]",
+        cell: (row) => (
+          <EllipsisTip
+            text={row.category_label}
+            className="block truncate"
+          >
+            {row.category_label}
+          </EllipsisTip>
+        ),
       });
     }
     base.push(
       {
         id: "source",
         header: "Source",
-        className: "text-slate-600",
-        cell: (row) => row.source_label,
+        headerClassName: "w-32",
+        className: "max-w-[8rem] text-stanbic-text/75",
+        cell: (row) => (
+          <EllipsisTip text={row.source_label} className="block truncate">
+            {row.source_label}
+          </EllipsisTip>
+        ),
       },
       {
         id: "status",
         header: "Status",
-        cell: (row) => statusBadge(row.status),
+        headerClassName: "w-28",
+        cell: (row) => (
+          <StatusDotBadge
+            label={row.status}
+            tone={ideaStatusTone(row.status)}
+          />
+        ),
       },
       {
         id: "pipeline",
         header: "Pipeline",
-        className: "text-slate-600 text-xs capitalize",
+        headerClassName: "w-32",
+        className: "capitalize",
         cell: (row) =>
-          row.ideahub_status
-            ? row.ideahub_status.replace(/_/g, " ")
-            : "—",
+          row.ideahub_status ? (
+            <StatusDotBadge
+              label={row.ideahub_status.replace(/_/g, " ")}
+              tone={statusToneFromString(row.ideahub_status)}
+            />
+          ) : (
+            "—"
+          ),
       },
       {
         id: "actions",
         header: "",
-        headerClassName: "w-14",
-        className: "w-14 text-right",
+        headerClassName: "w-24 sm:w-[5.75rem]",
+        className:
+          "w-24 text-right !pl-2 !pr-6 sm:w-[5.75rem] sm:!pr-7",
         cell: (row) => (
           <RowActionsMenu
             ariaLabel={`Actions for ${row.title}`}
@@ -148,32 +231,39 @@ const IdeaTableComponent: React.FC<IdeaTableProps> = ({
   }
 
   return (
-    <div className={flush ? "space-y-0" : "space-y-6"}>
+    <div className="min-w-0 max-w-full px-4 py-5 sm:px-6 sm:py-6">
+      <DataTableToolbar total={ideas.length} totalLabel="ideas" />
       <DataTable
-        variant="minimal"
-        flush={flush}
         columns={columns}
         rows={pageIdeas}
         getRowKey={(r) => r.id}
-        minWidthClass="min-w-[720px]"
+        tableClassName="table-fixed"
+        minWidthClass="min-w-[680px]"
+        renderExpandedRow={(row) => (
+          <IdeaTableSimilarPanel ideaId={row.id} />
+        )}
+        isRowExpanded={(key) => expandedRowKey === key}
+        onToggleRowExpand={toggleRowExpand}
+        getExpandAriaLabel={(row) =>
+          expandedRowKey === row.id
+            ? `Hide similar ideas for ${row.title}`
+            : `Show similar ideas for ${row.title}`
+        }
       />
-      {totalPages > 1 && (
-        <div
-          className={
-            flush
-              ? "border-t border-slate-100 bg-slate-50/40 px-5 sm:px-8"
-              : undefined
-          }
-        >
+      {totalPages > 1 ? (
+        <div className="mt-6 border-t border-stanbic-border pt-6">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
             totalItems={ideas.length}
             itemsPerPage={itemsPerPage}
+            variant="stanbic"
+            pageSizeOptions={[10, 12, 15, 25]}
+            onPageSizeChange={setItemsPerPage}
           />
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

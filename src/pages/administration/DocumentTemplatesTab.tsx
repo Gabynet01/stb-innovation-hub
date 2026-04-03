@@ -9,6 +9,7 @@ import {
   Input,
   Textarea,
   DataTable,
+  DataTableToolbar,
   RowActionsMenu,
   SimpleModal,
   LoadingSpinner,
@@ -58,6 +59,20 @@ export const DocumentTemplatesTab: React.FC = () => {
   const [pendingDelete, setPendingDelete] =
     useState<IdeahubDocumentTemplate | null>(null);
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+  const [downloadingTemplateId, setDownloadingTemplateId] = useState<
+    number | null
+  >(null);
+  const [retryingTemplateId, setRetryingTemplateId] = useState<number | null>(
+    null
+  );
+  const [expandedTemplateKey, setExpandedTemplateKey] = useState<string | null>(
+    null
+  );
+
+  const tableAsyncBusy =
+    downloadingTemplateId !== null ||
+    retryingTemplateId !== null ||
+    deleteSubmitting;
 
   const load = useCallback(async () => {
     try {
@@ -134,6 +149,7 @@ export const DocumentTemplatesTab: React.FC = () => {
   };
 
   const downloadOriginal = async (t: IdeahubDocumentTemplate) => {
+    setDownloadingTemplateId(t.id);
     setError(null);
     try {
       const blob = await apiService.documentTemplates.downloadFile(t.id);
@@ -149,10 +165,13 @@ export const DocumentTemplatesTab: React.FC = () => {
       URL.revokeObjectURL(url);
     } catch (e) {
       setError(errMessage(e));
+    } finally {
+      setDownloadingTemplateId(null);
     }
   };
 
   const retrySchemaExtraction = async (t: IdeahubDocumentTemplate) => {
+    setRetryingTemplateId(t.id);
     setError(null);
     try {
       const res = await apiService.documentTemplates.retrySchemaExtraction(t.id);
@@ -165,6 +184,8 @@ export const DocumentTemplatesTab: React.FC = () => {
       });
     } catch (e) {
       setError(errMessage(e));
+    } finally {
+      setRetryingTemplateId(null);
     }
   };
 
@@ -190,8 +211,8 @@ export const DocumentTemplatesTab: React.FC = () => {
       header: "Template",
       cell: (t) => (
         <div>
-          <p className="font-medium text-slate-900">{t.name}</p>
-          <p className="text-xs text-slate-500">{t.file_name}</p>
+          <p className="font-medium text-stanbic-text">{t.name}</p>
+          <p className="text-xs text-stanbic-text/55">{t.file_name}</p>
         </div>
       ),
     },
@@ -207,27 +228,24 @@ export const DocumentTemplatesTab: React.FC = () => {
     {
       id: "notesGuide",
       header: "Notes guide",
-      className: "max-w-[min(22rem,36vw)] align-top text-xs text-slate-700",
-      cell: (t) =>
-        t.note_guide_areas?.length ? (
-          <ul className="list-disc space-y-0.5 pl-4">
-            {t.note_guide_areas.slice(0, 4).map((line, i) => (
-              <li key={i}>{line}</li>
-            ))}
-            {t.note_guide_areas.length > 4 ? (
-              <li className="list-none text-slate-400">
-                +{t.note_guide_areas.length - 4} more
-              </li>
-            ) : null}
-          </ul>
-        ) : (
-          <span className="text-slate-400">—</span>
-        ),
+      className: "align-middle text-xs text-stanbic-text/80",
+      cell: (t) => {
+        const n = t.note_guide_areas?.length ?? 0;
+        if (!n) {
+          return <span className="text-stanbic-text/45">—</span>;
+        }
+        return (
+          <span className="tabular-nums">
+            {n} area{n === 1 ? "" : "s"}
+          </span>
+        );
+      },
     },
     {
       id: "err",
       header: "Last error",
-      className: "max-w-[min(28rem,40vw)] align-top text-xs text-slate-700",
+      className:
+        "max-w-[min(28rem,40vw)] align-top text-xs text-stanbic-text/90",
       cell: (t) =>
         t.schema_extraction_error ? (
           <span
@@ -237,13 +255,13 @@ export const DocumentTemplatesTab: React.FC = () => {
             {t.schema_extraction_error}
           </span>
         ) : (
-          <span className="text-slate-400">—</span>
+          <span className="text-stanbic-text/45">—</span>
         ),
     },
     {
       id: "updated",
       header: "Updated",
-      className: "text-slate-600 text-xs whitespace-nowrap",
+      className: "text-stanbic-text/70 text-xs whitespace-nowrap",
       cell: (t) => formatShortDate(t.updated_at),
     },
     {
@@ -254,6 +272,7 @@ export const DocumentTemplatesTab: React.FC = () => {
       cell: (t) => (
         <RowActionsMenu
           ariaLabel={`Actions for ${t.name}`}
+          disabled={tableAsyncBusy}
           items={[
             ...(t.variable_schema_status === "failed"
               ? [
@@ -285,57 +304,118 @@ export const DocumentTemplatesTab: React.FC = () => {
     return (
       <div className="flex min-h-[30vh] flex-col items-center justify-center gap-4">
         <LoadingSpinner size="lg" color="primary" />
-        <p className="text-slate-600">Loading document templates…</p>
+        <p className="text-stanbic-text/70">Loading document templates…</p>
       </div>
     );
   }
 
   return (
     <>
-      <Card className="border-slate-200 p-6 shadow-sm">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-          <div className="min-w-0 flex-1">
-            <h2 className="text-lg font-semibold text-slate-900">
-              Word document templates
-            </h2>
-            <p className="mt-1 text-sm text-slate-600">
-              Upload a .docx file with Jinja-style placeholders. IdeaHub extracts
-              a variable schema in the background (Azure OpenAI). Once
-              schema status is <span className="font-medium">completed</span>,
-              users can generate documents from an idea&apos;s Documents tab.
-            </p>
+      <Card
+        padding="none"
+        rounded="xl"
+        className="min-w-0 border-stanbic-border shadow-sm shadow-stanbic-text/[0.04]"
+      >
+        <div className="min-w-0 max-w-full px-4 py-5 sm:px-6 sm:py-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-lg font-semibold text-stanbic-text">
+                Word document templates
+              </h2>
+              <p className="mt-1 text-sm leading-relaxed text-stanbic-text/70">
+                Upload a .docx file with Jinja-style placeholders. IdeaHub extracts
+                a variable schema in the background (Azure OpenAI). Once
+                schema status is <span className="font-medium text-stanbic-text">completed</span>,
+                users can generate documents from an idea&apos;s Documents tab.
+                Use the row expand control to read the full notes guide for each
+                template.
+              </p>
+            </div>
+            <Button
+              variant="primary"
+              className="shrink-0 whitespace-nowrap self-start sm:self-center"
+              onClick={() => {
+                setError(null);
+                resetUploadForm();
+                setUploadOpen(true);
+              }}
+            >
+              <PlusIcon className="mr-2 h-4 w-4 shrink-0" />
+              Upload template
+            </Button>
           </div>
-          <Button
-            variant="primary"
-            className="shrink-0 whitespace-nowrap self-start sm:self-center"
-            onClick={() => {
-              setError(null);
-              resetUploadForm();
-              setUploadOpen(true);
-            }}
-          >
-            <PlusIcon className="mr-2 h-4 w-4 shrink-0" />
-            Upload template
-          </Button>
-        </div>
 
-        {error ? (
-          <div className="mt-8">
-            <CompactErrorWithToast
-              error={error}
-              title="Notice"
-              onRetry={() => setError(null)}
+          {downloadingTemplateId !== null || retryingTemplateId !== null ? (
+            <div
+              className="mt-4 flex items-center gap-3 rounded-lg border border-stanbic-border bg-stanbic-canvas/40 px-4 py-3 text-sm text-stanbic-text shadow-sm"
+              role="status"
+              aria-live="polite"
+              aria-busy="true"
+            >
+              <LoadingSpinner size="sm" color="primary" />
+              <span>
+                {downloadingTemplateId !== null
+                  ? `Downloading “${
+                      templates.find((x) => x.id === downloadingTemplateId)
+                        ?.name ?? "template"
+                    }”…`
+                  : `Retrying schema for “${
+                      templates.find((x) => x.id === retryingTemplateId)?.name ??
+                      "template"
+                    }”…`}
+              </span>
+            </div>
+          ) : null}
+
+          {error ? (
+            <div className="mt-6">
+              <CompactErrorWithToast
+                error={error}
+                title="Notice"
+                onRetry={() => setError(null)}
+              />
+            </div>
+          ) : null}
+
+          <div className="mt-6">
+            <DataTableToolbar total={templates.length} totalLabel="templates" />
+            <DataTable
+              columns={columns}
+              rows={templates}
+              getRowKey={(t) => String(t.id)}
+              minWidthClass="min-w-[760px]"
+            emptyMessage="No templates yet. Upload a .docx to get started."
+            renderExpandedRow={(t) => (
+              <div className="rounded-lg border border-stanbic-border/80 bg-white px-4 py-3 sm:px-5">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-stanbic-text/50">
+                  Notes guide
+                </p>
+                {t.note_guide_areas?.length ? (
+                  <div className="mt-2 max-h-[min(50vh,28rem)] overflow-y-auto overscroll-contain pr-1">
+                    <ul className="list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-stanbic-text">
+                      {t.note_guide_areas.map((line, i) => (
+                        <li key={i}>{line}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <p className="mt-2 text-sm text-stanbic-text/55">
+                    No note guide areas for this template.
+                  </p>
+                )}
+              </div>
+            )}
+            isRowExpanded={(key) => expandedTemplateKey === key}
+            onToggleRowExpand={(key) =>
+              setExpandedTemplateKey((k) => (k === key ? null : key))
+            }
+            getExpandAriaLabel={(t) =>
+              expandedTemplateKey === String(t.id)
+                ? `Hide notes guide for ${t.name}`
+                : `Show full notes guide for ${t.name}`
+            }
             />
           </div>
-        ) : null}
-
-        <div className="mt-6">
-          <DataTable
-            columns={columns}
-            rows={templates}
-            getRowKey={(t) => String(t.id)}
-            emptyMessage="No templates yet. Upload a .docx to get started."
-          />
         </div>
       </Card>
 

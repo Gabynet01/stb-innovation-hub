@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Idea } from "@/types/api";
 import type { IdeahubIdeaAssessment } from "@/types/ideahub";
-import { ConfirmationModal, SegmentedTabs } from "@/components/ui";
+import { Card, ConfirmationModal, SegmentedTabs } from "@/components/ui";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import { IdeaHeader } from "./IdeaHeader";
 import { IdeaContent } from "./IdeaContent";
-import { IdeaFooter } from "./IdeaFooter";
 import { IdeaAssessmentSection } from "./IdeaAssessmentSection";
 import { IdeaDocumentsSection } from "./IdeaDocumentsSection";
 import { IdeaSimilarSection } from "./IdeaSimilarSection";
@@ -60,47 +59,63 @@ export const IdeaDetail: React.FC<IdeaDetailProps> = ({
   return (
     <>
       <div className={detailOuterShell}>
-        <IdeaHeader idea={idea} onClose={onClose} />
-        <main className={`${detailMainPadding} bg-slate-50/50`}>
+        <IdeaHeader
+          idea={idea}
+          onClose={onClose}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+        <main className={detailMainPadding}>
           <div className={detailInnerColumn}>
-            <SegmentedTabs<IdeaDetailTab>
-              aria-label="Idea detail sections"
-              panelId={tabPanelId}
-              className="mb-8 w-full max-w-full"
-              items={[
-                { id: "details", label: "Details" },
-                { id: "assessment", label: "Assessment" },
-                { id: "documents", label: "Documents" },
-                { id: "related", label: "Related ideas" },
-              ]}
-              value={activeTab}
-              onChange={setActiveTab}
-            />
-            <div
-              id={tabPanelId}
-              role="tabpanel"
-              aria-labelledby={`segmented-tab-${activeTab}`}
-              className="min-h-[min(60vh,560px)]"
+            <Card
+              padding="none"
+              rounded="xl"
+              className="flex min-h-0 flex-col overflow-hidden border border-stanbic-border bg-white shadow-[0_1px_2px_rgba(34,46,55,0.04)]"
             >
-              {activeTab === "details" ? (
-                <IdeaContent idea={idea} />
-              ) : null}
-              {activeTab === "assessment" ? (
-                <IdeaAssessmentSection
-                  idea={idea}
-                  onUpdated={(assessment) => onAssessmentSaved?.(assessment)}
+              <div className="shrink-0 space-y-3 px-4 pb-1 pt-4 sm:px-6 sm:pt-5">
+                <SegmentedTabs<IdeaDetailTab>
+                  aria-label="Idea detail sections"
+                  variant="filled"
+                  panelId={tabPanelId}
+                  items={[
+                    { id: "details", label: "Details" },
+                    { id: "assessment", label: "Assessment" },
+                    { id: "documents", label: "Documents" },
+                    { id: "related", label: "Related" },
+                  ]}
+                  value={activeTab}
+                  onChange={setActiveTab}
                 />
-              ) : null}
-              {activeTab === "documents" ? (
-                <IdeaDocumentsSection idea={idea} />
-              ) : null}
-              {activeTab === "related" ? (
-                <IdeaSimilarSection ideaId={idea.id} />
-              ) : null}
-            </div>
+              </div>
+              <div
+                id={tabPanelId}
+                role="tabpanel"
+                aria-labelledby={`segmented-tab-${activeTab}`}
+                className={
+                  activeTab === "details"
+                    ? "flex min-h-[min(52vh,520px)] flex-1 flex-col overflow-hidden lg:min-h-[min(64vh,640px)]"
+                    : "min-h-[min(50vh,480px)] p-5 sm:p-8"
+                }
+              >
+                {activeTab === "details" ? (
+                  <IdeaContent idea={idea} />
+                ) : null}
+                {activeTab === "assessment" ? (
+                  <IdeaAssessmentSection
+                    idea={idea}
+                    onUpdated={(assessment) => onAssessmentSaved?.(assessment)}
+                  />
+                ) : null}
+                {activeTab === "documents" ? (
+                  <IdeaDocumentsSection idea={idea} />
+                ) : null}
+                {activeTab === "related" ? (
+                  <IdeaSimilarSection ideaId={idea.id} />
+                ) : null}
+              </div>
+            </Card>
           </div>
         </main>
-        <IdeaFooter onClose={onClose} onEdit={handleEdit} onDelete={handleDelete} />
       </div>
 
       {confirmation && (

@@ -100,11 +100,12 @@ export function IdeaSimilarSection({ ideaId }: { ideaId: string }) {
           <Button
             type="button"
             variant="secondary"
+            icon={ArrowPathIcon}
+            iconPosition="left"
             loading={retrying}
             onClick={() => void handleRetryEmbedding()}
             className="shrink-0"
           >
-            <ArrowPathIcon className="mr-2 h-4 w-4" aria-hidden />
             Retry embedding
           </Button>
         ) : null}

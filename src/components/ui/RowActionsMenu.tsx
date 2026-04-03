@@ -18,6 +18,8 @@ export interface RowActionItem {
 export interface RowActionsMenuProps {
   items: RowActionItem[];
   ariaLabel?: string;
+  /** When true, the trigger is disabled (e.g. while a row async action runs). */
+  disabled?: boolean;
 }
 
 function getScrollParents(el: HTMLElement | null): HTMLElement[] {
@@ -39,6 +41,7 @@ function getScrollParents(el: HTMLElement | null): HTMLElement[] {
 export const RowActionsMenu: React.FC<RowActionsMenuProps> = ({
   items,
   ariaLabel = "Row actions",
+  disabled = false,
 }) => {
   const [open, setOpen] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
@@ -126,6 +129,22 @@ export const RowActionsMenu: React.FC<RowActionsMenuProps> = ({
 
   if (items.length === 0) return null;
 
+  if (disabled) {
+    return (
+      <div className="inline-block text-left">
+        <button
+          type="button"
+          disabled
+          aria-label={ariaLabel}
+          aria-disabled="true"
+          className="inline-flex h-9 w-9 cursor-not-allowed items-center justify-center rounded-md border border-stanbic-border bg-stanbic-canvas text-stanbic-text/40 opacity-60"
+        >
+          <EllipsisVerticalIcon className="h-5 w-5" />
+        </button>
+      </div>
+    );
+  }
+
   const menu = open ? (
     <div
       ref={menuRef}
@@ -136,7 +155,7 @@ export const RowActionsMenu: React.FC<RowActionsMenuProps> = ({
         left: coords.left,
         zIndex: 60,
       }}
-      className="w-44 rounded-xl border border-slate-200 bg-white py-1 shadow-lg ring-1 ring-black/5"
+      className="w-52 rounded-lg border border-stanbic-border bg-white py-1 text-left shadow-lg"
     >
       {items.map((item) => (
         <button
@@ -144,11 +163,10 @@ export const RowActionsMenu: React.FC<RowActionsMenuProps> = ({
           type="button"
           role="menuitem"
           onClick={() => onItem(item)}
-          className={`block w-full px-3 py-2 text-left text-sm font-medium transition hover:bg-slate-50 ${
-            item.danger
+          className={`block w-full px-3 py-2.5 text-left text-sm font-medium leading-[130%] transition hover:bg-stanbic-canvas ${item.danger
               ? "text-red-600 hover:bg-red-50"
-              : "text-slate-700"
-          }`}
+              : "text-stanbic-text"
+            }`}
         >
           {item.label}
         </button>
@@ -165,7 +183,7 @@ export const RowActionsMenu: React.FC<RowActionsMenuProps> = ({
         aria-haspopup="menu"
         aria-label={ariaLabel}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0051FF]/30"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-stanbic-secondary bg-white text-stanbic-secondary shadow-sm transition hover:bg-stanbic-secondary/5 hover:text-stanbic-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-stanbic-secondary/35"
       >
         <EllipsisVerticalIcon className="h-5 w-5" />
       </button>

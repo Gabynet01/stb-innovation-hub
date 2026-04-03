@@ -7,9 +7,6 @@ import React, {
 import type { PriorityVisual } from "../assessmentPriorityStyles";
 import { AssessmentLivePreviewPanel } from "./AssessmentLivePreviewPanel";
 
-/** Matches fixed navbar (`h-24`) + small gap so preview clears the bar. */
-const PREVIEW_TOP_PX = 96;
-
 interface AssessmentStickyPreviewProps {
   previewScore: number;
   previewBand: string;
@@ -25,12 +22,10 @@ interface FixedBox {
 }
 
 /**
- * Desktop: fixed-position live preview pinned under the navbar, aligned to the
- * assessment column (measured). Stays visible while scrolling criteria/sliders.
+ * Desktop: fixed-position live preview vertically centred in the viewport, aligned
+ * horizontally to the assessment column (measured). Avoids sitting under the nav
+ * and blocking the top of the form. Inner content scrolls if taller than max-height.
  * Mobile: fixed bottom dock.
- *
- * Parent should be `aside` with `relative` + grid column classes; the aside must
- * stretch with the row (default grid) so the measure layer matches column geometry.
  */
 export const AssessmentStickyPreview: React.FC<AssessmentStickyPreviewProps> = ({
   previewScore,
@@ -56,9 +51,7 @@ export const AssessmentStickyPreview: React.FC<AssessmentStickyPreviewProps> = (
       setBox((b) => ({ ...b, show: false }));
       return;
     }
-    // Column still intersects the viewport — show fixed preview
-    const show =
-      r.bottom > PREVIEW_TOP_PX + 8 && r.top < window.innerHeight;
+    const show = r.top < window.innerHeight && r.bottom > 0;
     setBox({
       left: r.left,
       width: r.width,
@@ -102,18 +95,18 @@ export const AssessmentStickyPreview: React.FC<AssessmentStickyPreviewProps> = (
         aria-label="Live assessment score"
       >
         <div
-          className="pointer-events-auto border-t border-slate-200/90 bg-white/95 px-4 py-3 shadow-[0_-12px_48px_-12px_rgba(15,23,42,0.18)] backdrop-blur-md"
+          className="pointer-events-auto border-t border-stanbic-border bg-white/95 px-4 py-3 shadow-[0_-8px_32px_-8px_rgba(34,46,55,0.12)] backdrop-blur-md"
           style={{
             paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
           }}
         >
           <div className="mx-auto flex max-w-lg items-center justify-between gap-4">
             <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-stanbic-text/50">
                 Live score
               </p>
               <p
-                className="font-mono text-2xl font-bold tabular-nums tracking-tight text-[#0033A1]"
+                className="font-mono text-2xl font-bold tabular-nums tracking-tight text-stanbic-primary"
                 aria-live="polite"
                 aria-atomic="true"
               >
@@ -137,12 +130,14 @@ export const AssessmentStickyPreview: React.FC<AssessmentStickyPreviewProps> = (
       />
       {box.show ? (
         <div
-          className="fixed z-[45] max-h-[calc(100vh-6rem-1rem)] overflow-y-auto overscroll-contain"
+          className="fixed z-[45] overflow-y-auto overscroll-contain"
           style={{
-            top: PREVIEW_TOP_PX,
+            top: "50%",
             left: box.left,
             width: box.width,
             maxWidth: "min(100vw - 1rem, 100%)",
+            maxHeight: "min(85vh, calc(100vh - 2rem))",
+            transform: "translateY(-50%)",
           }}
         >
           {previewBlock}

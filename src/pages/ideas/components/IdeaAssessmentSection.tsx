@@ -37,17 +37,17 @@ function scoresFromAssessment(a: IdeahubIdeaAssessment): DraftScores {
 function CriterionBar({ label, value }: { label: string; value: number }) {
   const pct = (value / 10) * 100;
   return (
-    <div className="rounded-lg border border-slate-100 bg-slate-50/50 px-3 py-3">
+    <div className="rounded-lg border border-stanbic-border/70 bg-stanbic-canvas/30 px-3 py-3">
       <div className="mb-2 flex items-baseline justify-between gap-2">
-        <span className="text-xs font-medium text-slate-700">{label}</span>
-        <span className="tabular-nums text-sm font-bold text-[#0033A1]">
+        <span className="text-xs font-medium text-stanbic-text">{label}</span>
+        <span className="tabular-nums text-sm font-bold text-stanbic-primary">
           {value}
-          <span className="font-semibold text-slate-400">/10</span>
+          <span className="font-semibold text-stanbic-text/40">/10</span>
         </span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-slate-200/90">
+      <div className="h-2 overflow-hidden rounded-full bg-stanbic-border/40">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-[#0033A1] to-[#0051FF]"
+          className="h-full rounded-full bg-gradient-to-r from-stanbic-primary to-stanbic-secondary"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -65,8 +65,8 @@ function AssessmentReadOnlyLight({
 
   return (
     <div className="space-y-6">
-      <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_4px_32px_-16px_rgba(15,23,42,0.08)] ring-1 ring-slate-900/[0.03]">
-        <div className="border-b border-white/10 bg-gradient-to-br from-[#0033A1] via-[#0047CC] to-[#0051FF] px-6 py-6 text-white">
+      <div className="overflow-hidden rounded-2xl border border-stanbic-border bg-white shadow-sm">
+        <div className="border-b border-white/10 bg-gradient-to-br from-stanbic-primary via-[#0047CC] to-stanbic-secondary px-6 py-6 text-white">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/75">
@@ -89,7 +89,7 @@ function AssessmentReadOnlyLight({
           </div>
         </div>
         <div className="px-6 py-6">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-stanbic-text/45">
             Criteria breakdown
           </p>
           <div className="mt-4 space-y-5">
@@ -105,11 +105,11 @@ function AssessmentReadOnlyLight({
       </div>
 
       {existing.notes ? (
-        <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/90 to-white p-5 shadow-sm ring-1 ring-amber-900/5">
-          <p className="text-xs font-semibold uppercase tracking-wide text-amber-900/90">
+        <div className="rounded-xl border border-stanbic-border/70 bg-stanbic-canvas/40 p-5">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-stanbic-text/50">
             Analyst notes
           </p>
-          <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-slate-800">
+          <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-stanbic-text">
             {existing.notes}
           </p>
         </div>
@@ -207,27 +207,27 @@ export const IdeaAssessmentSection: React.FC<IdeaAssessmentSectionProps> = ({
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className={detailSectionLabel}>Assessment</p>
-            <p className="mt-2 max-w-lg text-sm text-slate-600">
+            <p className="mt-2 max-w-lg text-sm leading-relaxed text-stanbic-text/70">
               Review scores and notes from the innovation team. Creating or
               changing an assessment requires an administrator account.
             </p>
           </div>
-          <span className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600">
+          <span className="rounded-md border border-stanbic-border bg-stanbic-canvas/50 px-2.5 py-1 text-xs font-medium text-stanbic-text/75">
             View only
           </span>
         </div>
 
         <div className="mt-6">
           {!existing ? (
-            <div className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center">
+            <div className="rounded-xl border border-dashed border-stanbic-border/80 bg-white px-6 py-14 text-center">
               <ChartBarIcon
-                className="mx-auto h-10 w-10 text-slate-300"
+                className="mx-auto h-10 w-10 text-stanbic-border"
                 aria-hidden
               />
-              <p className="mt-4 text-sm font-medium text-slate-800">
+              <p className="mt-4 text-sm font-medium text-stanbic-text">
                 No assessment yet
               </p>
-              <p className="mx-auto mt-2 max-w-sm text-sm text-slate-500">
+              <p className="mx-auto mt-2 max-w-sm text-sm text-stanbic-text/60">
                 When scoring is complete, the weighted result and criteria will
                 show here.
               </p>
@@ -247,7 +247,7 @@ export const IdeaAssessmentSection: React.FC<IdeaAssessmentSectionProps> = ({
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className={detailSectionLabel}>Assessment</p>
-            <p className="mt-2 max-w-lg text-sm text-slate-600">
+            <p className="mt-2 max-w-lg text-sm leading-relaxed text-stanbic-text/70">
               Weighted score and criteria for this idea. Select Edit to change
               scores or analyst notes.
             </p>
@@ -273,14 +273,14 @@ export const IdeaAssessmentSection: React.FC<IdeaAssessmentSectionProps> = ({
   return (
     <section className="pb-24 lg:pb-0">
       <p className={detailSectionLabel}>Assessment</p>
-      <p className="mt-2 text-sm text-slate-600">
+      <p className="mt-2 text-sm leading-relaxed text-stanbic-text/70">
         {existing
           ? "Adjust scores or notes below, then save. Others can view this assessment but only administrators can change it."
           : "One assessment per idea (IdeaHub). Add scores below. Only administrators can score ideas. Analyst notes are stored on the assessment record."}
       </p>
 
       {error ? (
-        <p className="mt-3 text-sm text-red-600">{error}</p>
+        <p className="mt-3 text-sm text-red-700">{error}</p>
       ) : null}
 
       <div className="mt-6 grid gap-8 lg:grid-cols-12 lg:items-stretch">
@@ -303,8 +303,8 @@ export const IdeaAssessmentSection: React.FC<IdeaAssessmentSectionProps> = ({
             previewBand={previewBand}
             previewStyle={previewStyle}
             desktopFooter={
-              <div className="rounded-xl border border-slate-200/90 bg-slate-50/90 px-4 py-3 text-xs leading-relaxed text-slate-600">
-                <span className="font-semibold text-slate-800">Tip:</span>{" "}
+              <div className="mt-3 rounded-lg border border-stanbic-border/60 bg-stanbic-canvas/50 px-4 py-3 text-xs leading-relaxed text-stanbic-text/65">
+                <span className="font-semibold text-stanbic-text">Tip:</span>{" "}
                 Adjust sliders — the preview updates in real time. Save when
                 you are ready to sync with IdeaHub.
               </div>

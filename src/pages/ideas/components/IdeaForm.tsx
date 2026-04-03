@@ -1,5 +1,11 @@
-import React from "react";
-import { Card, Stepper, ConfirmationModal } from "../../../components/ui";
+import React, { useMemo } from "react";
+import {
+  Card,
+  ConfirmationModal,
+  PageHeader,
+  Stepper,
+  type BreadcrumbItem,
+} from "@/components/ui";
 import {
   useConfirmation,
   useIdeaForm,
@@ -16,11 +22,6 @@ import {
   FormStatus,
 } from "./form-steps";
 import { getIdeaFormSteps } from "../../../constants/idea-form";
-import {
-  PAGE_HERO_HEADER_CLASS,
-  PAGE_HERO_PATTERN_LIGHT,
-  PAGE_HERO_SURFACE,
-} from "@/constants/pageHero";
 import type {
   IdeahubIdeaCategory,
   IdeahubIdeaSource,
@@ -69,6 +70,27 @@ export const IdeaForm: React.FC<IdeaFormProps> = ({
   const { confirmation, showConfirmation, hideConfirmation } = useConfirmation();
 
   const editing = !!editingIdea;
+
+  const formBreadcrumbs: BreadcrumbItem[] = useMemo(() => {
+    if (editing) {
+      return [{ label: "Idea Bank", to: "/ideas" }, { label: "Edit idea" }];
+    }
+    if (isAuthenticated) {
+      return [
+        { label: "Idea Bank", to: "/ideas" },
+        { label: "New submission" },
+      ];
+    }
+    return [
+      { label: "Staff sign in", to: "/login" },
+      { label: "Guest submission" },
+    ];
+  }, [editing, isAuthenticated]);
+
+  const formTitle = editing ? "Refine your idea" : "Share a new idea";
+  const formDescription = editing
+    ? "Update details below, then review and save."
+    : "Start with the source, then category, then title and description. No file uploads — IdeaHub stores title and description only.";
 
   const handleSubmit = () => {
     if (!canSubmit()) return;
@@ -127,75 +149,22 @@ export const IdeaForm: React.FC<IdeaFormProps> = ({
     (!isAuthenticated && currentStep === 5);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50/50 via-slate-50 to-neutral-100/90">
-      <header className={PAGE_HERO_HEADER_CLASS}>
-        <div className={PAGE_HERO_SURFACE} aria-hidden />
-        <div
-          className="absolute inset-0 opacity-80"
-          style={{ backgroundImage: PAGE_HERO_PATTERN_LIGHT }}
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -left-20 top-1/4 h-56 w-56 rounded-full bg-indigo-200/25 blur-3xl"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -right-20 top-6 h-64 w-64 rounded-full bg-blue-200/20 blur-3xl"
-          aria-hidden
-        />
+    <div className="min-h-screen bg-stanbic-canvas">
+      <PageHeader
+        breadcrumbs={formBreadcrumbs}
+        title={formTitle}
+        description={formDescription}
+      />
 
-        <div className="relative z-10 mx-auto max-w-4xl px-4 pb-5 pt-6 sm:px-6 sm:pb-6 sm:pt-7">
-          {/* Editing: return to list. Guest new idea: return to staff sign-in. */}
-          {onCancel && editing ? (
-            <button
-              type="button"
-              onClick={onCancel}
-              className="text-sm font-medium text-slate-600 underline-offset-4 transition hover:text-slate-900 hover:underline"
-            >
-              ← Back to ideas
-            </button>
-          ) : null}
-          {onCancel && !editing && !isAuthenticated ? (
-            <button
-              type="button"
-              onClick={onCancel}
-              className="text-sm font-medium text-slate-600 underline-offset-4 transition hover:text-slate-900 hover:underline"
-            >
-              ← Back to sign in
-            </button>
-          ) : null}
+      <div className="mx-auto max-w-4xl space-y-5 px-4 pb-16 pt-8 sm:px-6">
+        <Card className="border-stanbic-border p-4 shadow-sm sm:p-5">
+          <Stepper
+            steps={formSteps}
+            currentStep={currentStep}
+            loading={loading}
+          />
+        </Card>
 
-          <div
-            className={
-              (onCancel && editing) || (onCancel && !editing && !isAuthenticated)
-                ? 'mt-4'
-                : ''
-            }
-          >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 sm:text-[11px]">
-              Stanbic Bank · Innovation
-            </p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight text-gray-900 sm:text-[2rem]">
-              {editing ? "Refine your idea" : "Share a new idea"}
-            </h1>
-            <p className="mt-2 max-w-2xl text-xs leading-relaxed text-gray-600 sm:text-sm">
-              {editing
-                ? "Update details below, then review and save."
-                : "Start with the source, then category, then title and description. No file uploads — IdeaHub stores title and description only."}
-            </p>
-          </div>
-
-          <div className="mt-5 rounded-xl border border-slate-200/90 bg-white/90 px-3 py-3 shadow-sm sm:mt-6 sm:px-4 sm:py-4">
-            <Stepper
-              steps={formSteps}
-              currentStep={currentStep}
-              loading={loading}
-            />
-          </div>
-        </div>
-      </header>
-
-      <div className="relative z-10 mx-auto max-w-4xl space-y-5 px-4 pb-16 pt-5 sm:px-6">
         <FormStatus error={error} loading={loading} />
 
         {currentStep === 1 && (
@@ -247,7 +216,7 @@ export const IdeaForm: React.FC<IdeaFormProps> = ({
         <Card
           padding="none"
           rounded="xl"
-          className="border-0 bg-white/95 shadow-[0_18px_50px_-24px_rgba(0,51,161,0.44),0_10px_22px_-16px_rgba(15,23,42,0.28)] ring-1 ring-slate-200/70 backdrop-blur-[1.5px]"
+          className="border-stanbic-border shadow-sm"
         >
           <div className="px-4 py-3 sm:px-5 sm:py-4">
             <FormNavigation

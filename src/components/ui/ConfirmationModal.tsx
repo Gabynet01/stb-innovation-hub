@@ -136,9 +136,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 />
 
                 {/* Modal */}
-                <div className="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div className="relative transform overflow-hidden rounded-lg border border-stanbic-border bg-white text-left text-stanbic-text shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                     {/* Header */}
-                    <div className="bg-white px-6 py-4 border-b border-slate-200">
+                    <div className="border-b border-stanbic-border bg-white px-6 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
                                 <div className={`p-2 rounded-xl ${styles.iconBg}`}>
@@ -146,7 +146,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                                         {getIcon()}
                                     </div>
                                 </div>
-                                <h3 className={`text-lg font-semibold ${styles.title}`}>
+                                <h3 className={`text-base font-medium leading-[130%] ${styles.title}`}>
                                     {title}
                                 </h3>
                             </div>
@@ -162,13 +162,13 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
                     {/* Content */}
                     <div className="px-6 py-4">
-                        <p className={`text-sm ${styles.message}`}>
+                        <p className={`text-sm font-normal leading-[130%] ${styles.message}`}>
                             {message}
                         </p>
                     </div>
 
                     {/* Actions */}
-                    <div className="bg-slate-50 px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3 space-y-3 space-y-reverse">
+                    <div className="flex flex-col-reverse space-y-3 space-y-reverse border-t border-stanbic-border bg-stanbic-canvas px-6 py-4 sm:flex-row sm:justify-end sm:space-x-3">
                         <button
                             type="button"
                             onClick={handleClose}

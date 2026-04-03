@@ -57,6 +57,36 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
     sources.find((s) => s.id === formData.source_id)?.name ?? "—";
   const cat = categories.find((c) => c.id === formData.category_id);
 
+  const contactRows: { label: string; value: React.ReactNode }[] = [];
+  if (formData.contact.email) {
+    contactRows.push({ label: "Email", value: formData.contact.email });
+  }
+  if (formData.contact.phone) {
+    contactRows.push({ label: "Phone", value: formData.contact.phone });
+  }
+
+  const reviewThead = (
+    <thead>
+      <tr className="border-b border-stanbic-border bg-white">
+        <th
+          scope="col"
+          className="w-1/3 px-3 py-3 text-left text-sm font-medium leading-[130%] text-stanbic-text sm:px-4"
+        >
+          Field
+        </th>
+        <th
+          scope="col"
+          className="px-3 py-3 text-left text-sm font-medium leading-[130%] text-stanbic-text sm:px-4"
+        >
+          Value
+        </th>
+      </tr>
+    </thead>
+  );
+
+  const stripe = (i: number) =>
+    i % 2 === 1 ? "bg-stanbic-canvas" : "bg-white";
+
   return (
     <div className="mb-1">
       <IdeaFormStepIntro
@@ -66,46 +96,47 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
 
       <div className={ideaFormReviewPanelClass}>
         <div className="space-y-3">
-          <div className="overflow-hidden rounded-xl border border-slate-200">
+          <div className="overflow-hidden rounded-xl border border-stanbic-border">
             <AccordionBar
               title="Idea & classification"
               open={!!expandedSections.basicInfo}
               onClick={() => onToggleSection("basicInfo")}
             />
             {expandedSections.basicInfo && (
-              <div className="border-t border-slate-100 px-4 py-4 sm:px-5">
-                <div className="overflow-hidden rounded-lg border border-slate-200">
-                  <table className="w-full">
-                    <tbody className="divide-y divide-slate-200">
-                      <tr className="bg-slate-50">
-                        <td className="w-1/3 px-3 py-2 text-xs font-medium text-slate-700 sm:px-4 sm:text-sm">
+              <div className="border-t border-stanbic-border/60 px-4 py-4 sm:px-5">
+                <div className="overflow-hidden rounded-lg border border-stanbic-border">
+                  <table className="w-full text-left text-sm">
+                    {reviewThead}
+                    <tbody>
+                      <tr className={stripe(0)}>
+                        <td className="w-1/3 px-3 py-2.5 text-xs font-medium leading-[130%] text-stanbic-text sm:px-4 sm:text-sm">
                           Title
                         </td>
-                        <td className="px-3 py-2 text-xs text-slate-900 sm:px-4 sm:text-sm">
+                        <td className="px-3 py-2.5 text-xs font-normal leading-[130%] text-stanbic-text sm:px-4 sm:text-sm">
                           {formData.title}
                         </td>
                       </tr>
-                      <tr>
-                        <td className="px-3 py-2 text-xs font-medium text-slate-700 sm:px-4 sm:text-sm align-top">
+                      <tr className={stripe(1)}>
+                        <td className="px-3 py-2.5 text-xs font-medium leading-[130%] text-stanbic-text sm:px-4 sm:text-sm align-top">
                           Description
                         </td>
-                        <td className="max-w-md whitespace-pre-wrap px-3 py-2 text-xs text-slate-900 sm:px-4 sm:text-sm">
+                        <td className="max-w-md whitespace-pre-wrap px-3 py-2.5 text-xs font-normal leading-[130%] text-stanbic-text sm:px-4 sm:text-sm">
                           {formData.description}
                         </td>
                       </tr>
-                      <tr className="bg-slate-50">
-                        <td className="px-3 py-2 text-xs font-medium text-slate-700 sm:px-4 sm:text-sm">
+                      <tr className={stripe(2)}>
+                        <td className="px-3 py-2.5 text-xs font-medium leading-[130%] text-stanbic-text sm:px-4 sm:text-sm">
                           Collection source
                         </td>
-                        <td className="px-3 py-2 text-xs text-slate-900 sm:px-4 sm:text-sm">
+                        <td className="px-3 py-2.5 text-xs font-normal leading-[130%] text-stanbic-text sm:px-4 sm:text-sm">
                           {sourceName}
                         </td>
                       </tr>
-                      <tr>
-                        <td className="px-3 py-2 text-xs font-medium text-slate-700 sm:px-4 sm:text-sm">
+                      <tr className={stripe(3)}>
+                        <td className="px-3 py-2.5 text-xs font-medium leading-[130%] text-stanbic-text sm:px-4 sm:text-sm">
                           Idea Category
                         </td>
-                        <td className="px-3 py-2 text-xs text-slate-900 sm:px-4 sm:text-sm">
+                        <td className="px-3 py-2.5 text-xs font-normal leading-[130%] text-stanbic-text sm:px-4 sm:text-sm">
                           {cat?.name ?? "—"}
                         </td>
                       </tr>
@@ -143,42 +174,34 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
           </div>
 
           {!isAuthenticated ? (
-            <div className="overflow-hidden rounded-xl border border-slate-200">
+            <div className="overflow-hidden rounded-xl border border-stanbic-border">
               <AccordionBar
                 title="Contact"
                 open={!!expandedSections.contactInfo}
                 onClick={() => onToggleSection("contactInfo")}
               />
               {expandedSections.contactInfo && (
-                <div className="border-t border-slate-100 px-4 py-4 sm:px-5">
-                  <div className="overflow-hidden rounded-lg border border-slate-200">
-                    <table className="w-full">
-                      <tbody className="divide-y divide-slate-200">
-                        {formData.contact.email && (
-                          <tr className="bg-slate-50">
-                            <td className="w-1/3 px-3 py-2 text-xs font-medium text-slate-700 sm:px-4 sm:text-sm">
-                              Email
-                            </td>
-                            <td className="px-3 py-2 text-xs text-slate-900 sm:px-4 sm:text-sm">
-                              {formData.contact.email}
-                            </td>
-                          </tr>
-                        )}
-                        {formData.contact.phone && (
-                          <tr>
-                            <td className="px-3 py-2 text-xs font-medium text-slate-700 sm:px-4 sm:text-sm">
-                              Phone
-                            </td>
-                            <td className="px-3 py-2 text-xs text-slate-900 sm:px-4 sm:text-sm">
-                              {formData.contact.phone}
-                            </td>
-                          </tr>
-                        )}
-                        {!formData.contact.email && !formData.contact.phone && (
-                          <tr className="bg-slate-50">
+                <div className="border-t border-stanbic-border/60 px-4 py-4 sm:px-5">
+                  <div className="overflow-hidden rounded-lg border border-stanbic-border">
+                    <table className="w-full text-left text-sm">
+                      {reviewThead}
+                      <tbody>
+                        {contactRows.length > 0 ? (
+                          contactRows.map((row, i) => (
+                            <tr key={row.label} className={stripe(i)}>
+                              <td className="w-1/3 px-3 py-2.5 text-xs font-medium leading-[130%] text-stanbic-text sm:px-4 sm:text-sm">
+                                {row.label}
+                              </td>
+                              <td className="px-3 py-2.5 text-xs font-normal leading-[130%] text-stanbic-text sm:px-4 sm:text-sm">
+                                {row.value}
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr className={stripe(0)}>
                             <td
                               colSpan={2}
-                              className="px-3 py-2 text-xs italic text-slate-500 sm:px-4 sm:text-sm"
+                              className="px-3 py-2.5 text-xs font-normal italic leading-[130%] text-stanbic-text/60 sm:px-4 sm:text-sm"
                             >
                               No contact details
                             </td>
@@ -201,7 +224,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
               )}
             </div>
           ) : (
-            <p className="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-600">
+            <p className="rounded-xl border border-stanbic-border bg-stanbic-canvas/80 px-4 py-3 text-sm font-normal leading-[130%] text-stanbic-text/75">
               You are signed in — IdeaHub will record you as the internal submitter.
               Contact fields were not required.
             </p>

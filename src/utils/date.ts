@@ -22,16 +22,42 @@ export function formatDate(
 }
 
 /**
- * Formats a date string to include time
+ * Formats a date string to include date and time (locale-aware).
  */
 export function formatDateTime(dateString: string): string {
-  return formatDate(dateString, {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) {
+    return "Invalid date";
+  }
+  return date.toLocaleString(undefined, {
     year: "numeric",
     month: "short",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+/**
+ * User-facing line for a generated document row (idea detail / documents list).
+ */
+export function formatDocumentGenerationLabel(
+  generationStatus: string,
+  createdAt: string,
+  updatedAt: string
+): string {
+  const line = (prefix: string, iso: string) => {
+    const t = new Date(iso).getTime();
+    const body = Number.isNaN(t) ? "—" : formatDateTime(iso);
+    return `${prefix} ${body}`;
+  };
+  if (generationStatus === "completed") {
+    return line("Generated", updatedAt);
+  }
+  if (generationStatus === "pending") {
+    return line("Requested", createdAt);
+  }
+  return line("Last updated", updatedAt);
 }
 
 /**

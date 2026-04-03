@@ -74,18 +74,10 @@ export const FormNavigation: React.FC<FormNavigationProps> = ({
             size="md"
             className="w-full bg-gradient-to-r from-[#0051FF] to-[#0047E6] hover:from-[#0047E6] hover:to-[#0038CC] sm:w-auto"
             disabled={!canSubmit || loading}
+            loading={loading}
             onClick={onSubmit}
           >
-            {loading ? (
-              <span className="inline-flex items-center gap-2">
-                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Submitting…
-              </span>
-            ) : editingIdea ? (
-              "Update idea"
-            ) : (
-              "Submit idea"
-            )}
+            {editingIdea ? "Update idea" : "Submit idea"}
           </Button>
 
           {!canSubmit && (

@@ -7,6 +7,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        /** Stanbic UI system (tables, tabs, layout) */
+        stanbic: {
+          primary: '#0033AA',
+          secondary: '#0051FF',
+          border: '#CED3D9',
+          text: '#222E37',
+          canvas: '#F4F5F7',
+        },
         // Stanbic Bank Brand Colors (Updated - Electric Blue Primary)
         'stanbic-bank': {
           50: '#F0F7FF',   // Very light blue tint
@@ -74,9 +82,11 @@ module.exports = {
         }
       },
       fontFamily: {
-        'sans': ['Benton Sans Pro', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        'display': ['Benton Sans Pro', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        'brand': ['Benton Sans Pro', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        'sans': ['Benton Sans Pro', 'Outfit', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        'display': ['Benton Sans Pro', 'Outfit', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        'brand': ['Benton Sans Pro', 'Outfit', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        /** Idea detail “book” reading column */
+        'reader': ['"Source Serif 4"', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
       },
       fontWeight: {
         'benton-thin': '100',

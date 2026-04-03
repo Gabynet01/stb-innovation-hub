@@ -1,7 +1,8 @@
 // MainLayout Component Styles using Tailwind CSS
 .main-layout {
   /* overflow-x-hidden can make overflow-y computed as auto and break position:sticky for fixed columns */
-  @apply min-h-screen bg-gray-50 overflow-x-clip;
+  @apply min-h-screen overflow-x-clip;
+  background-color: #f4f5f7;
 
   &__content {
     @apply flex pt-24;
@@ -32,7 +33,8 @@
   }
 
   &__main-card {
-    @apply bg-white rounded-3xl shadow-lg border border-gray-200 p-8 min-h-[calc(100vh-200px)];
+    @apply bg-white rounded-3xl p-8 min-h-[calc(100vh-200px)] shadow-md;
+    border: 1px solid #ced3d9;
   }
 }
 

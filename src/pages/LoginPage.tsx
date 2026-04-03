@@ -147,10 +147,10 @@ export const LoginPage: React.FC = () => {
             <Button
               type="submit"
               variant="primary"
-              disabled={loading}
+              loading={loading}
               className="w-full !min-h-[48px] !bg-[#0051FF] hover:!bg-[#0033A1] focus:ring-[#0051FF]/30"
             >
-              {loading ? "Signing in…" : "Sign in"}
+              Sign in
             </Button>
           </form>
 

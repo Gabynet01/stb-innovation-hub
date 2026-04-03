@@ -15,6 +15,7 @@ import {
   LoadingSpinner,
   CompactErrorWithToast,
   ConfirmationModal,
+  PageHeader,
   SegmentedTabs,
 } from "@/components/ui";
 import { useConfirmation } from "@/hooks/useConfirmation";
@@ -27,7 +28,6 @@ import {
   ASSESSED_PAGE_SIZE,
 } from "./assessmentConstants";
 import {
-  AssessmentsHeader,
   AssessmentWorkspace,
   PendingAssessmentQueue,
   CompletedAssessmentCards,
@@ -319,7 +319,7 @@ export const AssessmentsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-gradient-to-b from-blue-50/40 via-slate-50 to-neutral-100/85">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-stanbic-canvas">
         <LoadingSpinner size="lg" color="primary" />
         <p className="text-sm font-medium text-[#0033A1]/80">
           Loading assessments…
@@ -330,10 +330,17 @@ export const AssessmentsPage: React.FC = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-blue-50/40 via-slate-50 to-neutral-100/85">
-        <AssessmentsHeader />
+      <div className="min-h-screen bg-stanbic-canvas">
+        <PageHeader
+          breadcrumbs={[
+            { label: "Dashboard", to: "/dashboard" },
+            { label: "Idea assessments" },
+          ]}
+          title="Idea assessments"
+          description="Work the queue of unaudited ideas, then browse completed scores. New assessments open only after you choose an idea from the awaiting list."
+        />
 
-        <div className="mx-auto max-w-6xl space-y-6 px-4 pb-20 pt-6 sm:px-6 sm:pt-8">
+        <div className="mx-auto max-w-6xl space-y-6 px-4 pb-20 pt-8 sm:px-6">
           {!isAdmin ? (
             <p
               className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-sm"
@@ -359,6 +366,7 @@ export const AssessmentsPage: React.FC = () => {
 
           <SegmentedTabs<AssessmentsMainTab>
             aria-label="Assessment views"
+            variant="filled"
             panelId="assessments-main-panel"
             items={[
               {
@@ -381,7 +389,7 @@ export const AssessmentsPage: React.FC = () => {
             id="assessments-main-panel"
             aria-labelledby={`segmented-tab-${mainTab}`}
           >
-            <Card className="border-slate-200 p-4 shadow-sm sm:p-6">
+            <Card className="border-stanbic-border p-4 shadow-sm sm:p-6">
               {mainTab === "pending" && (
                 <PendingAssessmentQueue
                   pendingIdeas={pendingIdeas}

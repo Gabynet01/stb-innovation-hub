@@ -43,15 +43,15 @@ export const SimpleModal: React.FC<SimpleModalProps> = ({
           onClick={onClose}
         />
         <div
-          className={`relative flex max-h-[min(90vh,880px)] w-full flex-col transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 ${maxW}`}
+          className={`relative flex max-h-[min(90vh,880px)] w-full flex-col transform overflow-hidden rounded-lg border border-stanbic-border bg-white text-left text-stanbic-text shadow-2xl transition-all sm:my-8 ${maxW}`}
           role="dialog"
           aria-modal="true"
           aria-labelledby="simple-modal-title"
         >
-          <div className="flex shrink-0 items-center justify-between border-b border-white/15 bg-gradient-to-br from-[#0033A1] via-[#0051FF] to-[#0047E6] px-6 py-4">
+          <div className="flex shrink-0 items-center justify-between bg-stanbic-primary px-6 py-4">
             <h2
               id="simple-modal-title"
-              className="text-lg font-semibold tracking-tight text-white"
+              className="text-base font-medium leading-[130%] text-white"
             >
               {title}
             </h2>
@@ -59,14 +59,16 @@ export const SimpleModal: React.FC<SimpleModalProps> = ({
               type="button"
               onClick={onClose}
               aria-label="Close dialog"
-              className="rounded-lg p-1 text-white/85 transition hover:bg-white/15 hover:text-white"
+              className="rounded-md p-1 text-white transition hover:bg-white/15"
             >
               <XMarkIcon className="h-5 w-5" />
             </button>
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto px-6 py-4">{children}</div>
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 py-4 text-sm font-normal leading-[130%]">
+            {children}
+          </div>
           {footer && (
-            <div className="flex shrink-0 flex-col-reverse gap-2 border-t border-slate-100 bg-slate-50 px-6 py-4 sm:flex-row sm:justify-end">
+            <div className="flex shrink-0 flex-col-reverse gap-2 border-t border-stanbic-border bg-stanbic-canvas px-6 py-4 sm:flex-row sm:justify-end">
               {footer}
             </div>
           )}

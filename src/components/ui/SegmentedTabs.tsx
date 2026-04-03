@@ -7,11 +7,18 @@ export interface SegmentedTabItem<T extends string = string> {
   count?: number;
 }
 
+export type SegmentedTabsVariant = "underline" | "filled";
+
 export interface SegmentedTabsProps<T extends string = string> {
   items: SegmentedTabItem<T>[];
   value: T;
   onChange: (id: T) => void;
   className?: string;
+  /**
+   * `underline` — primary blue + bottom bar (many tabs, filters).
+   * `filled` — secondary blue fill on selected, white on rest (toggle group).
+   */
+  variant?: SegmentedTabsVariant;
   /** When true, tabs stay on one row with horizontal scroll (many tabs, e.g. idea categories). */
   nowrap?: boolean;
   /** Set to the `id` of the associated `role="tabpanel"` element for accessibility. */
@@ -19,19 +26,70 @@ export interface SegmentedTabsProps<T extends string = string> {
   "aria-label"?: string;
 }
 
-/**
- * Pill-style section tabs (same pattern as Administration).
- */
 export function SegmentedTabs<T extends string>({
   items,
   value,
   onChange,
   className = "",
+  variant = "underline",
   nowrap = false,
   panelId,
   "aria-label": ariaLabel,
 }: SegmentedTabsProps<T>) {
-  const flow = nowrap
+  if (variant === "filled") {
+    const scroll = nowrap
+      ? "flex-nowrap overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]"
+      : "flex-wrap";
+    return (
+      <div
+        role="tablist"
+        aria-label={ariaLabel}
+        className={`w-full rounded-md border border-stanbic-border bg-stanbic-canvas p-0.5 ${className}`}
+      >
+        <div className={`flex min-h-[2.75rem] gap-0.5 ${scroll}`}>
+          {items.map((item) => {
+            const selected = value === item.id;
+            const hasCount = item.count !== undefined;
+            const widthGrow = nowrap
+              ? "shrink-0 grow-0"
+              : "min-w-[8rem] flex-1";
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                id={`segmented-tab-${String(item.id)}`}
+                aria-selected={selected}
+                {...(panelId ? { "aria-controls": panelId } : {})}
+                onClick={() => onChange(item.id)}
+                className={`inline-flex min-h-[2.5rem] items-center justify-center gap-1.5 rounded px-3 py-2 text-center text-sm font-medium leading-[130%] tracking-normal transition-colors sm:px-4 ${widthGrow} ${
+                  nowrap ? "min-w-[8rem]" : ""
+                } ${
+                  selected
+                    ? "bg-stanbic-secondary text-white shadow-sm"
+                    : "bg-white text-stanbic-text hover:bg-white"
+                }`}
+              >
+                <span className="truncate">{item.label}</span>
+                {hasCount ? (
+                  <span
+                    className={`shrink-0 tabular-nums text-xs font-medium ${
+                      selected ? "text-white/90" : "text-stanbic-text/50"
+                    }`}
+                    aria-label={`${item.count} items`}
+                  >
+                    {item.count}
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  const scroll = nowrap
     ? "flex-nowrap overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]"
     : "flex-wrap";
 
@@ -39,40 +97,48 @@ export function SegmentedTabs<T extends string>({
     <div
       role="tablist"
       aria-label={ariaLabel}
-      className={`flex gap-2 rounded-xl border border-slate-200 bg-white p-1.5 shadow-sm ${flow} ${className}`}
+      className={`w-full bg-white ${className}`}
     >
-      {items.map((item) => {
-        const selected = value === item.id;
-        const hasCount = item.count !== undefined;
-        return (
-          <button
-            key={item.id}
-            type="button"
-            role="tab"
-            id={`segmented-tab-${String(item.id)}`}
-            aria-selected={selected}
-            {...(panelId ? { "aria-controls": panelId } : {})}
-            onClick={() => onChange(item.id)}
-            className={`inline-flex max-w-[min(100%,280px)] shrink-0 items-center gap-2 rounded-lg border-2 px-4 py-2.5 text-sm font-semibold transition ${selected
-                ? "border-[#0051FF] bg-[#F0F7FF] text-slate-900 shadow-sm"
-                : "border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50"
+      <div
+        className={`flex min-h-[3rem] gap-0 border-b border-stanbic-border ${scroll}`}
+      >
+        {items.map((item) => {
+          const selected = value === item.id;
+          const hasCount = item.count !== undefined;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              id={`segmented-tab-${String(item.id)}`}
+              aria-selected={selected}
+              {...(panelId ? { "aria-controls": panelId } : {})}
+              onClick={() => onChange(item.id)}
+              className={`relative inline-flex min-h-[3rem] max-w-[min(100%,320px)] shrink-0 justify-center px-4 text-center text-sm font-medium leading-[130%] tracking-normal transition-colors sm:px-5 ${
+                selected
+                  ? "items-end pb-2 pt-3 text-stanbic-primary after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-sm after:bg-stanbic-primary sm:after:inset-x-4"
+                  : "items-center py-3 text-stanbic-text/55 hover:text-stanbic-text"
               }`}
-          >
-            <span className="min-w-0 truncate text-left">{item.label}</span>
-            {hasCount ? (
-              <span
-                className={`inline-flex min-h-5 min-w-[1.25rem] shrink-0 items-center justify-center rounded-md px-2 text-[11px] font-bold tabular-nums leading-none ${selected
-                    ? "bg-[#0051FF]/15 text-[#0033A1]"
-                    : "border border-slate-200/90 bg-slate-100 text-slate-700"
-                  }`}
-                aria-label={`${item.count} items`}
-              >
-                {item.count}
+            >
+              <span className="inline-flex min-w-0 items-center gap-1.5">
+                <span className="truncate">{item.label}</span>
+                {hasCount ? (
+                  <span
+                    className={`shrink-0 tabular-nums text-xs font-medium ${
+                      selected
+                        ? "text-stanbic-secondary"
+                        : "text-stanbic-text/45"
+                    }`}
+                    aria-label={`${item.count} items`}
+                  >
+                    {item.count}
+                  </span>
+                ) : null}
               </span>
-            ) : null}
-          </button>
-        );
-      })}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

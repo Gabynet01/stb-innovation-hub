@@ -23,7 +23,7 @@ export const AssessmentLivePreviewPanel: React.FC<
   className = "",
 }) => (
   <div
-    className={`relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_8px_40px_-12px_rgba(0,51,161,0.18)] ring-1 ring-slate-900/[0.04] ${className}`}
+    className={`relative overflow-hidden rounded-2xl border border-stanbic-border bg-white shadow-[0_4px_24px_-8px_rgba(34,46,55,0.12)] ring-1 ring-black/[0.03] ${className}`}
   >
     <div
       className="pointer-events-none absolute inset-0 opacity-[0.35]"
@@ -33,7 +33,7 @@ export const AssessmentLivePreviewPanel: React.FC<
       }}
       aria-hidden
     />
-    <div className="relative border-b border-slate-100/90 bg-gradient-to-br from-[#0033A1] via-[#0047CC] to-[#0051FF] px-6 py-6 text-white">
+    <div className="relative border-b border-white/10 bg-gradient-to-br from-stanbic-primary via-[#0047CC] to-stanbic-secondary px-6 py-6 text-white">
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/75">
         Live preview
       </p>
@@ -46,8 +46,8 @@ export const AssessmentLivePreviewPanel: React.FC<
       </p>
       <p className="mt-1 text-sm font-medium text-white/85">Weighted score</p>
     </div>
-    <div className="relative px-6 py-5">
-      <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+    <div className="relative bg-white px-6 py-5">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-stanbic-text/45">
         Priority band
       </p>
       <div className="mt-3">
@@ -62,7 +62,7 @@ export const AssessmentLivePreviewPanel: React.FC<
         </span>
       </div>
       {hint ? (
-        <p className="mt-4 text-xs leading-relaxed text-slate-500">{hint}</p>
+        <p className="mt-4 text-xs leading-relaxed text-stanbic-text/55">{hint}</p>
       ) : null}
     </div>
   </div>
