@@ -1,7 +1,7 @@
 import React from "react";
 import { IdeaDetail } from "./IdeaDetail";
 import { Idea } from "@/types/api";
-import type { IdeahubIdeaAssessment } from "@/types/ideahub";
+import type { IdeahubIdeaAssessment, IdeahubIdeaStatus } from "@/types/ideahub";
 
 export interface IdeaDetailViewProps {
   selectedIdea: Idea;
@@ -9,6 +9,7 @@ export interface IdeaDetailViewProps {
   onDelete: (id: string) => Promise<void>;
   onBack: () => void;
   onAssessmentSaved?: (assessment: IdeahubIdeaAssessment) => void;
+  onStatusChange?: (status: IdeahubIdeaStatus) => Promise<void>;
 }
 
 export const IdeaDetailView: React.FC<IdeaDetailViewProps> = ({
@@ -17,6 +18,7 @@ export const IdeaDetailView: React.FC<IdeaDetailViewProps> = ({
   onDelete,
   onBack,
   onAssessmentSaved,
+  onStatusChange,
 }) => {
   return (
     <div className="flex w-full flex-col">
@@ -28,6 +30,7 @@ export const IdeaDetailView: React.FC<IdeaDetailViewProps> = ({
         }}
         onClose={onBack}
         onAssessmentSaved={onAssessmentSaved}
+        onStatusChange={onStatusChange}
       />
     </div>
   );

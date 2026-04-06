@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Idea } from "@/types/api";
-import type { IdeahubIdeaAssessment } from "@/types/ideahub";
+import type { IdeahubIdeaAssessment, IdeahubIdeaStatus } from "@/types/ideahub";
 import { Card, ConfirmationModal, SegmentedTabs } from "@/components/ui";
 import { useConfirmation } from "@/hooks/useConfirmation";
 import { IdeaHeader } from "./IdeaHeader";
@@ -23,6 +23,7 @@ interface IdeaDetailProps {
   onDelete?: (id: string) => void;
   /** Merge saved assessment into the open idea without relying on list refresh alone. */
   onAssessmentSaved?: (assessment: IdeahubIdeaAssessment) => void;
+  onStatusChange?: (status: IdeahubIdeaStatus) => Promise<void>;
 }
 
 export const IdeaDetail: React.FC<IdeaDetailProps> = ({
@@ -31,6 +32,7 @@ export const IdeaDetail: React.FC<IdeaDetailProps> = ({
   onEdit,
   onDelete,
   onAssessmentSaved,
+  onStatusChange,
 }) => {
   const { confirmation, showConfirmation, hideConfirmation } = useConfirmation();
 
@@ -64,6 +66,7 @@ export const IdeaDetail: React.FC<IdeaDetailProps> = ({
           onClose={onClose}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onStatusChange={onStatusChange}
         />
         <main className={detailMainPadding}>
           <div className={detailInnerColumn}>

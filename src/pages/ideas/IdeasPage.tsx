@@ -12,6 +12,7 @@ import type {
   IdeahubIdeaAssessment,
   IdeahubIdeaCategory,
   IdeahubIdeaSource,
+  IdeahubIdeaStatus,
 } from '@/types/ideahub';
 import { mapAssessment } from '@/services/ideaHubMappers';
 
@@ -127,6 +128,15 @@ export const IdeasPage: React.FC = () => {
       cancelled = true;
     };
   }, [isAuthenticated, ideaIdFromUrl, view, selectedIdea?.id]);
+
+  /** Return to list when ideaId is removed from the URL (e.g. sidebar click). */
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    if (!ideaIdFromUrl && view === 'detail') {
+      setView('list');
+      setSelectedIdea(null);
+    }
+  }, [isAuthenticated, ideaIdFromUrl, view]);
 
   const renderConfirmationModal = () => {
     if (!confirmation) return null;
@@ -308,6 +318,34 @@ export const IdeasPage: React.FC = () => {
     [silentlyRefreshIdeas]
   );
 
+  const handleStatusChange = useCallback(
+    async (status: IdeahubIdeaStatus) => {
+      if (!selectedIdea) return;
+      try {
+        const res = await apiService.ideas.updateIdeaStatus(selectedIdea.id, status);
+        if (res.ok && res.data) {
+          setSelectedIdea(res.data);
+          showSnackbar({
+            type: 'success',
+            title: 'Status updated',
+            message: `Idea moved to ${status.replace(/_/g, ' ')}.`,
+            duration: 4000,
+          });
+          void silentlyRefreshIdeas();
+        }
+      } catch (err) {
+        showSnackbar({
+          type: 'error',
+          title: 'Status update failed',
+          message: err instanceof Error ? err.message : 'Please try again.',
+          duration: 6000,
+        });
+        throw err;
+      }
+    },
+    [selectedIdea, showSnackbar, silentlyRefreshIdeas]
+  );
+
   const listError = error || catalogError;
 
   return (
@@ -331,6 +369,7 @@ export const IdeasPage: React.FC = () => {
           onDelete={handleDeleteIdea}
           onBack={handleBackToList}
           onAssessmentSaved={handleAssessmentSaved}
+          onStatusChange={handleStatusChange}
         />
       )}
 
