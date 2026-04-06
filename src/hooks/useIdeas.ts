@@ -27,6 +27,8 @@ interface UseIdeasReturn {
 export type UseIdeasOptions = {
   /** When false, skip listing / refreshing ideas (guest submit-only). Default true. */
   listIdeasEnabled?: boolean;
+  /** Override the default filters on first mount (e.g. from URL params). */
+  initialFilters?: Partial<IdeaFilters>;
 };
 
 export const useIdeas = (options?: UseIdeasOptions): UseIdeasReturn => {
@@ -35,7 +37,10 @@ export const useIdeas = (options?: UseIdeasOptions): UseIdeasReturn => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<IdeaFilters>(DEFAULT_IDEA_FILTERS);
+  const [filters, setFilters] = useState<IdeaFilters>(() => ({
+    ...DEFAULT_IDEA_FILTERS,
+    ...options?.initialFilters,
+  }));
 
   const isMountedRef = useRef(true);
   useEffect(() => {

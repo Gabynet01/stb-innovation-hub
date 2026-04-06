@@ -20,6 +20,10 @@ export const IdeasPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+
+  // Read once at mount so useIdeas fetches with the right filter from the start
+  const [initialStatus] = useState(() => searchParams.get('ideahub_status') || '');
+
   const {
     ideas,
     loading: ideasLoading,
@@ -32,7 +36,10 @@ export const IdeasPage: React.FC = () => {
     clearError,
     refreshIdeas,
     silentlyRefreshIdeas,
-  } = useIdeas({ listIdeasEnabled: isAuthenticated });
+  } = useIdeas({
+    listIdeasEnabled: isAuthenticated,
+    initialFilters: initialStatus ? { ideahub_status: initialStatus } : undefined,
+  });
 
   const { showSnackbar } = useSnackbar();
   const { confirmation, showConfirmation, hideConfirmation } = useConfirmation();
@@ -47,6 +54,16 @@ export const IdeasPage: React.FC = () => {
   const [guestFormKey, setGuestFormKey] = useState(0);
 
   const ideaIdFromUrl = searchParams.get('ideaId');
+
+  /** Clean ideahub_status from URL after mount so it doesn't stick. */
+  useEffect(() => {
+    if (!searchParams.has('ideahub_status')) return;
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.delete('ideahub_status');
+      return next;
+    }, { replace: true });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- run once on mount
 
   useSoftRefresh(
     () => void silentlyRefreshIdeas(),

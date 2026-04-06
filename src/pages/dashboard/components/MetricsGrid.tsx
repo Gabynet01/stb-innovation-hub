@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   LightBulbIcon,
   ClockIcon,
@@ -43,6 +44,7 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({
   statusCounts,
   assessmentCount,
 }) => {
+  const navigate = useNavigate();
   const { draft, under_review } = statusCounts;
 
   const cards = [
@@ -51,24 +53,28 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({
       value: totalIdeas,
       hint: "Idea Bank scope (up to 500 loaded)",
       icon: LightBulbIcon,
+      onClick: () => navigate("/ideas"),
     },
     {
       title: IDEAHUB_STATUS_LABEL.draft,
       value: draft,
       hint: "Pipeline · draft",
       icon: ClockIcon,
+      onClick: () => navigate("/ideas?ideahub_status=draft"),
     },
     {
       title: IDEAHUB_STATUS_LABEL.under_review,
       value: under_review,
       hint: "Pipeline · in review",
       icon: ChartBarIcon,
+      onClick: () => navigate("/ideas?ideahub_status=under_review"),
     },
     {
       title: "Assessments",
       value: assessmentCount,
       hint: "Scores on record",
       icon: CheckCircleIcon,
+      onClick: () => navigate("/assessments"),
     },
   ];
 
@@ -78,12 +84,14 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({
         Overview
       </h2>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-        {cards.map(({ title, value, hint, icon: Icon }, i) => {
+        {cards.map(({ title, value, hint, icon: Icon, onClick }, i) => {
           const theme = metricThemes[i];
           return (
-            <div
+            <button
               key={title}
-              className={`group flex min-h-[200px] flex-col rounded-[1.75rem] p-6 text-white transition duration-300 sm:min-h-[220px] sm:p-7 ${theme.bg} ${theme.shadow} hover:-translate-y-0.5`}
+              type="button"
+              onClick={onClick}
+              className={`group flex min-h-[200px] cursor-pointer flex-col rounded-[1.75rem] p-6 text-left text-white transition duration-300 sm:min-h-[220px] sm:p-7 ${theme.bg} ${theme.shadow} hover:-translate-y-0.5`}
             >
               <div
                 className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white/20 ring-2 ring-white/25 backdrop-blur-[2px]"
@@ -100,7 +108,7 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({
               <p className="mt-auto pt-8 text-4xl font-bold tabular-nums tracking-tight text-white sm:text-[2.5rem] sm:leading-none">
                 {value.toLocaleString()}
               </p>
-            </div>
+            </button>
           );
         })}
       </div>
