@@ -65,7 +65,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const handleViewChange = (_view: ViewType) => {};
 
     const handleMenuChange = (menu: string) => {
-        navigate(`/${menu}`);
+        navigate(`/${menu}`, { replace: menu === segment });
         setMobileSidebarOpen(false);
     };
 
