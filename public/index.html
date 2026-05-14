@@ -9,10 +9,10 @@
       name="description"
       content="Idea Flow - Stanbic Bank's Idea Sharing Platform - Share and manage brilliant ideas from the community"
     />
-    <!-- Content Security Policy for development -->
+    <!-- Content Security Policy: extend connect-src when the API host changes, then rebuild. -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' http://localhost:8000 http://127.0.0.1:8000 http://localhost:9000 http://127.0.0.1:9000 ws://localhost:* ws://127.0.0.1:* wss://localhost:*; worker-src 'self' blob:; child-src 'self' blob:; object-src 'none'; base-uri 'self';"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://ideaflow.stanbicbank.co.zm http://ideaflow.stanbicbank.co.zm http://10.236.104.159:8000 https://10.236.104.159:8000 http://localhost:8000 http://127.0.0.1:8000 http://localhost:9000 http://127.0.0.1:9000 ws://localhost:* ws://127.0.0.1:* wss://localhost:*; worker-src 'self' blob:; child-src 'self' blob:; object-src 'none'; base-uri 'self';"
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/stanbic-logo.png" />
 
