@@ -7,9 +7,7 @@ import packageJson from "../../package.json";
 
 type AuthMode = "internal" | "ad";
 
-/** Prefer `public/login-hero.jpg` (or .png); falls back to a neutral stock photo if missing. */
-const HERO_FALLBACK =
-  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1600&q=80";
+const HERO_IMAGE = `${process.env.PUBLIC_URL || ""}/bg-img.jpg`;
 
 export const LoginPage: React.FC = () => {
   const { login, loginAd } = useAuth();
@@ -24,11 +22,6 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [heroSrc, setHeroSrc] = useState(() => {
-    const base = process.env.PUBLIC_URL || "";
-    return `${base}/login-hero.jpg`;
-  });
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -47,10 +40,6 @@ export const LoginPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const onHeroError = () => {
-    if (heroSrc !== HERO_FALLBACK) setHeroSrc(HERO_FALLBACK);
   };
 
   return (
@@ -178,10 +167,9 @@ export const LoginPage: React.FC = () => {
       {/* Right — hero (tablet+) */}
       <div className="relative hidden min-h-0 flex-1 md:block">
         <img
-          src={heroSrc}
+          src={HERO_IMAGE}
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
-          onError={onHeroError}
         />
         <div
           className="absolute inset-0 bg-gradient-to-t from-[#0033A1]/85 via-[#0033A1]/25 to-transparent"
